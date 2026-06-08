@@ -4,12 +4,16 @@ on:
   push:
     branches: ["main"]
 
+env:
+  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+
 jobs:
-  build-and-push:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -17,7 +21,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build JARs
+      - name: Build all microservices
         run: |
           for s in driver-service payment-service transport_saas
           do
@@ -27,13 +31,21 @@ jobs:
             cd ..
           done
 
+  docker-build-push:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & Push Docker images
+      - name: Build & Push images
         run: |
           VERSION=${GITHUB_RUN_NUMBER}
 
@@ -41,9 +53,9 @@ jobs:
           do
             echo "Dockerizing $s"
 
-            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION ./$s
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION
+            docker build -t $DOCKERHUB_USER/$s:$VERSION ./$s
+            docker push $DOCKERHUB_USER/$s:$VERSION
 
-            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION ${{ secrets.DOCKERHUB_USERNAME }}/$s:latest
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$s:latest
+            docker tag $DOCKERHUB_USER/$s:$VERSION $DOCKERHUB_USER/$s:latest
+            docker push $DOCKERHUB_USER/$s:latest
           done
