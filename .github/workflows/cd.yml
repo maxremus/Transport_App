@@ -1,4 +1,4 @@
-name: Microservices CI/CD
+name: Microservices CD
 
 on:
   push:
@@ -23,11 +23,14 @@ jobs:
 
       - name: Build JARs
         run: |
-          for s in discovery-server api-gateway user-service product-service
+          for s in driver-service payment-service transport-saas
           do
-            cd $s
-            mvn clean package -DskipTests
-            cd ..
+            if [ -f "$s/pom.xml" ]; then
+              echo "Building $s"
+              cd $s
+              mvn clean package -DskipTests
+              cd ..
+            fi
           done
 
   docker:
@@ -47,7 +50,7 @@ jobs:
         run: |
           VERSION=${GITHUB_RUN_NUMBER}
 
-          for s in discovery-server api-gateway user-service product-service
+          for s in driver-service payment-service transport-saas
           do
             docker build -t $DOCKERHUB_USER/$s:$VERSION ./$s
             docker push $DOCKERHUB_USER/$s:$VERSION
