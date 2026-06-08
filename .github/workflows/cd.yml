@@ -22,7 +22,7 @@ jobs:
 
       - name: Build JARs
         run: |
-          for s in driver-service payment-service transport-saas
+          for s in driver-service payment-service transport_saas
           do
             cd $s
             mvn clean package -DskipTests
