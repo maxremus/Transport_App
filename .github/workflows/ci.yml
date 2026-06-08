@@ -1,0 +1,31 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build all microservices
+        run: |
+          for dir in discovery-server api-gateway user-service product-service payment-service
+          do
+            if [ -d "$dir" ]; then
+              echo "Building $dir"
+              cd $dir
+              mvn clean package -DskipTests
+              cd ..
+            fi
+          done
