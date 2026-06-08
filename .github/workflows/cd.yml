@@ -39,7 +39,7 @@ jobs:
         run: |
           VERSION=${GITHUB_RUN_NUMBER}
 
-          for s in driver-service payment-service transport-saas
+          for s in driver-service payment-service transport_saas
           do
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION ./$s
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION
