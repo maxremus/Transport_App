@@ -2,13 +2,10 @@ name: Microservices CD
 
 on:
   push:
-    branches: [ "main" ]
-
-env:
-  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+    branches: ["main"]
 
 jobs:
-  ci:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,12 +21,13 @@ jobs:
         run: |
           for s in driver-service payment-service transport_saas
           do
+            echo "Building $s"
             cd $s
             mvn clean package -DskipTests
             cd ..
           done
 
-      - name: Login Docker
+      - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -41,6 +39,11 @@ jobs:
 
           for s in driver-service payment-service transport_saas
           do
+            echo "Dockerizing $s"
+
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION ./$s
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION
+
+            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/$s:$VERSION ${{ secrets.DOCKERHUB_USERNAME }}/$s:latest
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$s:latest
           done
