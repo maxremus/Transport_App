@@ -1,25 +1,31 @@
-version: "3.8"
+FROM maven:3.9-eclipse-temurin-17 AS build
 
-services:
+WORKDIR /app
 
-  driver-service:
-    image: maxremus/driver-service:latest
-    ports:
-      - "8081:8081"
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
-  payment-service:
-    image: maxremus/payment-service:latest
-    ports:
-      - "8082:8082"
+COPY src ./src
 
-  transport-saas:
-    image: maxremus/transport_saas:latest
-    ports:
-      - "8083:8083"
+RUN mvn clean package -DskipTests
 
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3306:3306"
+
+FROM eclipse-temurin:17-jre
+
+RUN apt-get update && apt-get install -y dumb-init
+
+RUN addgroup --system spring && adduser --system spring --ingroup spring
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+RUN chown -R spring:spring /app
+
+USER spring:spring
+
+ENV PORT=8080
+EXPOSE $PORT
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["java", "-Xmx512m", "-jar", "app.jar"]
