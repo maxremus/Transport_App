@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Курсове - Transport SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { background:#f4f6f9; }
+
+        .layout { display:flex; }
+
+        .sidebar {
+            width:240px;
+            height:100vh;
+            background:#111827;
+            color:white;
+            position:fixed;
+            top:0;
+            left:0;
+            padding:20px;
+        }
+
+        .sidebar a {
+            display:block;
+            padding:12px;
+            margin-bottom:10px;
+            border-radius:10px;
+            color:#cbd5f5;
+            text-decoration:none;
+        }
+
+        .sidebar a:hover {
+            background:#1f2937;
+            color:white;
+        }
+
+        .sidebar a.active {
+            background:#22c55e;
+            color:black;
+        }
+
+        .content {
+            margin-left:240px;
+            width:100%;
+        }
+
+        .card { border-radius:16px; }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h4>🚚 Transport</h4>
+
+        <a th:href="@{/dashboard}">📊 Dashboard</a>
+
+        <a th:href="@{/trips}" class="active">
+            📦 Курсове
+        </a>
+
+        <a th:href="@{/vehicles}">🚛 МПС</a>
+        <a th:href="@{/driver}">👨‍✈️ Шофьори</a>
+
+        <hr>
+
+        <a th:href="@{/upgrade}">💎 Абонамент</a>
+        <a th:href="@{/settings}">⚙ Настройки</a>
+
+        <hr>
+
+        <a th:href="@{/logout}" class="text-danger">🚪 Изход</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <div class="container-fluid py-4">
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>📦 Курсове</h2>
+            </div>
+
+            <!-- FORM -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+
+                    <h5 class="mb-3">Добавяне на курс</h5>
+
+                    <form th:action="@{/trips}" method="post"
+                          th:object="${trip}" class="row g-3">
+
+                        <!-- CSRF -->
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}" />
+
+                        <div class="col-md-4">
+                            <label>От</label>
+                            <input type="text" class="form-control"
+                                   th:field="*{fromLocation}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>До</label>
+                            <input type="text" class="form-control"
+                                   th:field="*{toLocation}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>МПС</label>
+                            <select class="form-select" name="vehicleId" required>
+                                <option value="">-- Избери МПС --</option>
+                                <option th:each="v : ${vehicles}"
+                                        th:value="${v.id}"
+                                        th:text="${v.registrationNumber}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Приход</label>
+                            <input type="number" step="0.01"
+                                   class="form-control"
+                                   th:field="*{revenue}" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Гориво</label>
+                            <input type="number" step="0.01"
+                                   class="form-control"
+                                   th:field="*{fuelCost}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Пътни такси</label>
+                            <input type="number" step="0.01"
+                                   class="form-control"
+                                   th:field="*{tollCost}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Други</label>
+                            <input type="number" step="0.01"
+                                   class="form-control"
+                                   th:field="*{otherCost}">
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100">
+                                💾 Запази курс
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="mb-3">Всички курсове</h5>
+
+                    <table class="table table-hover">
+
+                        <thead>
+                        <tr>
+                            <th>От</th>
+                            <th>До</th>
+                            <th>МПС</th>
+                            <th>Приход</th>
+                            <th>Разходи</th>
+                            <th>Печалба</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="t : ${trips}">
+                            <td th:text="${t.fromLocation}"></td>
+                            <td th:text="${t.toLocation}"></td>
+                            <td th:text="${t.vehicle.registrationNumber}"></td>
+                            <td th:text="${t.revenue} + ' €'"></td>
+                            <td th:text="${t.totalCost} + ' €'"></td>
+                            <td class="fw-bold"
+                                th:text="${t.profit} + ' €'"></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                    <!-- EMPTY STATE -->
+                    <div th:if="${trips == null || trips.isEmpty()}"
+                         class="text-center text-muted mt-3">
+                        Няма добавени курсове
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

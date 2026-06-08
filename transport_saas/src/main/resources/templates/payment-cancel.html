@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Неуспешно плащане</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #E53935, #B71C1C);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        .icon {
+            font-size: 70px;
+            color: #E53935;
+        }
+
+        h1 {
+            margin: 20px 0 10px;
+            color: #B71C1C;
+        }
+
+        p {
+            color: #555;
+        }
+
+        .btn {
+            margin-top: 15px;
+            display: inline-block;
+            padding: 12px 25px;
+            background: #E53935;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #C62828;
+        }
+
+        .secondary-btn {
+            display: block;
+            margin-top: 10px;
+            color: #E53935;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="icon">✖</div>
+    <h1>Плащането не беше успешно</h1>
+    <p>Възникна проблем или плащането беше отказано.</p>
+
+    <a th:href="@{/subscribe}" class="btn">Опитай отново</a>
+    <a th:href="@{/dashboard}" class="secondary-btn">Обратно към началото</a>
+</div>
+
+</body>
+</html>

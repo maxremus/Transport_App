@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Успешно плащане</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        .icon {
+            font-size: 70px;
+            color: #4CAF50;
+        }
+
+        h1 {
+            margin: 20px 0 10px;
+            color: #2E7D32;
+        }
+
+        p {
+            color: #555;
+        }
+
+        .btn {
+            margin-top: 25px;
+            display: inline-block;
+            padding: 12px 25px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #388E3C;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="icon">✔</div>
+    <h1>Плащането е успешно!</h1>
+    <p>Благодарим ти за доверието. Абонаментът ти е активиран.</p>
+
+    <a th:href="@{/dashboard}" class="btn">Обратно към началото</a>
+</div>
+
+</body>
+</html>

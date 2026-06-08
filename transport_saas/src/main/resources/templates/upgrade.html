@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Абонамент - Transport SaaS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body { background:#f4f6f9; }
+
+        .layout { display:flex; }
+
+        .sidebar {
+            width:240px;
+            height:100vh;
+            background:#111827;
+            color:white;
+            position:fixed;
+            top:0;
+            left:0;
+            padding:20px;
+        }
+
+        .sidebar a {
+            display:block;
+            padding:12px;
+            margin-bottom:10px;
+            border-radius:10px;
+            color:#cbd5f5;
+            text-decoration:none;
+        }
+
+        .sidebar a:hover {
+            background:#1f2937;
+            color:white;
+        }
+
+        .sidebar a.active {
+            background:#22c55e;
+            color:black;
+        }
+
+        .content {
+            margin-left:240px;
+            width:100%;
+        }
+
+        .card {
+            border-radius:16px;
+            transition:0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h4>🚚 Transport</h4>
+
+        <a th:href="@{/dashboard}">📊 Dashboard</a>
+        <a th:href="@{/trips}">📦 Курсове</a>
+        <a th:href="@{/vehicles}">🚛 МПС</a>
+        <a th:href="@{/driver}">👨‍✈️ Шофьори</a>
+
+        <hr>
+
+        <a th:href="@{/upgrade}" class="active">
+            💎 Абонамент
+        </a>
+
+        <a th:href="@{/settings}">⚙ Настройки</a>
+
+        <hr>
+
+        <a th:href="@{/logout}" class="text-danger">🚪 Изход</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <div class="container-fluid py-4">
+
+            <!-- SUCCESS MESSAGE -->
+            <div class="alert alert-success text-center"
+                 th:if="${param.success}">
+                ✔ Абонаментът е активиран успешно!
+            </div>
+
+            <!-- HEADER -->
+            <div class="text-center mb-5">
+                <h2>💎 Надграждане на абонамент</h2>
+
+                <p class="text-muted">
+                    Текущ план:
+                    <strong th:text="${currentPlan}"></strong>
+                </p>
+
+                <!-- VEHICLES -->
+                <p>
+                    🚛 МПС:
+                    <strong th:text="${vehicleCount}"></strong> /
+                    <span th:text="${vehicleLimit == 2147483647 ? '∞' : vehicleLimit}"></span>
+                </p>
+
+                <div class="progress mb-3">
+                    <div class="progress-bar"
+                         th:style="'width:' + (${vehicleLimit} == 2147483647 ? 10 : (${vehicleCount} * 100 / ${vehicleLimit})) + '%'">
+                    </div>
+                </div>
+
+                <p th:if="${vehicleLimit != 2147483647 and vehicleCount >= vehicleLimit * 0.8}"
+                   class="text-danger">
+                    ⚠ Близо сте до лимита за МПС!
+                </p>
+
+                <!-- TRIPS -->
+                <p>
+                    📦 Курсове:
+                    <strong th:text="${tripCount}"></strong> /
+                    <span th:text="${tripLimit == 2147483647 ? '∞' : tripLimit}"></span>
+                </p>
+
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success"
+                         th:style="'width:' + (${tripLimit} == 2147483647 ? 10 : (${tripCount} * 100 / ${tripLimit})) + '%'">
+                    </div>
+                </div>
+
+                <p th:if="${tripLimit != 2147483647 and tripCount >= tripLimit * 0.8}"
+                   class="text-danger">
+                    ⚠ Близо сте до лимита за курсове!
+                </p>
+
+            </div>
+
+            <!-- PLANS -->
+            <div class="row g-4 justify-content-center">
+
+                <!-- PRO -->
+                <div class="col-md-4">
+                    <div class="card shadow text-center">
+                        <div class="card-body">
+
+                            <h4>PRO</h4>
+                            <h3 class="my-3 text-primary">15 € / месец</h3>
+
+                            <p>✔ До 10 МПС</p>
+                            <p>✔ До 1000 курса</p>
+
+                            <a th:if="${currentPlan.name() != 'PRO'}"
+                               th:href="@{/upgrade/pro}"
+                               class="btn btn-primary w-100">
+                                🚀 Премини към PRO
+                            </a>
+
+                            <button th:if="${currentPlan.name() == 'PRO'}"
+                                    class="btn btn-secondary w-100" disabled>
+                                ✔ Активен план
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PREMIUM -->
+                <div class="col-md-4">
+                    <div class="card shadow text-center border-dark">
+                        <div class="card-body">
+
+                            <h4>PREMIUM</h4>
+                            <h3 class="my-3 text-dark">40 € / месец</h3>
+
+                            <p>✔ Неограничени МПС</p>
+                            <p>✔ Неограничени курсове</p>
+
+                            <a th:if="${currentPlan.name() != 'PREMIUM'}"
+                               th:href="@{/upgrade/premium}"
+                               class="btn btn-dark w-100">
+                                🔥 Премини към PREMIUM
+                            </a>
+
+                            <button th:if="${currentPlan.name() == 'PREMIUM'}"
+                                    class="btn btn-secondary w-100" disabled>
+                                ✔ Активен план
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BACK -->
+            <div class="text-center mt-5">
+                <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
+                    ⬅ Назад към таблото
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
