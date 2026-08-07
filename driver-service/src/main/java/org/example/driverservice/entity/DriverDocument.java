@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class DriverDocument {
 
-    @Id
-    @GeneratedValue
+     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
