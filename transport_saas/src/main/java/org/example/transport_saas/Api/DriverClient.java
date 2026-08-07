@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "driver-service",
-        url = "http://localhost:8081"
+        url = "${driver.service.url}"
 )
 public interface DriverClient {
 

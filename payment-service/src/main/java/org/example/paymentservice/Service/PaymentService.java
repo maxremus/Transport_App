@@ -14,7 +14,9 @@ public class PaymentService {
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
 
-    @Value("${app.base-url}")   // ✅ ТОВА ЛИПСВАШЕ
+    // URL-ът на transport_saas (публично достъпен), защото там живеят
+    // страниците /success и /cancel, към които Stripe пренасочва браузъра
+    @Value("${app.frontend-url}")
     private String baseUrl;
 
     public String createCheckoutSession(String priceId, String plan, Long companyId) throws Exception {

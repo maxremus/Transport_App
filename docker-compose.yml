@@ -3,31 +3,48 @@ services:
   transport-saas:
     build:
       context: ./transport_saas
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: transport-saas
     ports:
       - "8080:8080"
     environment:
       PORT: 8080
-
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DRIVER_SERVICE_URL: http://driver-service:8081
+      PAYMENT_SERVICE_URL: http://payment-service:8082
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    depends_on:
+      - driver-service
+      - payment-service
 
   driver-service:
     build:
       context: ./driver-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: driver-service
     ports:
       - "8081:8081"
     environment:
       PORT: 8081
-
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
 
   payment-service:
     build:
       context: ./payment-service
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: payment-service
     ports:
       - "8082:8082"
     environment:
       PORT: 8082
+      TRANSPORT_SERVICE_URL: http://transport-saas:8080
+      TRANSPORT_SAAS_PUBLIC_URL: http://localhost:8080
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+    depends_on:
+      - transport-saas

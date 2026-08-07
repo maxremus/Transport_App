@@ -17,6 +17,9 @@ public class StripeWebhookController {
     @Value("${stripe.webhook.secret}")
     private String endpointSecret;
 
+    @Value("${app.internal-key}")
+    private String internalKey;
+
     private final CompanyClient companyClient;
 
     public StripeWebhookController(CompanyClient companyClient) {
@@ -66,7 +69,8 @@ public class StripeWebhookController {
                     companyClient.updatePlan(
                             Long.parseLong(companyId),
                             plan,
-                            subscriptionId
+                            subscriptionId,
+                            internalKey
                     );
 
                     System.out.println("PLAN UPDATED ✔");
@@ -91,7 +95,7 @@ public class StripeWebhookController {
 
                 String subscriptionId = invoice.getSubscription();
 
-                companyClient.renewSubscription(subscriptionId);
+                companyClient.renewSubscription(subscriptionId, internalKey);
 
                 System.out.println("RENEWED ✔ " + subscriptionId);
             }
@@ -110,7 +114,7 @@ public class StripeWebhookController {
 
                 String subscriptionId = invoice.getSubscription();
 
-                companyClient.deactivateSubscription(subscriptionId);
+                companyClient.deactivateSubscription(subscriptionId, internalKey);
 
                 System.out.println("DEACTIVATED ❌ " + subscriptionId);
             }
