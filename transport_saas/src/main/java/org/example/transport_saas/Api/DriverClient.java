@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "driver-service", url = "http://localhost:8081")
+@FeignClient(
+        name = "driver-service",
+        url = "${driver.service.url}"
 public interface DriverClient {
 
     @PostMapping("/api/v1/driver-documents")
