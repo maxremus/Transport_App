@@ -1,5 +1,7 @@
 package org.example.transport_saas.Api;
 
+import java.util.List;
+
 import org.example.transport_saas.DTO.DriverCreateDTO;
 import org.example.transport_saas.DTO.DriverDTO;
 import org.example.transport_saas.DTO.DriverDocumentRequestDTO;
@@ -8,11 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
-
 @FeignClient(
         name = "driver-service",
-        url = "${driver.service.url}"
+        url = "http://localhost:8081"
+)
 public interface DriverClient {
 
     @PostMapping("/api/v1/driver-documents")
