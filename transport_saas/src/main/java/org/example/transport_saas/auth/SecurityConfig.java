@@ -22,7 +22,11 @@ public class SecurityConfig {
 
         http
 
-                .csrf(csrf -> csrf.disable()) // 🔥 ВАЖНО за webhook
+                // CSRF protection е ВКЛЮЧЕНА (по подразбиране в Spring Security).
+                // Stripe webhook-ът НЕ живее тук - той е в payment-service,
+                // отделно Spring Boot приложение без spring-security изобщо,
+                // така че не му трябва CSRF exemption в тази услуга.
+                // Всички форми в темплейтите вече очакват _csrf.token/_csrf.parameterName.
 
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession()
