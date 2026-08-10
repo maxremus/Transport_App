@@ -4,11 +4,21 @@ WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+# JVM тунинг за малки RAM лимити (напр. Render "starter" = 512MB):
+# - MaxRAMPercentage кара JVM-a да позволи heap-а спрямо РЕАЛНО видимата
+#   за контейнера памет (вместо да гадае), оставяйки място за metaspace,
+#   thread stacks и native памет извън heap-а.
+# - SerialGC/по-малки thread stacks намаляват overhead-а при малко RAM.
+ENTRYPOINT ["java", \
+  "-XX:MaxRAMPercentage=70.0", \
+  "-XX:+UseSerialGC", \
+  "-XX:MaxMetaspaceSize=160m", \
+  "-Xss512k", \
+  "-jar", "app.jar"]
