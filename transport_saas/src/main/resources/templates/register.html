@@ -1,32 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Регистрация - Transport SaaS</title>
+    <meta charset="UTF-8">
+    <title>Регистрация - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <style>
-        body {
-            background: linear-gradient(135deg, #134e5e, #71b280);
-            height: 100vh;
-        }
-
-        .register-card {
-            border-radius: 16px;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 
-<body class="d-flex align-items-center justify-content-center">
+<body class="road-shell">
 
-<div class="card shadow-lg p-4 register-card" style="width: 420px;">
+<div class="road-card wide">
 
-    <div class="text-center mb-4">
-        <h3>Създаване на акаунт</h3>
-        <p class="text-muted">Регистрация на нова фирма</p>
-    </div>
+    <div class="road-brand"><span class="dot"></span> Transport Manager</div>
+
+    <h3 class="road-title">Създаване на акаунт</h3>
+    <p class="road-sub">Регистрация на нова транспортна фирма</p>
 
     <form th:action="@{/register}" th:object="${request}" method="post">
 
@@ -35,52 +27,50 @@
                th:value="${_csrf.token}" />
 
         <div class="mb-3">
-            <label class="form-label">Име на фирмата</label>
+            <label class="field-label">Име на фирмата</label>
             <input type="text"
                    th:field="*{companyName}"
-                   class="form-control"
+                   class="field-control"
                    placeholder="Въведете име на фирмата"
                    required>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Потребителско име</label>
+            <label class="field-label">Потребителско име</label>
             <input type="text"
                    th:field="*{username}"
-                   class="form-control"
+                   class="field-control"
                    placeholder="Изберете потребителско име"
                    required>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Парола</label>
+        <div class="mb-4">
+            <label class="field-label">Парола</label>
             <input type="password"
                    th:field="*{password}"
-                   class="form-control"
+                   class="field-control"
                    placeholder="Изберете парола"
                    required>
         </div>
 
-        <button type="submit" class="btn btn-success w-100 mb-3">
+        <button type="submit" class="btn-route btn-block mb-2">
             Регистрация
         </button>
 
-        <a th:href="@{/}" class="btn btn-home w-100 mb-3">
+        <a th:href="@{/}" class="btn-ghost btn-block">
             🏠 Начало
         </a>
 
     </form>
 
-    <div th:if="${error}" class="alert alert-danger text-center p-2"
+    <div th:if="${error}" class="notice notice-danger text-center mt-3 mb-0"
          th:text="${error}">
     </div>
 
-    <div class="text-center mt-3">
-        <small>
-            Вече имате акаунт?
-            <a th:href="@{/login}">Вход</a>
-        </small>
-    </div>
+    <p class="text-center text-muted-c mt-4 mb-0" style="font-size:14px;">
+        Вече имате акаунт?
+        <a th:href="@{/login}" style="font-weight:600;">Вход</a>
+    </p>
 
 </div>
 

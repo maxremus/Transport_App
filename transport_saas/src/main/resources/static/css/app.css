@@ -1,0 +1,488 @@
+/* =========================================================
+   TRANSPORT SAAS — DESIGN SYSTEM
+   Тема: пътно/транспортно диспечерско табло.
+   Асфалт + пътен амбър + печатен манифест естетика.
+   ========================================================= */
+
+:root {
+  --ink:        #14181F;   /* асфалт - основен текст / sidebar */
+  --ink-soft:   #262B35;   /* по-светъл асфалт за hover повърхности */
+  --paper:      #F6F4EE;   /* топла хартия - фон на съдържанието */
+  --paper-dim:  #ECE7DA;   /* по-тъмна хартия - zebra редове, дивидери */
+  --card:       #FFFFFF;   /* картички */
+  --line:       #DED8C6;   /* hairline бордери върху хартия */
+  --route:      #D98A2B;   /* пътен амбър - основен акцент */
+  --route-dark: #B06F1E;   /* амбър hover */
+  --signal-green: #3C8C6B;
+  --signal-green-bg: #E4F1EB;
+  --signal-amber: #C98A1E;
+  --signal-amber-bg: #FBF0DC;
+  --signal-red:   #C1442E;
+  --signal-red-bg:#FBE8E4;
+  --text-muted:  #6B7280;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-card: 0 1px 2px rgba(20,24,31,0.04), 0 8px 24px -12px rgba(20,24,31,0.12);
+}
+
+* { box-sizing: border-box; }
+
+body.app-shell {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, .display-font {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+
+a { color: var(--route-dark); }
+
+/* ---------- LAYOUT SHELL ---------- */
+
+.app-layout { display: flex; min-height: 100vh; }
+
+.app-sidebar {
+  width: 252px;
+  min-height: 100vh;
+  background: var(--ink);
+  color: #C9CDD6;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 20px 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.app-brand .dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--route);
+  box-shadow: 0 0 0 3px rgba(217,138,43,0.25);
+}
+
+/* лентова маркировка - сигнатурен елемент */
+.route-line {
+  border: none;
+  height: 0;
+  border-top: 2px dashed rgba(255,255,255,0.14);
+  margin: 14px 4px;
+}
+
+.nav-stops { list-style: none; margin: 0; padding: 0; flex: 1; }
+
+.nav-stop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 2px;
+  border-radius: var(--radius-sm);
+  color: #AAB0BE;
+  text-decoration: none;
+  font-size: 14.5px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.nav-stop .stop-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4B5160;
+  flex-shrink: 0;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.nav-stop:hover {
+  background: var(--ink-soft);
+  color: #fff;
+}
+
+.nav-stop.is-active {
+  background: var(--ink-soft);
+  color: #fff;
+  border-left-color: var(--route);
+}
+
+.nav-stop.is-active .stop-dot {
+  background: var(--route);
+  transform: scale(1.4);
+}
+
+.nav-stop.is-exit { color: #D98577; margin-top: 4px; }
+.nav-stop.is-exit:hover { background: rgba(193,68,46,0.18); color: #fff; }
+
+.app-content {
+  margin-left: 252px;
+  width: 100%;
+  padding: 28px 32px 60px;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.page-eyebrow {
+  text-transform: uppercase;
+  font-size: 11.5px;
+  letter-spacing: .12em;
+  color: var(--route-dark);
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.page-title { font-size: 26px; font-weight: 700; margin: 0; }
+
+/* ---------- CARDS ---------- */
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.panel-body { padding: 22px 24px; }
+
+.panel-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.kpi-label {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.kpi-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.kpi-value.up { color: var(--signal-green); }
+.kpi-value.down { color: var(--signal-red); }
+.kpi-value.neutral { color: var(--ink); }
+
+/* ---------- PLATE BADGE (сигнатурен елемент) ---------- */
+
+.plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+}
+
+.plate.plate-amber { border-color: var(--route); color: var(--route-dark); background: #FFF7EC; }
+
+/* ---------- STATUS PILLS ---------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pill-ok      { background: var(--signal-green-bg); color: var(--signal-green); }
+.pill-warning { background: var(--signal-amber-bg); color: var(--signal-amber); }
+.pill-danger  { background: var(--signal-red-bg);   color: var(--signal-red); }
+.pill-neutral { background: var(--paper-dim); color: var(--text-muted); }
+
+/* ---------- BUTTONS ---------- */
+
+.btn-route {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--route);
+  color: #1A1200;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s ease, transform .1s ease;
+}
+
+.btn-route:hover { background: var(--route-dark); color: #fff; }
+.btn-route:active { transform: translateY(1px); }
+
+.btn-ink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.btn-ink:hover { background: var(--ink-soft); color: #fff; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.btn-ghost:hover { border-color: var(--ink); background: var(--paper-dim); color: var(--ink); }
+
+.btn-danger-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--signal-red);
+  border: 1.5px solid var(--signal-red);
+  border-radius: var(--radius-sm);
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-danger-ghost:hover { background: var(--signal-red-bg); }
+
+.btn-block { width: 100%; }
+
+/* ---------- FORMS ---------- */
+
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.field-control {
+  width: 100%;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 14.5px;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.field-control:focus {
+  outline: none;
+  border-color: var(--route);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(217,138,43,0.15);
+}
+
+select.field-control { cursor: pointer; }
+
+/* ---------- TABLES ---------- */
+
+.manifest-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.manifest-table thead th {
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: .07em;
+  color: var(--text-muted);
+  font-weight: 700;
+  padding: 0 12px 10px;
+  border-bottom: 1.5px solid var(--line);
+}
+
+.manifest-table tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--paper-dim);
+  vertical-align: middle;
+}
+
+.manifest-table tbody tr:hover { background: var(--paper); }
+.manifest-table tbody tr:last-child td { border-bottom: none; }
+
+.manifest-table tr.row-danger  { background: var(--signal-red-bg); }
+.manifest-table tr.row-warning { background: var(--signal-amber-bg); }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 34px 10px;
+  font-size: 14px;
+}
+
+/* ---------- ALERTS ---------- */
+
+.notice {
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+.notice-ok     { background: var(--signal-green-bg); color: var(--signal-green); }
+.notice-danger { background: var(--signal-red-bg);   color: var(--signal-red); }
+
+/* ---------- FULL-SCREEN (auth / status) PAGES ---------- */
+
+body.road-shell {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  background: var(--ink);
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 74px, rgba(255,255,255,0.05) 74px 78px),
+    linear-gradient(160deg, #1B2130 0%, #0D1017 70%);
+  padding: 20px;
+}
+
+.road-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--paper);
+  border-radius: 18px;
+  padding: 40px 36px;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+}
+
+.road-card.wide { max-width: 480px; }
+
+.road-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--route-dark);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 18px;
+}
+
+.road-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--route); }
+
+.road-title { text-align: center; font-size: 24px; margin: 0 0 6px; }
+.road-sub   { text-align: center; color: var(--text-muted); font-size: 14px; margin: 0 0 26px; }
+
+.status-badge-circle {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 18px;
+}
+
+/* ---------- MISC ---------- */
+
+.text-muted-c { color: var(--text-muted); }
+.progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--paper-dim);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--route);
+}
+.progress-fill.green { background: var(--signal-green); }
+
+@media (max-width: 900px) {
+  .app-sidebar { display: none; }
+  .app-content { margin-left: 0; padding: 20px; }
+}

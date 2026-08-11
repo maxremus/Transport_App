@@ -1,106 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Настройки</title>
+    <meta charset="UTF-8">
+    <title>Настройки - Transport Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <style>
-        body { background: #f4f6f9; }
-
-        .layout { display: flex; }
-
-        .sidebar {
-            width: 240px;
-            height: 100vh;
-            background: #111827;
-            color: white;
-            position: fixed;
-            padding: 20px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            margin-bottom: 8px;
-            color: #cbd5f5;
-            text-decoration: none;
-            border-radius: 8px;
-        }
-
-        .sidebar a:hover { background: #1f2937; }
-
-        .content {
-            margin-left: 240px;
-            width: 100%;
-            padding: 30px;
-        }
-
-        .card { border-radius: 15px; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 
-<body>
+<body class="app-shell">
 
-<div class="layout">
+<div class="app-layout">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h4>🚚 Transport</h4>
+    <div th:replace="~{fragments/sidebar :: sidebar('settings')}"></div>
 
-        <a href="/dashboard">📊 Dashboard</a>
-        <a href="/trips">📦 Курсове</a>
-        <a href="/vehicles">🚛 МПС</a>
-        <a href="/driver">👨‍✈️ Шофьори</a>
+    <div class="app-content">
 
-        <hr>
-
-        <a href="/upgrade">💎 Абонамент</a>
-        <a href="/settings" class="bg-success text-dark">⚙ Настройки</a>
-
-        <hr>
-
-        <a href="/logout" class="text-danger">🚪 Изход</a>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="content">
-
-        <h2 class="mb-4">⚙ Настройки</h2>
-
-        <div class="card shadow p-4">
-
-            <h4>💎 Абонамент</h4>
-
-            <p>
-                План:
-                <strong th:text="${plan}"></strong>
-            </p>
-
-            <p>
-                Статус:
-                <span th:if="${active}" class="text-success">Активен</span>
-                <span th:if="${!active}" class="text-danger">Неактивен</span>
-            </p>
-
-            <p>
-                Валиден до:
-                <strong th:text="${expiry}"></strong>
-            </p>
-
-            <p th:if="${expiry != null}">
-                Остават:
-                <strong th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), expiry)}"></strong>
-                дни
-            </p>
-
-            <div class="mt-3" th:if="${!active}">
-                <a href="/upgrade" class="btn btn-success">
-                    💳 Плати абонамент
-                </a>
+        <div class="page-head">
+            <div>
+                <p class="page-eyebrow">Профил</p>
+                <h1 class="page-title">Настройки</h1>
             </div>
+        </div>
 
+        <div class="panel" style="max-width:560px;">
+            <div class="panel-body">
+
+                <p class="panel-title">💎 Абонамент</p>
+
+                <p style="margin-bottom:10px;">
+                    План:
+                    <span class="plate plate-amber" th:text="${plan}"></span>
+                </p>
+
+                <p style="margin-bottom:10px;">
+                    Статус:
+                    <span th:if="${active}" class="pill pill-ok">Активен</span>
+                    <span th:if="${!active}" class="pill pill-danger">Неактивен</span>
+                </p>
+
+                <p style="margin-bottom:10px;">
+                    Валиден до:
+                    <strong class="mono" th:text="${expiry}"></strong>
+                </p>
+
+                <p th:if="${expiry != null}" class="text-muted-c" style="margin-bottom:0;">
+                    Остават
+                    <strong class="mono" th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), expiry)}"></strong>
+                    дни
+                </p>
+
+                <div class="mt-3" th:if="${!active}">
+                    <a th:href="@{/upgrade}" class="btn-route">
+                        💳 Плати абонамент
+                    </a>
+                </div>
+
+            </div>
         </div>
 
     </div>

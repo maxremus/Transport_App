@@ -2,164 +2,76 @@
 <html lang="bg" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Шофьори</title>
+    <title>Шофьори - Transport Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <style>
-        body {
-            background: #f4f6f9;
-        }
-
-        .layout {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 240px;
-            height: 100vh;
-            background: #111827;
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 20px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            color: #cbd5f5;
-            text-decoration: none;
-        }
-
-        .sidebar a:hover {
-            background: #1f2937;
-            color: white;
-        }
-
-        .sidebar a.active {
-            background: #22c55e;
-            color: black;
-        }
-
-        .content {
-            margin-left: 240px;
-            width: 100%;
-        }
-
-        .card {
-            border-radius: 16px;
-        }
-
-        .badge-status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-
-        .ok { background: #dcfce7; color: #166534; }
-        .warning { background: #fef9c3; color: #854d0e; }
-        .danger { background: #fee2e2; color: #991b1b; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 
-<body>
+<body class="app-shell">
 
-<div class="layout">
+<div class="app-layout">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+    <div th:replace="~{fragments/sidebar :: sidebar('driver')}"></div>
 
-        <h4>🚚 Transport</h4>
+    <div class="app-content">
 
-        <a th:href="@{/dashboard}">📊 Dashboard</a>
-        <a th:href="@{/trips}">📦 Курсове</a>
-        <a th:href="@{/vehicles}">🚛 МПС</a>
-
-        <a th:href="@{/driver}"
-           class="active">
-            👨‍✈️ Шофьори
-        </a>
-
-        <hr>
-
-        <a th:href="@{/upgrade}">💎 Абонамент</a>
-        <a th:href="@{/settings}">⚙ Настройки</a>
-
-        <hr>
-
-        <a th:href="@{/logout}" class="text-danger">🚪 Изход</a>
-
-    </div>
-
-    <!-- CONTENT -->
-    <div class="content">
-
-        <div class="container-fluid py-4">
-
-            <!-- HEADER -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>👨‍✈️ Шофьори</h2>
-
-                <a th:href="@{/driver-add}" class="btn btn-primary">
-                    ➕ Добави шофьор
-                </a>
+        <div class="page-head">
+            <div>
+                <p class="page-eyebrow">Екипаж</p>
+                <h1 class="page-title">Шофьори</h1>
             </div>
 
-            <!-- TABLE -->
-            <div class="card shadow-sm">
+            <a th:href="@{/driver-add}" class="btn-route">
+                ➕ Добави шофьор
+            </a>
+        </div>
 
-                <div class="card-body">
+        <div class="panel">
+            <div class="panel-body">
 
-                    <h5 class="mb-3">Списък</h5>
+                <p class="panel-title">Списък</p>
 
-                    <table class="table table-hover">
+                <table class="manifest-table">
 
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Име</th>
-                            <th>Телефон</th>
-                            <th>Статус</th>
-                            <th>Действия</th>
-                        </tr>
-                        </thead>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Име</th>
+                        <th>Телефон</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
 
-                        <tbody>
+                    <tbody>
 
-                        <tr th:each="d : ${drivers}">
-                            <td th:text="${d.id}"></td>
-                            <td th:text="${d.name}"></td>
-                            <td th:text="${d.phone}"></td>
+                    <tr th:each="d : ${drivers}">
+                        <td class="mono text-muted-c" th:text="${d.id}"></td>
+                        <td th:text="${d.name}"></td>
+                        <td class="mono" th:text="${d.phone}"></td>
 
-                            <td>
-                                <span class="badge-status ok">
-                                    Активен
-                                </span>
-                            </td>
+                        <td>
+                            <span class="pill pill-ok">Активен</span>
+                        </td>
 
-                            <td>
-                                <a th:href="@{/driver-documents(driverId=${d.id})}"
-                                   class="btn btn-sm btn-primary">
-                                    📄 Документи
-                                </a>
-                            </td>
-                        </tr>
+                        <td>
+                            <a th:href="@{/driver-documents(driverId=${d.id})}"
+                               class="btn-ghost" style="padding:6px 14px; font-size:13px;">
+                                📄 Документи
+                            </a>
+                        </td>
+                    </tr>
 
-                        </tbody>
+                    </tbody>
 
-                    </table>
+                </table>
 
-                    <!-- ако няма данни -->
-                    <div th:if="${drivers == null || drivers.isEmpty()}"
-                         class="text-center text-muted mt-3">
-                        Няма шофьори
-                    </div>
-
+                <div th:if="${drivers == null || drivers.isEmpty()}" class="empty-state">
+                    Няма шофьори
                 </div>
 
             </div>

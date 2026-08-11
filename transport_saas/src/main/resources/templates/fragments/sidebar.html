@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar(active)" class="app-sidebar">
+
+    <div class="app-brand">
+        <span class="dot"></span> Transport Manager
+    </div>
+
+    <hr class="route-line">
+
+    <ul class="nav-stops">
+
+        <li>
+            <a th:href="@{/dashboard}" class="nav-stop"
+               th:classappend="${active == 'dashboard'} ? 'is-active'">
+                <span class="stop-dot"></span> Табло
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/trips}" class="nav-stop"
+               th:classappend="${active == 'trips'} ? 'is-active'">
+                <span class="stop-dot"></span> Курсове
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/vehicles}" class="nav-stop"
+               th:classappend="${active == 'vehicles'} ? 'is-active'">
+                <span class="stop-dot"></span> МПС
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/driver}" class="nav-stop"
+               th:classappend="${active == 'driver'} ? 'is-active'">
+                <span class="stop-dot"></span> Шофьори
+            </a>
+        </li>
+    </ul>
+
+    <hr class="route-line">
+
+    <ul class="nav-stops">
+        <li>
+            <a th:href="@{/upgrade}" class="nav-stop"
+               th:classappend="${active == 'upgrade'} ? 'is-active'">
+                <span class="stop-dot"></span> Абонамент
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/settings}" class="nav-stop"
+               th:classappend="${active == 'settings'} ? 'is-active'">
+                <span class="stop-dot"></span> Настройки
+            </a>
+        </li>
+    </ul>
+
+    <hr class="route-line">
+
+    <a th:href="@{/logout}" class="nav-stop is-exit">
+        <span class="stop-dot"></span> Изход
+    </a>
+
+</div>
+
+</body>
+</html>
