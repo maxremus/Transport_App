@@ -1,6 +1,5 @@
 package org.example.transport_saas.service;
 
-import org.example.transport_saas.Api.DriverClient;
 import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.entity.Company;
 import org.example.transport_saas.entity.Driver;
@@ -16,12 +15,10 @@ public class DriverService {
 
     private final DriverRepository driverRepository;
     private final VehicleRepository vehicleRepository;
-    private final DriverClient driverClient;
 
-    public DriverService(DriverRepository driverRepository, VehicleRepository vehicleRepository, DriverClient driverClient) {
+    public DriverService(DriverRepository driverRepository, VehicleRepository vehicleRepository) {
         this.driverRepository = driverRepository;
         this.vehicleRepository = vehicleRepository;
-        this.driverClient = driverClient;
     }
 
     public void assignDriver(Long driverId, Long vehicleId) {
