@@ -83,6 +83,15 @@ services:
       - key: DATABASE_PASSWORD
         sync: false
 
+      # Взема се автоматично от transport-saas, за да е гарантирано,
+      # че двата ключа съвпадат (driver-service вече проверява X-API-KEY
+      # на всяка заявка от transport_saas)
+      - key: INTERNAL_API_KEY
+        fromService:
+          name: transport-saas
+          type: web
+          envVarKey: INTERNAL_API_KEY
+
   # ---------------------------------------------------------------------
   # payment-service - Stripe checkout + webhook, без собствена база
   # ---------------------------------------------------------------------

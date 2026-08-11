@@ -1,11 +1,12 @@
 package org.example.driverservice.controller;
 
 import org.example.driverservice.DTO.DriverDocumentRequestDTO;
+import org.example.driverservice.entity.DriverDocument;
 import org.example.driverservice.service.DriverDocumentService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/driver-documents")
@@ -13,15 +14,47 @@ public class DriverDocumentController {
 
     private final DriverDocumentService driverDocumentService;
 
+    @Value("${app.internal-key}")
+    private String internalKey;
+
     public DriverDocumentController(DriverDocumentService driverDocumentService) {
         this.driverDocumentService = driverDocumentService;
     }
 
-    @PostMapping
-    public void save(@RequestBody DriverDocumentRequestDTO req) {
+    private void validateKey(String apiKey) {
+        if (!internalKey.equals(apiKey)) {
+            throw new RuntimeException("Unauthorized");
+        }
+    }
 
-        driverDocumentService.saveOrUpdate(
+    @GetMapping
+    public List<DriverDocument> getForDriver(@RequestParam Long driverId,
+                                              @RequestHeader("X-API-KEY") String apiKey) {
+        validateKey(apiKey);
+        return driverDocumentService.getForDriver(driverId);
+    }
+
+    @PostMapping
+    public DriverDocument save(@RequestBody DriverDocumentRequestDTO req,
+                                @RequestHeader("X-API-KEY") String apiKey) {
+        validateKey(apiKey);
+
+        return driverDocumentService.create(
                 req.getDriverId(),
+                req.getType(),
+                req.getExpiryDate(),
+                req.getNumber()
+        );
+    }
+
+    @PutMapping("/{id}")
+    public DriverDocument update(@PathVariable Long id,
+                                  @RequestBody DriverDocumentRequestDTO req,
+                                  @RequestHeader("X-API-KEY") String apiKey) {
+        validateKey(apiKey);
+
+        return driverDocumentService.update(
+                id,
                 req.getType(),
                 req.getExpiryDate(),
                 req.getNumber()

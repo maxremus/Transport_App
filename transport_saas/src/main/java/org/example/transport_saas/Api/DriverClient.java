@@ -6,9 +6,7 @@ import org.example.transport_saas.DTO.DriverCreateDTO;
 import org.example.transport_saas.DTO.DriverDTO;
 import org.example.transport_saas.DTO.DriverDocumentRequestDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
         name = "driver-service",
@@ -16,12 +14,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface DriverClient {
 
-    @PostMapping("/api/v1/driver-documents")
-    void save(@RequestBody DriverDocumentRequestDTO dto);
-
     @GetMapping("/api/v1/drivers")
-    List<DriverDTO> getAllDrivers();
+    List<DriverDTO> getAllDrivers(@RequestParam("companyId") Long companyId,
+                                   @RequestHeader("X-API-KEY") String apiKey);
+
+    @GetMapping("/api/v1/drivers/{id}")
+    DriverDTO getDriver(@PathVariable("id") Long id,
+                         @RequestParam("companyId") Long companyId,
+                         @RequestHeader("X-API-KEY") String apiKey);
 
     @PostMapping("/api/v1/drivers")
-    void createDriver(@RequestBody DriverCreateDTO dto);
+    DriverDTO createDriver(@RequestBody DriverCreateDTO dto,
+                            @RequestHeader("X-API-KEY") String apiKey);
+
+    @GetMapping("/api/v1/driver-documents")
+    List<DriverDocumentRequestDTO> getDocuments(@RequestParam("driverId") Long driverId,
+                                                 @RequestHeader("X-API-KEY") String apiKey);
+
+    @PostMapping("/api/v1/driver-documents")
+    DriverDocumentRequestDTO createDocument(@RequestBody DriverDocumentRequestDTO dto,
+                                             @RequestHeader("X-API-KEY") String apiKey);
+
+    @PutMapping("/api/v1/driver-documents/{id}")
+    DriverDocumentRequestDTO updateDocument(@PathVariable("id") Long id,
+                                             @RequestBody DriverDocumentRequestDTO dto,
+                                             @RequestHeader("X-API-KEY") String apiKey);
 }

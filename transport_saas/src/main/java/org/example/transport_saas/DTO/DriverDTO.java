@@ -8,4 +8,5 @@ public class DriverDTO {
     private Long id;
     private String name;
     private String phone;
+    private Long companyId;
 }

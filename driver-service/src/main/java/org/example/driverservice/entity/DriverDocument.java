@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "driver_documents")
 @Builder
 @Getter
 @Setter
@@ -22,7 +23,7 @@ public class DriverDocument {
 
     private LocalDate expiryDate;
 
-    private String documentNumber;
+    private String number;
 
     private Long driverId;
 }

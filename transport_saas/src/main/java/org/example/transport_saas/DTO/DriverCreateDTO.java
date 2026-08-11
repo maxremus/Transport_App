@@ -7,4 +7,5 @@ public class DriverCreateDTO {
 
     private String name;
     private String phone;
+    private Long companyId;
 }

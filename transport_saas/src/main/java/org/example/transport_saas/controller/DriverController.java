@@ -2,7 +2,6 @@ package org.example.transport_saas.controller;
 
 import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.entity.DriverDocumentType;
-import org.example.transport_saas.service.DriverDocumentService;
 import org.example.transport_saas.service.DriverIntegrationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,12 +13,9 @@ import java.time.LocalDate;
 public class DriverController {
 
     private final DriverIntegrationService driverIntegrationService;
-    private final DriverDocumentService driverDocumentService;
 
-    public DriverController(DriverIntegrationService driverIntegrationService,
-                             DriverDocumentService driverDocumentService) {
+    public DriverController(DriverIntegrationService driverIntegrationService) {
         this.driverIntegrationService = driverIntegrationService;
-        this.driverDocumentService = driverDocumentService;
     }
 
     @GetMapping("/driver-add")
@@ -37,9 +33,7 @@ public class DriverController {
 
     @GetMapping("/driver")
     public String driverPage(Model model) {
-
         model.addAttribute("drivers", driverIntegrationService.getAllDrivers());
-
         return "driver";
     }
 
@@ -49,19 +43,21 @@ public class DriverController {
                                  Model model) {
         Long companyId = SecurityUtils.getCurrentCompanyId();
 
-        // Verify driver belongs to current company
         if (driverId != null) {
             var driver = driverIntegrationService.getDriverIfBelongsToCompany(driverId, companyId);
             if (driver == null) {
                 return "redirect:/driver"; // Unauthorized access attempt
             }
 
-            model.addAttribute("documents", driverDocumentService.getForDriver(driverId));
+            model.addAttribute("documents", driverIntegrationService.getDocumentsForDriver(driverId));
         }
 
-        // Ако е избрана редакция - зареждаме документа за предпопълване на формата
         if (editId != null) {
-            var doc = driverDocumentService.getIfBelongsToCompany(editId, companyId);
+            var doc = driverIntegrationService.getDocumentsForDriver(driverId).stream()
+                    .filter(d -> d.getId().equals(editId))
+                    .findFirst()
+                    .orElse(null);
+
             if (doc == null) {
                 return "redirect:/driver-documents?driverId=" + driverId;
             }
@@ -82,13 +78,12 @@ public class DriverController {
     ) {
         Long companyId = SecurityUtils.getCurrentCompanyId();
 
-        // Verify driver belongs to current company
         var driver = driverIntegrationService.getDriverIfBelongsToCompany(driverId, companyId);
         if (driver == null) {
             return "redirect:/driver"; // Unauthorized access attempt
         }
 
-        driverDocumentService.create(driverId, type, number, expiryDate);
+        driverIntegrationService.createDocument(driverId, type, number, expiryDate);
 
         return "redirect:/driver-documents?driverId=" + driverId;
     }
@@ -103,13 +98,13 @@ public class DriverController {
     ) {
         Long companyId = SecurityUtils.getCurrentCompanyId();
 
-        // Проверка, че документът принадлежи на текуща фирма
-        var doc = driverDocumentService.getIfBelongsToCompany(id, companyId);
-        if (doc == null) {
+        // Проверка, че документът е за шофьор от текущата фирма
+        var driver = driverIntegrationService.getDriverIfBelongsToCompany(driverId, companyId);
+        if (driver == null) {
             return "redirect:/driver";
         }
 
-        driverDocumentService.update(id, type, number, expiryDate);
+        driverIntegrationService.updateDocument(id, type, number, expiryDate);
 
         return "redirect:/driver-documents?driverId=" + driverId;
     }

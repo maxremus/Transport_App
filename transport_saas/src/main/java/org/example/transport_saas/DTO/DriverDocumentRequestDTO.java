@@ -1,14 +1,16 @@
 package org.example.transport_saas.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.example.transport_saas.entity.DriverDocumentType;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
+@Data
 public class DriverDocumentRequestDTO {
 
+    private Long id;
     private Long driverId;
-    private String type;
-    private String expiryDate;
+    private DriverDocumentType type;
+    private LocalDate expiryDate;
     private String number;
 }
