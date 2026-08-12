@@ -25,11 +25,17 @@ public class VehicleController {
 
         model.addAttribute("vehicles",
                 vehicleService.getAllForCompany(companyId));
-        model.addAttribute("vehicle", new Vehicle());
         model.addAttribute("documents", vehicleDocumentService.getAllForCompany(companyId));
 
-        model.addAttribute("editVehicle",
-                editId != null ? vehicleService.getVehicleIfBelongsToCompany(editId, companyId) : null);
+        Vehicle vehicle = null;
+        if (editId != null) {
+            vehicle = vehicleService.getVehicleIfBelongsToCompany(editId, companyId);
+        }
+        if (vehicle == null) {
+            vehicle = new Vehicle();
+        }
+        model.addAttribute("vehicle", vehicle);
+        model.addAttribute("editId", vehicle.getId());
 
         model.addAttribute("editDoc",
                 editDocId != null ? vehicleDocumentService.getIfBelongsToCompany(editDocId, companyId) : null);

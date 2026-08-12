@@ -30,11 +30,11 @@
         <div class="panel mb-4">
             <div class="panel-body">
 
-                <p class="panel-title" th:text="${editVehicle != null} ? '✏ Редакция на МПС' : 'Добавяне на МПС'"></p>
+                <p class="panel-title" th:text="${editId != null} ? '✏ Редакция на МПС' : 'Добавяне на МПС'"></p>
 
-                <form th:action="${editVehicle != null} ? @{'/vehicles/' + ${editVehicle.id}} : @{/vehicles}"
+                <form th:action="${editId != null} ? @{'/vehicles/' + ${editId}} : @{/vehicles}"
                       method="post"
-                      th:object="${editVehicle != null} ? ${editVehicle} : ${vehicle}"
+                      th:object="${vehicle}"
                       class="row g-3">
 
                     <input type="hidden"
@@ -52,9 +52,9 @@
 
                     <div class="col-md-4 d-flex align-items-end gap-2">
                         <button class="btn-route" style="flex:1;"
-                                th:text="${editVehicle != null} ? '💾 Запази' : '➕ Добави'">
+                                th:text="${editId != null} ? '💾 Запази' : '➕ Добави'">
                         </button>
-                        <a th:if="${editVehicle != null}" th:href="@{/vehicles}" class="btn-ghost">Откажи</a>
+                        <a th:if="${editId != null}" th:href="@{/vehicles}" class="btn-ghost">Откажи</a>
                     </div>
 
                 </form>

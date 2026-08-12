@@ -28,14 +28,16 @@ public class TripController {
         model.addAttribute("vehicles",
                 vehicleService.getAllForCompany(companyId));
 
+        Trip trip = null;
         if (editId != null) {
-            Trip editTrip = tripService.getIfBelongsToCompany(editId, companyId);
-            model.addAttribute("editTrip", editTrip);
-        } else {
-            model.addAttribute("editTrip", null);
+            trip = tripService.getIfBelongsToCompany(editId, companyId);
+        }
+        if (trip == null) {
+            trip = new Trip();
         }
 
-        model.addAttribute("trip", new Trip());
+        model.addAttribute("trip", trip);
+        model.addAttribute("editId", (trip.getId() != null) ? trip.getId() : null);
 
         return "trips";
     }

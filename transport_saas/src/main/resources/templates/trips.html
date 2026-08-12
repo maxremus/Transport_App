@@ -30,11 +30,11 @@
         <div class="panel mb-4">
             <div class="panel-body">
 
-                <p class="panel-title" th:text="${editTrip != null} ? '✏ Редакция на курс' : 'Добавяне на курс'"></p>
+                <p class="panel-title" th:text="${editId != null} ? '✏ Редакция на курс' : 'Добавяне на курс'"></p>
 
-                <form th:action="${editTrip != null} ? @{'/trips/' + ${editTrip.id}} : @{/trips}"
+                <form th:action="${editId != null} ? @{'/trips/' + ${editId}} : @{/trips}"
                       method="post"
-                      th:object="${editTrip != null} ? ${editTrip} : ${trip}"
+                      th:object="${trip}"
                       class="row g-3">
 
                     <input type="hidden"
@@ -59,7 +59,7 @@
                             <option value="">-- Избери МПС --</option>
                             <option th:each="v : ${vehicles}"
                                     th:value="${v.id}"
-                                    th:selected="${editTrip != null and editTrip.vehicle != null and editTrip.vehicle.id == v.id}"
+                                    th:selected="${trip.vehicle != null and trip.vehicle.id == v.id}"
                                     th:text="${v.registrationNumber}">
                             </option>
                         </select>
@@ -95,9 +95,9 @@
 
                     <div class="col-12 d-flex gap-2">
                         <button class="btn-route" style="flex:1;"
-                                th:text="${editTrip != null} ? '💾 Запази промените' : '💾 Запази курс'">
+                                th:text="${editId != null} ? '💾 Запази промените' : '💾 Запази курс'">
                         </button>
-                        <a th:if="${editTrip != null}" th:href="@{/trips}" class="btn-ghost">Откажи</a>
+                        <a th:if="${editId != null}" th:href="@{/trips}" class="btn-ghost">Откажи</a>
                     </div>
 
                 </form>
