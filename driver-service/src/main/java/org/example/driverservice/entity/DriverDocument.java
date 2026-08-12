@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "driver_documents")
+@Table(name = "ds_driver_documents")
 @Builder
 @Getter
 @Setter

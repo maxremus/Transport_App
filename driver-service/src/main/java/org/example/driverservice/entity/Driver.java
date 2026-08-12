@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
-@Table(name = "drivers")
+@Table(name = "ds_drivers")
 @Builder
 @Getter
 @Setter
