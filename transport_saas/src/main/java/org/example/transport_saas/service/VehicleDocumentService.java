@@ -106,4 +106,15 @@ public class VehicleDocumentService {
     public List<VehicleDocument> getAllForCompany(Long companyId) {
         return vehicleDocumentRepository.findByVehicleCompanyId(companyId);
     }
+
+    public void update(Long id, DocumentType type, LocalDate expiryDate) {
+        VehicleDocument doc = vehicleDocumentRepository.findById(id).orElseThrow();
+        doc.setType(type);
+        doc.setExpiryDate(expiryDate);
+        vehicleDocumentRepository.save(doc);
+    }
+
+    public VehicleDocument getIfBelongsToCompany(Long id, Long companyId) {
+        return vehicleDocumentRepository.findByIdAndVehicleCompanyId(id, companyId).orElse(null);
+    }
 }

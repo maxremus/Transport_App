@@ -42,6 +42,39 @@ public class TripService {
         tripRepository.save(trip);
     }
 
+    public void update(Long tripId, Long companyId, Trip updated, Long vehicleId) {
+
+        Trip trip = getIfBelongsToCompany(tripId, companyId);
+        if (trip == null) {
+            throw new RuntimeException("Access denied");
+        }
+
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow();
+
+        trip.setFromLocation(updated.getFromLocation());
+        trip.setToLocation(updated.getToLocation());
+        trip.setRevenue(updated.getRevenue());
+        trip.setFuelCost(updated.getFuelCost());
+        trip.setTollCost(updated.getTollCost());
+        trip.setOtherCost(updated.getOtherCost());
+        trip.setVehicle(vehicle);
+
+        if (updated.getTripDate() != null) {
+            trip.setTripDate(updated.getTripDate());
+        }
+
+        tripRepository.save(trip);
+    }
+
+    public Trip getIfBelongsToCompany(Long tripId, Long companyId) {
+        Trip trip = tripRepository.findById(tripId).orElse(null);
+        if (trip == null || trip.getCompany() == null || !trip.getCompany().getId().equals(companyId)) {
+            return null;
+        }
+        return trip;
+    }
+
     public void delete(Long tripId, Long companyId) {
 
         Trip trip = tripRepository.findById(tripId)

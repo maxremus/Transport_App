@@ -17,7 +17,7 @@
 
     <div th:replace="~{fragments/sidebar :: sidebar('settings')}"></div>
 
-    <div class="app-content">
+    <div class="app-content" style="max-width:720px;">
 
         <div class="page-head">
             <div>
@@ -26,14 +26,53 @@
             </div>
         </div>
 
-        <div class="panel" style="max-width:560px;">
+        <div class="notice notice-ok" th:if="${param.saved}">✔ Промените са запазени.</div>
+        <div class="notice notice-ok" th:if="${param.passwordChanged}">✔ Паролата е сменена успешно.</div>
+        <div class="notice notice-danger" th:if="${param.passwordError != null and param.passwordError[0] == 'wrong'}">Текущата парола е грешна.</div>
+        <div class="notice notice-danger" th:if="${param.passwordError != null and param.passwordError[0] == 'mismatch'}">Новите пароли не съвпадат.</div>
+
+        <!-- ПРОФИЛ НА ПОТРЕБИТЕЛЯ -->
+        <div class="panel mb-4">
+            <div class="panel-body">
+                <p class="panel-title">👤 Профил</p>
+                <p style="margin-bottom:4px;">Потребителско име: <span class="plate" th:text="${user.username}"></span></p>
+                <p class="text-muted-c" style="margin-bottom:0; font-size:13px;">Ролята и достъпът се управляват от системата.</p>
+            </div>
+        </div>
+
+        <!-- ФИРМЕН ПРОФИЛ -->
+        <div class="panel mb-4">
+            <div class="panel-body">
+                <p class="panel-title">🏢 Фирмен профил</p>
+
+                <form th:action="@{/settings/company}" method="post" class="row g-3">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="col-md-7">
+                        <label class="field-label">Име на фирмата</label>
+                        <input type="text" name="name" class="field-control" th:value="${company.name}" required>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="field-label">ЕИК / Булстат</label>
+                        <input type="text" name="bulstat" class="field-control mono" th:value="${company.bulstat}">
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn-route">💾 Запази профила</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- АБОНАМЕНТ -->
+        <div class="panel mb-4">
             <div class="panel-body">
 
                 <p class="panel-title">💎 Абонамент</p>
 
                 <p style="margin-bottom:10px;">
-                    План:
-                    <span class="plate plate-amber" th:text="${plan}"></span>
+                    План: <span class="plate plate-amber" th:text="${plan}"></span>
                 </p>
 
                 <p style="margin-bottom:10px;">
@@ -42,23 +81,67 @@
                     <span th:if="${!active}" class="pill pill-danger">Неактивен</span>
                 </p>
 
-                <p style="margin-bottom:10px;">
-                    Валиден до:
-                    <strong class="mono" th:text="${expiry}"></strong>
+                <p style="margin-bottom:10px;" th:if="${expiry != null}">
+                    Валиден до: <strong class="mono" th:text="${expiry}"></strong>
                 </p>
 
-                <p th:if="${expiry != null}" class="text-muted-c" style="margin-bottom:0;">
-                    Остават
-                    <strong class="mono" th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(T(java.time.LocalDate).now(), expiry)}"></strong>
-                    дни
-                </p>
-
-                <div class="mt-3" th:if="${!active}">
-                    <a th:href="@{/upgrade}" class="btn-route">
-                        💳 Плати абонамент
-                    </a>
+                <div class="mt-3">
+                    <a th:href="@{/upgrade}" class="btn-ghost">💳 Управление на абонамента</a>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- ИЗВЕСТИЯ -->
+        <div class="panel mb-4">
+            <div class="panel-body">
+                <p class="panel-title">🔔 Известия</p>
+
+                <form th:action="@{/settings/notifications}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <p style="margin:0; font-weight:600;">Известия по имейл</p>
+                            <p class="text-muted-c" style="margin:0; font-size:13px;">Известявай ме за изтичащи документи и абонамент.</p>
+                        </div>
+                        <input type="checkbox" name="emailNotifications" value="true"
+                               th:checked="${user.emailNotifications}"
+                               style="width:20px; height:20px; accent-color: var(--route);">
+                    </div>
+
+                    <button class="btn-ghost">💾 Запази</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- СМЯНА НА ПАРОЛА -->
+        <div class="panel mb-4">
+            <div class="panel-body">
+                <p class="panel-title">🔒 Смяна на парола</p>
+
+                <form th:action="@{/settings/password}" method="post" class="row g-3">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="col-12">
+                        <label class="field-label">Текуща парола</label>
+                        <input type="password" name="currentPassword" class="field-control" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="field-label">Нова парола</label>
+                        <input type="password" name="newPassword" class="field-control" required minlength="6">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="field-label">Потвърди нова парола</label>
+                        <input type="password" name="confirmPassword" class="field-control" required minlength="6">
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn-ink">🔒 Смени паролата</button>
+                    </div>
+                </form>
             </div>
         </div>
 

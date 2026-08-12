@@ -30,6 +30,22 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
     }
 
+    public void update(Long vehicleId, Long companyId, Vehicle updated) {
+
+        Vehicle vehicle = getVehicleIfBelongsToCompany(vehicleId, companyId);
+        if (vehicle == null) {
+            throw new RuntimeException("Access denied");
+        }
+
+        vehicle.setRegistrationNumber(updated.getRegistrationNumber());
+
+        if (updated.getVin() != null) {
+            vehicle.setVin(updated.getVin());
+        }
+
+        vehicleRepository.save(vehicle);
+    }
+
     public String getStatus(LocalDate expiryDate) {
         LocalDate now = LocalDate.now();
 

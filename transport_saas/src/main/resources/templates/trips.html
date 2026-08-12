@@ -26,14 +26,16 @@
             </div>
         </div>
 
-        <!-- FORM -->
+        <!-- FORM (add or edit) -->
         <div class="panel mb-4">
             <div class="panel-body">
 
-                <p class="panel-title">Добавяне на курс</p>
+                <p class="panel-title" th:text="${editTrip != null} ? '✏ Редакция на курс' : 'Добавяне на курс'"></p>
 
-                <form th:action="@{/trips}" method="post"
-                      th:object="${trip}" class="row g-3">
+                <form th:action="${editTrip != null} ? @{'/trips/' + ${editTrip.id}} : @{/trips}"
+                      method="post"
+                      th:object="${editTrip != null} ? ${editTrip} : ${trip}"
+                      class="row g-3">
 
                     <input type="hidden"
                            th:name="${_csrf.parameterName}"
@@ -57,6 +59,7 @@
                             <option value="">-- Избери МПС --</option>
                             <option th:each="v : ${vehicles}"
                                     th:value="${v.id}"
+                                    th:selected="${editTrip != null and editTrip.vehicle != null and editTrip.vehicle.id == v.id}"
                                     th:text="${v.registrationNumber}">
                             </option>
                         </select>
@@ -90,8 +93,11 @@
                                th:field="*{otherCost}">
                     </div>
 
-                    <div class="col-12">
-                        <button class="btn-route btn-block">💾 Запази курс</button>
+                    <div class="col-12 d-flex gap-2">
+                        <button class="btn-route" style="flex:1;"
+                                th:text="${editTrip != null} ? '💾 Запази промените' : '💾 Запази курс'">
+                        </button>
+                        <a th:if="${editTrip != null}" th:href="@{/trips}" class="btn-ghost">Откажи</a>
                     </div>
 
                 </form>
@@ -115,6 +121,7 @@
                         <th>Приход</th>
                         <th>Разходи</th>
                         <th>Печалба</th>
+                        <th></th>
                     </tr>
                     </thead>
 
@@ -127,6 +134,15 @@
                         <td class="mono" th:text="${t.revenue} + ' €'"></td>
                         <td class="mono" th:text="${t.totalCost} + ' €'"></td>
                         <td class="mono fw-bold" th:text="${t.profit} + ' €'"></td>
+                        <td class="d-flex gap-2">
+                            <a th:href="@{/trips(editId=${t.id})}"
+                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✏</a>
+
+                            <form th:action="@{'/trips/delete/' + ${t.id}}" method="post" onsubmit="return confirm('Изтриване на курса?');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button class="btn-danger-ghost" style="padding:5px 12px; font-size:12.5px;">🗑</button>
+                            </form>
+                        </td>
                     </tr>
 
                     </tbody>

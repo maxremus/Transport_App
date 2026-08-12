@@ -6,6 +6,7 @@ import org.example.transport_saas.entity.DocumentType;
 import org.example.transport_saas.service.VehicleDocumentService;
 import org.example.transport_saas.service.VehicleService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -33,6 +34,24 @@ public class VehicleDocumentController {
         }
 
         vehicleDocumentService.saveOrUpdate(vehicleId, type, expiryDate);
+
+        return "redirect:/vehicles";
+    }
+
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id,
+                         DocumentType type,
+                         LocalDate expiryDate) {
+
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+
+        // Verify document belongs to current company
+        var doc = vehicleDocumentService.getIfBelongsToCompany(id, companyId);
+        if (doc == null) {
+            return "redirect:/vehicles"; // Unauthorized access attempt
+        }
+
+        vehicleDocumentService.update(id, type, expiryDate);
 
         return "redirect:/vehicles";
     }
