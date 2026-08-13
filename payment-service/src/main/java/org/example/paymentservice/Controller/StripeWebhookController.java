@@ -31,11 +31,16 @@ public class StripeWebhookController {
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String sigHeader) {
 
+        System.out.println("📩 /webhook получи заявка от Stripe");
+
         Event event;
 
         try {
             event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
         } catch (Exception e) {
+            System.out.println("❌ INVALID STRIPE SIGNATURE - проверете дали STRIPE_WEBHOOK_SECRET " +
+                    "съвпада с 'Signing secret' на webhook endpoint-а в Stripe Dashboard");
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Invalid signature");
         }
 
