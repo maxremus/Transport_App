@@ -1,30 +1,21 @@
 package org.example.transport_saas.controller;
 
-import org.example.transport_saas.entity.Company;
-import org.example.transport_saas.repository.CompanyRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PaymentPageController {
 
-    private final CompanyRepository companyRepository;
-
-    public PaymentPageController(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
-
+    // Stripe пренасочва браузъра директно тук (може сесията вече да не е
+    // валидна) - затова връщаме статична страница с ясно съобщение и линк
+    // обратно в приложението, вместо redirect към защитен ресурс.
     @GetMapping("/success")
     public String success() {
-        return "redirect:/upgrade?success=true";
+        return "payment-success";
     }
 
     @GetMapping("/cancel")
     public String cancel() {
         return "payment-cancel";
     }
-
-
 }

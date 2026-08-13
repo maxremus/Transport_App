@@ -33,6 +33,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/register", "/css/**", "/images/**").permitAll()
 
+                        // Stripe пренасочва браузъра директно тук след плащане -
+                        // трябва да са достъпни независимо дали сесията е още валидна
+                        .requestMatchers("/success", "/cancel").permitAll()
+
                         // 🔥 ТОВА РЕШАВА ПРОБЛЕМА
                         .requestMatchers("/api/v1/company/**").permitAll()
 
