@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 @Controller
 @RequestMapping("/upgrade")
 @RequiredArgsConstructor
@@ -52,9 +55,17 @@ public class UpgradeController {
         model.addAttribute("tripCount", tripCount);
         model.addAttribute("vehicleLimit", vehicleLimit);
         model.addAttribute("tripLimit", tripLimit);
+        model.addAttribute("active", company.isActive());
 
-        System.out.println("PLAN FROM DB: " + company.getSubscriptionPlan());
-        System.out.println("VEHICLE LIMIT: " + vehicleLimit);
+        LocalDate expiry = company.getSubscriptionExpiry();
+        model.addAttribute("expiry", expiry);
+
+        if (expiry != null) {
+            long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), expiry);
+            model.addAttribute("daysUntilExpiry", daysLeft);
+        } else {
+            model.addAttribute("daysUntilExpiry", null);
+        }
 
         return "upgrade";
     }
