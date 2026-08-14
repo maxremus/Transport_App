@@ -20,11 +20,20 @@ public class SecurityConfig {
 
         http
 
-                // CSRF protection е ВКЛЮЧЕНА (по подразбиране в Spring Security).
-                // Stripe webhook-ът НЕ живее тук - той е в payment-service,
-                // отделно Spring Boot приложение без spring-security изобщо,
-                // така че не му трябва CSRF exemption в тази услуга.
-                // Всички форми в темплейтите вече очакват _csrf.token/_csrf.parameterName.
+                // CSRF protection е ВКЛЮЧЕНА (по подразбиране в Spring Security)
+                // за всички браузърни/сесийни форми.
+                //
+                // /api/v1/company/** е изключение - това е чист server-to-server
+                // REST API (извикван от payment-service през Feign), защитен със
+                // собствен X-API-KEY механизъм, не с браузърна сесия. Feign не
+                // изпраща CSRF токен, така че без това изключение CSRF филтърът
+                // отхвърля заявката -> пренасочва към /login -> Java-клиентът на
+                // Feign (HttpURLConnection) не сменя POST->GET при redirect ->
+                // POST-ва пак към /login -> /login също изисква CSRF за POST ->
+                // безкраен redirect loop до 20-те опита на Java.
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/v1/company/**")
+                )
 
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession()
@@ -37,7 +46,6 @@ public class SecurityConfig {
                         // трябва да са достъпни независимо дали сесията е още валидна
                         .requestMatchers("/success", "/cancel").permitAll()
 
-                        // 🔥 ТОВА РЕШАВА ПРОБЛЕМА
                         .requestMatchers("/api/v1/company/**").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
