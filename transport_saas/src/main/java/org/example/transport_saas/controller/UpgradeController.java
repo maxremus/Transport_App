@@ -44,6 +44,12 @@ public class UpgradeController {
 
         Company company = companyRepository.findById(companyId).orElseThrow();
 
+        System.out.println("🔍 /upgrade зареден за companyId=" + companyId
+                + " | plan=" + company.getSubscriptionPlan()
+                + " | active=" + company.isActive()
+                + " | expiry=" + company.getSubscriptionExpiry()
+                + " | stripeSubId=" + company.getStripeSubscriptionId());
+
         long vehicleCount = vehicleRepository.countByCompanyId(companyId);
         long tripCount = tripRepository.countByCompanyId(companyId);
 
