@@ -11,108 +11,140 @@
     <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 
-<body class="road-shell" style="align-items:flex-start; padding-top:50px; padding-bottom:50px;">
+<body class="app-shell">
 
-<div class="road-card wide">
+<div class="app-layout">
 
-    <div class="road-brand"><span class="dot"></span> Transport Manager</div>
+    <div th:replace="~{fragments/sidebar :: sidebar('driver')}"></div>
 
-    <h3 class="road-title" th:text="${editDoc != null} ? '✏ Редакция на документ' : '📄 Нов документ'"></h3>
-    <p class="road-sub" th:if="${driverId != null}">Шофьор № <span class="mono" th:text="${driverId}"></span></p>
+    <div class="app-content">
 
-    <!-- ADD / EDIT FORM -->
-    <form th:action="${editDoc != null} ? @{'/driver-documents/' + ${editDoc.id}} : @{/driver-documents}"
-          method="post">
+        <div class="page-head">
+            <div>
+                <p class="page-eyebrow">Екипаж</p>
+                <h1 class="page-title">
+                    Документи
+                    <span th:if="${driverName != null}" class="text-muted-c" style="font-size:16px; font-weight:500;"
+                          th:text="'— ' + ${driverName}"></span>
+                </h1>
+            </div>
 
-        <input type="hidden"
-               th:name="${_csrf.parameterName}"
-               th:value="${_csrf.token}" />
-
-        <div class="mb-3">
-            <label class="field-label">ID на шофьор</label>
-            <input type="number" name="driverId" class="field-control mono"
-                   th:value="${editDoc != null} ? ${editDoc.driverId} : ${driverId}"
-                   readonly required>
+            <a th:href="@{/driver}" class="btn-ghost">⬅ Назад към шофьорите</a>
         </div>
 
-        <div class="mb-3">
-            <label class="field-label">Тип документ</label>
-            <select name="type" class="field-control">
-                <option value="DRIVING_LICENSE"
-                        th:selected="${editDoc != null and editDoc.type.name() == 'DRIVING_LICENSE'}">Книжка</option>
-                <option value="ID_CARD"
-                        th:selected="${editDoc != null and editDoc.type.name() == 'ID_CARD'}">Лична карта</option>
-                <option value="DIGITAL_CARD"
-                        th:selected="${editDoc != null and editDoc.type.name() == 'DIGITAL_CARD'}">Дигитална карта</option>
-                <option value="PROFESSIONAL_CERT"
-                        th:selected="${editDoc != null and editDoc.type.name() == 'PROFESSIONAL_CERT'}">Професионална</option>
-            </select>
+        <div class="row g-4">
+
+            <!-- ADD / EDIT FORM -->
+            <div class="col-lg-4">
+                <div class="panel">
+                    <div class="panel-body">
+
+                        <p class="panel-title" th:text="${editDoc != null} ? '✏ Редакция на документ' : '📄 Нов документ'"></p>
+
+                        <form th:action="${editDoc != null} ? @{'/driver-documents/' + ${editDoc.id}} : @{/driver-documents}"
+                              method="post">
+
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}" />
+
+                            <input type="hidden" name="driverId"
+                                   th:value="${editDoc != null} ? ${editDoc.driverId} : ${driverId}">
+
+                            <div class="mb-3">
+                                <label class="field-label">Тип документ</label>
+                                <select name="type" class="field-control">
+                                    <option value="DRIVING_LICENSE"
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'DRIVING_LICENSE'}">Книжка</option>
+                                    <option value="ID_CARD"
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'ID_CARD'}">Лична карта</option>
+                                    <option value="DIGITAL_CARD"
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'DIGITAL_CARD'}">Дигитална карта</option>
+                                    <option value="PROFESSIONAL_CERT"
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'PROFESSIONAL_CERT'}">Професионална</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="field-label">Номер</label>
+                                <input type="text" name="number" class="field-control mono"
+                                       th:value="${editDoc != null} ? ${editDoc.number} : ''">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="field-label">Валиден до</label>
+                                <input type="date" name="expiryDate" class="field-control"
+                                       th:value="${editDoc != null} ? ${editDoc.expiryDate} : ''" required>
+                            </div>
+
+                            <button class="btn-route btn-block mb-2"
+                                    th:text="${editDoc != null} ? '💾 Запази промените' : '💾 Добави документ'">
+                            </button>
+
+                            <a th:if="${editDoc != null}"
+                               th:href="@{/driver-documents(driverId=${driverId})}"
+                               class="btn-ghost btn-block">Откажи редакция</a>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXISTING DOCUMENTS -->
+            <div class="col-lg-8">
+                <div class="panel">
+                    <div class="panel-body">
+
+                        <p class="panel-title">Всички документи на шофьора</p>
+
+                        <table class="manifest-table" th:if="${documents != null and !documents.isEmpty()}">
+                            <thead>
+                            <tr>
+                                <th>Тип</th>
+                                <th>Номер</th>
+                                <th>Валиден до</th>
+                                <th>Статус</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="doc : ${documents}"
+                                th:classappend="
+                                    ${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ИЗТЕКЪЛ'} ? 'row-danger' :
+                                    (${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'СПЕШЕН'} ? 'row-warning' : '')
+                                ">
+                                <td th:text="${@driverDocumentService.getDisplayType(doc.type)}"></td>
+                                <td class="mono" th:text="${doc.number}"></td>
+                                <td class="mono" th:text="${#temporals.format(doc.expiryDate, 'dd/MM/yyyy')}"></td>
+                                <td>
+                                    <span class="pill"
+                                          th:classappend="
+                                              ${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ОК'} ? 'pill-ok' :
+                                              (${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ИЗТЕКЪЛ'} ? 'pill-danger' : 'pill-warning')
+                                          "
+                                          th:text="${@driverDocumentService.getDisplayStatus(doc.expiryDate)}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/driver-documents(driverId=${driverId}, editId=${doc.id})}"
+                                       class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">
+                                        ✏ Редакция
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div th:if="${documents == null or documents.isEmpty()}" class="empty-state">
+                            Няма добавени документи за този шофьор
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="mb-3">
-            <label class="field-label">Номер</label>
-            <input type="text" name="number" class="field-control mono"
-                   th:value="${editDoc != null} ? ${editDoc.number} : ''">
-        </div>
-
-        <div class="mb-4">
-            <label class="field-label">Валиден до</label>
-            <input type="date" name="expiryDate" class="field-control"
-                   th:value="${editDoc != null} ? ${editDoc.expiryDate} : ''" required>
-        </div>
-
-        <button class="btn-route btn-block mb-2"
-                th:text="${editDoc != null} ? '💾 Запази промените' : '💾 Запази документ'">
-        </button>
-
-        <a th:if="${editDoc != null}"
-           th:href="@{/driver-documents(driverId=${driverId})}"
-           class="btn-ghost btn-block mb-2">Откажи редакция</a>
-
-        <a th:href="@{/driver}" class="btn-ghost btn-block">⬅ Назад към списъка</a>
-
-    </form>
-
-    <!-- EXISTING DOCUMENTS -->
-    <div th:if="${driverId != null and documents != null and !documents.isEmpty()}" class="mt-4 pt-4" style="border-top:1px solid var(--line);">
-
-        <p class="panel-title">Документи на този шофьор</p>
-
-        <table class="manifest-table">
-            <thead>
-            <tr>
-                <th>Тип</th>
-                <th>Номер</th>
-                <th>Валиден до</th>
-                <th>Статус</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="doc : ${documents}"
-                th:classappend="
-                    ${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ИЗТЕКЪЛ'} ? 'row-danger' :
-                    (${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'СПЕШЕН'} ? 'row-warning' : '')
-                ">
-                <td th:text="${@driverDocumentService.getDisplayType(doc.type)}"></td>
-                <td class="mono" th:text="${doc.number}"></td>
-                <td class="mono" th:text="${doc.expiryDate}"></td>
-                <td th:text="${@driverDocumentService.getDisplayStatus(doc.expiryDate)}"></td>
-                <td>
-                    <a th:href="@{/driver-documents(driverId=${driverId}, editId=${doc.id})}"
-                       class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">
-                        ✏ Редакция
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-    </div>
-
-    <div th:if="${driverId != null and (documents == null or documents.isEmpty())}"
-         class="empty-state mt-3">
-        Няма добавени документи за този шофьор
     </div>
 
 </div>

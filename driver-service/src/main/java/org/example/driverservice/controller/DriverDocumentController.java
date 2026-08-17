@@ -34,6 +34,13 @@ public class DriverDocumentController {
         return driverDocumentService.getForDriver(driverId);
     }
 
+    @GetMapping("/company")
+    public List<DriverDocument> getForCompany(@RequestParam Long companyId,
+                                               @RequestHeader("X-API-KEY") String apiKey) {
+        validateKey(apiKey);
+        return driverDocumentService.getForCompany(companyId);
+    }
+
     @PostMapping
     public DriverDocument save(@RequestBody DriverDocumentRequestDTO req,
                                 @RequestHeader("X-API-KEY") String apiKey) {

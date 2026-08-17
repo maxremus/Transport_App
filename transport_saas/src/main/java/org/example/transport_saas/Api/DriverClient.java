@@ -31,6 +31,10 @@ public interface DriverClient {
     List<DriverDocumentRequestDTO> getDocuments(@RequestParam("driverId") Long driverId,
                                                  @RequestHeader("X-API-KEY") String apiKey);
 
+    @GetMapping("/api/v1/driver-documents/company")
+    List<DriverDocumentRequestDTO> getDocumentsForCompany(@RequestParam("companyId") Long companyId,
+                                                           @RequestHeader("X-API-KEY") String apiKey);
+
     @PostMapping("/api/v1/driver-documents")
     DriverDocumentRequestDTO createDocument(@RequestBody DriverDocumentRequestDTO dto,
                                              @RequestHeader("X-API-KEY") String apiKey);

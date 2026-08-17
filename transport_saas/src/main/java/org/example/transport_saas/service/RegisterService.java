@@ -31,6 +31,10 @@ public class RegisterService {
             throw new RuntimeException("Username already exists");
         }
 
+        if (request.getEmail() != null && userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
         Company company = Company.builder()
                 .name(request.getCompanyName())
                 .active(true)
@@ -42,6 +46,7 @@ public class RegisterService {
 
         User user = User.builder()
                 .username(request.getUsername())
+                .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .enabled(true)
                 .role(Role.ROLE_ADMIN)

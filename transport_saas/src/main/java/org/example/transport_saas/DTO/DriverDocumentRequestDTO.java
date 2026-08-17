@@ -13,4 +13,8 @@ public class DriverDocumentRequestDTO {
     private DriverDocumentType type;
     private LocalDate expiryDate;
     private String number;
+
+    // Само за показване в таблото - попълва се client-side след join с шофьора,
+    // не се праща при create/update заявки
+    private String driverName;
 }

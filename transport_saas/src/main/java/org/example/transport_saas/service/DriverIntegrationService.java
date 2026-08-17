@@ -57,6 +57,30 @@ public class DriverIntegrationService {
         return driverClient.getDocuments(driverId, internalKey);
     }
 
+    /**
+     * Документи на всички шофьори на фирмата, изтичащи до 30 дни (или вече
+     * изтекли) - за таблото. Прави join с имената на шофьорите, защото
+     * driver-service не пази имена в самия документ.
+     */
+    public List<DriverDocumentRequestDTO> getExpiringDocumentsForCompany(Long companyId) {
+
+        List<DriverDTO> drivers = driverClient.getAllDrivers(companyId, internalKey);
+        java.util.Map<Long, String> driverNames = new java.util.HashMap<>();
+        for (DriverDTO d : drivers) {
+            driverNames.put(d.getId(), d.getName());
+        }
+
+        List<DriverDocumentRequestDTO> allDocs = driverClient.getDocumentsForCompany(companyId, internalKey);
+
+        LocalDate cutoff = LocalDate.now().plusDays(30);
+
+        return allDocs.stream()
+                .filter(doc -> doc.getExpiryDate() != null && doc.getExpiryDate().isBefore(cutoff))
+                .peek(doc -> doc.setDriverName(driverNames.getOrDefault(doc.getDriverId(), "—")))
+                .sorted(java.util.Comparator.comparing(DriverDocumentRequestDTO::getExpiryDate))
+                .toList();
+    }
+
     public void createDocument(Long driverId, DriverDocumentType type, String number, LocalDate expiryDate) {
         DriverDocumentRequestDTO dto = new DriverDocumentRequestDTO();
         dto.setDriverId(driverId);

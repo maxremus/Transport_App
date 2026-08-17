@@ -17,4 +17,6 @@ public interface  DriverDocumentRepository extends JpaRepository<DriverDocument,
     );
 
     List<DriverDocument> findByDriverId(Long driverId);
+
+    List<DriverDocument> findByDriverIdIn(List<Long> driverIds);
 }

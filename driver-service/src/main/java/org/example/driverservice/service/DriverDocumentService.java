@@ -55,6 +55,19 @@ public class DriverDocumentService {
         return driverDocumentRepository.findByDriverId(driverId);
     }
 
+    public List<DriverDocument> getForCompany(Long companyId) {
+        List<Long> driverIds = driverRepository.findByCompanyId(companyId)
+                .stream()
+                .map(Driver::getId)
+                .toList();
+
+        if (driverIds.isEmpty()) {
+            return List.of();
+        }
+
+        return driverDocumentRepository.findByDriverIdIn(driverIds);
+    }
+
     /**
      * Проверява, че документ с това id принадлежи на шофьор от подадената фирма,
      * преди да позволи четене/редакция (server-to-server защита - извикващата

@@ -50,6 +50,7 @@ public class DriverController {
             }
 
             model.addAttribute("documents", driverIntegrationService.getDocumentsForDriver(driverId));
+            model.addAttribute("driverName", driver.getName());
         }
 
         if (editId != null) {

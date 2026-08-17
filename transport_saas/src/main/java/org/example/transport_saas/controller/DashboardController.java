@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.repository.TripRepository;
 import org.example.transport_saas.repository.VehicleRepository;
+import org.example.transport_saas.service.DriverIntegrationService;
 import org.example.transport_saas.service.VehicleDocumentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ public class DashboardController {
     private final TripRepository tripRepository;
     private final VehicleRepository vehicleRepository;
     private final VehicleDocumentService vehicleDocumentService;
+    private final DriverIntegrationService driverIntegrationService;
 
     @GetMapping("/dashboard")
     public String dashboard(
@@ -110,6 +112,15 @@ public class DashboardController {
                 vehicleDocumentService.getExpiringDocuments(companyId)
         );
 
+        // driver-service е отделна услуга - ако временно е недостъпна, не
+        // трябва да чупи цялото табло, затова хващаме грешката тук
+        List<org.example.transport_saas.DTO.DriverDocumentRequestDTO> expiringDriverDocs;
+        try {
+            expiringDriverDocs = driverIntegrationService.getExpiringDocumentsForCompany(companyId);
+        } catch (Exception e) {
+            expiringDriverDocs = List.of();
+        }
+        model.addAttribute("expiringDriverDocs", expiringDriverDocs);
 
         return "dashboard";
     }

@@ -40,7 +40,9 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+
+                        .requestMatchers("/forgot-password", "/reset-password").permitAll()
 
                         // Stripe пренасочва браузъра директно тук след плащане -
                         // трябва да са достъпни независимо дали сесията е още валидна

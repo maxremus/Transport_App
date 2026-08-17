@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/css/app.css}" rel="stylesheet">
+    <script th:src="@{/js/app.js}" defer></script>
 </head>
 
 <body class="road-shell">
@@ -44,13 +45,25 @@
                    required>
         </div>
 
+        <div class="mb-3">
+            <label class="field-label">Имейл</label>
+            <input type="email"
+                   th:field="*{email}"
+                   class="field-control"
+                   placeholder="за възстановяване на парола"
+                   required>
+        </div>
+
         <div class="mb-4">
             <label class="field-label">Парола</label>
-            <input type="password"
-                   th:field="*{password}"
-                   class="field-control"
-                   placeholder="Изберете парола"
-                   required>
+            <div class="password-wrap">
+                <input type="password"
+                       th:field="*{password}"
+                       class="field-control"
+                       placeholder="Изберете парола"
+                       required>
+                <button type="button" class="password-toggle" onclick="togglePassword(this)">👁</button>
+            </div>
         </div>
 
         <button type="submit" class="btn-route btn-block mb-2">
