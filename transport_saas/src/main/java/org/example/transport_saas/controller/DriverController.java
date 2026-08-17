@@ -19,15 +19,37 @@ public class DriverController {
     }
 
     @GetMapping("/driver-add")
-    public String addDriverPage(Model model) {
+    public String addDriverPage(@RequestParam(required = false) Long editId, Model model) {
         Long companyId = SecurityUtils.getCurrentCompanyId();
         model.addAttribute("companyId", companyId);
+
+        if (editId != null) {
+            var driver = driverIntegrationService.getDriverIfBelongsToCompany(editId, companyId);
+            if (driver == null) {
+                return "redirect:/driver";
+            }
+            model.addAttribute("editDriver", driver);
+        }
+
         return "driver-add";
     }
 
     @PostMapping("/drivers/add")
     public String addDriver(String name, String phone) {
         driverIntegrationService.createDriver(name, phone);
+        return "redirect:/driver";
+    }
+
+    @PostMapping("/drivers/{id}")
+    public String updateDriver(@PathVariable Long id, String name, String phone) {
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+
+        var driver = driverIntegrationService.getDriverIfBelongsToCompany(id, companyId);
+        if (driver == null) {
+            return "redirect:/driver";
+        }
+
+        driverIntegrationService.updateDriver(id, companyId, name, phone);
         return "redirect:/driver";
     }
 

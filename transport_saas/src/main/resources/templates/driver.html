@@ -58,10 +58,14 @@
                             <span class="pill pill-ok">Активен</span>
                         </td>
 
-                        <td>
+                        <td class="d-flex gap-2">
                             <a th:href="@{/driver-documents(driverId=${d.id})}"
                                class="btn-ghost" style="padding:6px 14px; font-size:13px;">
                                 📄 Документи
+                            </a>
+                            <a th:href="@{/driver-add(editId=${d.id})}"
+                               class="btn-ghost" style="padding:6px 14px; font-size:13px;">
+                                ✏ Редакция
                             </a>
                         </td>
                     </tr>

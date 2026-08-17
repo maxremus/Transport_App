@@ -53,6 +53,15 @@ public class DriverIntegrationService {
         }
     }
 
+    public void updateDriver(Long driverId, Long companyId, String name, String phone) {
+        DriverCreateDTO dto = new DriverCreateDTO();
+        dto.setName(name);
+        dto.setPhone(phone);
+        dto.setCompanyId(companyId);
+
+        driverClient.updateDriver(driverId, companyId, dto, internalKey);
+    }
+
     public List<DriverDocumentRequestDTO> getDocumentsForDriver(Long driverId) {
         return driverClient.getDocuments(driverId, internalKey);
     }

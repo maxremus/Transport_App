@@ -47,4 +47,19 @@ public class DriverController {
         validateKey(apiKey);
         return driverRepository.save(driver);
     }
+
+    @PutMapping("/{id}")
+    public Driver updateDriver(@PathVariable Long id,
+                                @RequestParam Long companyId,
+                                @RequestBody Driver updated,
+                                @RequestHeader("X-API-KEY") String apiKey) {
+        validateKey(apiKey);
+
+        Driver driver = driverRepository.findByIdAndCompanyId(id, companyId).orElseThrow();
+
+        driver.setName(updated.getName());
+        driver.setPhone(updated.getPhone());
+
+        return driverRepository.save(driver);
+    }
 }
