@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Табло - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('dashboard')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Root Access</p>
+                <h1 class="title">Табло</h1>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi">
+                <p class="label">Фирми</p>
+                <p class="value" th:text="${totalCompanies}"></p>
+            </div>
+            <div class="kpi">
+                <p class="label">Активни</p>
+                <p class="value ok" th:text="${activeCompanies}"></p>
+            </div>
+            <div class="kpi">
+                <p class="label">Потребители</p>
+                <p class="value" th:text="${totalUsers}"></p>
+            </div>
+            <div class="kpi">
+                <p class="label">МПС</p>
+                <p class="value" th:text="${totalVehicles}"></p>
+            </div>
+            <div class="kpi">
+                <p class="label">Курсове</p>
+                <p class="value" th:text="${totalTrips}"></p>
+            </div>
+            <div class="kpi">
+                <p class="label">Шофьори</p>
+                <p class="value" th:text="${totalDrivers}"></p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+                <p class="panel-title">Последна активност (одит лог)</p>
+
+                <div th:each="log : ${recentLogs}" class="log-line">
+                    <span class="log-time" th:text="${#temporals.format(log.timestamp, 'dd/MM HH:mm:ss')}"></span>
+                    <span class="log-action" th:text="${log.action}"></span>
+                    <span th:text="${log.adminUsername}"></span>
+                    <span th:if="${log.details != null}" style="color:var(--text-dim);" th:text="' — ' + ${log.details}"></span>
+                </div>
+
+                <div th:if="${recentLogs == null or recentLogs.isEmpty()}" class="empty-state">
+                    Няма записана активност още
+                </div>
+
+                <a th:href="@{/audit-log}" style="display:inline-block; margin-top:12px; font-size:12.5px;">Виж целия лог →</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

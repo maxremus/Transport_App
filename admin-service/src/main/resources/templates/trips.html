@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Курсове - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('trips')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Всички фирми</p>
+                <h1 class="title">Курсове</h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>От</th>
+                        <th>До</th>
+                        <th>Приход</th>
+                        <th>Печалба</th>
+                        <th>Фирма</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="t : ${trips}">
+                        <td th:text="${t.id}"></td>
+                        <td th:text="${t.fromLocation}"></td>
+                        <td th:text="${t.toLocation}"></td>
+                        <td th:text="${t.revenue} + ' €'"></td>
+                        <td th:text="${t.profit} + ' €'"></td>
+                        <td th:text="${t.company != null ? t.company.name : '—'}"></td>
+                        <td>
+                            <form th:action="@{'/trips/' + ${t.id} + '/delete'}" method="post"
+                                  onsubmit="return confirm('Изтриване на курса?');">
+                                <button class="btn-danger">Изтрий</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${trips == null or trips.isEmpty()}" class="empty-state">Няма курсове</div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

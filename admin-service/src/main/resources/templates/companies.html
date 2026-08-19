@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Фирми - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('companies')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Всички наематели</p>
+                <h1 class="title">Фирми</h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Име</th>
+                        <th>Булстат</th>
+                        <th>План</th>
+                        <th>Статус</th>
+                        <th>Изтича</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c : ${companies}">
+                        <td th:text="${c.id}"></td>
+                        <td th:text="${c.name}"></td>
+                        <td th:text="${c.bulstat}"></td>
+                        <td><span class="badge badge-warn" th:text="${c.subscriptionPlan}"></span></td>
+                        <td>
+                            <span th:if="${c.active}" class="badge badge-ok">активна</span>
+                            <span th:if="${!c.active}" class="badge badge-danger">неактивна</span>
+                        </td>
+                        <td th:text="${c.subscriptionExpiry}"></td>
+                        <td style="display:flex; gap:8px;">
+                            <a th:href="@{'/companies/' + ${c.id} + '/edit'}" class="btn-ghost">Редакция</a>
+                            <form th:action="@{'/companies/' + ${c.id} + '/delete'}" method="post"
+                                  th:attr="onsubmit=|return confirm('Изтриване на фирма ${c.name} - ТРАЙНО ДЕЙСТВИЕ?');|">
+                                <button class="btn-danger">Изтрий</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${companies == null or companies.isEmpty()}" class="empty-state">Няма фирми</div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

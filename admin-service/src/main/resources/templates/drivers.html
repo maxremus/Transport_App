@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Шофьори - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('drivers')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Всички фирми</p>
+                <h1 class="title">Шофьори</h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Име</th>
+                        <th>Телефон</th>
+                        <th>Company ID</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d : ${drivers}">
+                        <td th:text="${d.id}"></td>
+                        <td th:text="${d.name}"></td>
+                        <td th:text="${d.phone}"></td>
+                        <td th:text="${d.companyId}"></td>
+                        <td>
+                            <form th:action="@{'/drivers/' + ${d.id} + '/delete'}" method="post"
+                                  onsubmit="return confirm('Изтриване на шофьора?');">
+                                <button class="btn-danger">Изтрий</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${drivers == null or drivers.isEmpty()}" class="empty-state">Няма шофьори</div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar(active)" class="sidebar">
+
+    <div class="brand"><span class="dot"></span> ADMIN // ROOT</div>
+
+    <ul class="nav">
+        <li><a th:href="@{/}" th:classappend="${active == 'dashboard'} ? 'active'">📊 Табло</a></li>
+        <li><a th:href="@{/companies}" th:classappend="${active == 'companies'} ? 'active'">🏢 Фирми</a></li>
+        <li><a th:href="@{/users}" th:classappend="${active == 'users'} ? 'active'">👤 Потребители</a></li>
+        <li><a th:href="@{/vehicles}" th:classappend="${active == 'vehicles'} ? 'active'">🚛 МПС</a></li>
+        <li><a th:href="@{/trips}" th:classappend="${active == 'trips'} ? 'active'">📦 Курсове</a></li>
+        <li><a th:href="@{/drivers}" th:classappend="${active == 'drivers'} ? 'active'">👨‍✈️ Шофьори</a></li>
+        <li><a th:href="@{/audit-log}" th:classappend="${active == 'audit-log'} ? 'active'">📜 Одит лог</a></li>
+        <li><a th:href="@{/backup}">💾 Свали бекъп</a></li>
+    </ul>
+
+    <a th:href="@{/logout}" style="color:var(--accent); font-size:13px; padding:9px 10px;">⏻ Изход</a>
+
+</div>
+
+</body>
+</html>

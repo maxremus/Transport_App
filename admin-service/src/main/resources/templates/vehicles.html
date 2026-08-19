@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>МПС - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('vehicles')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Всички фирми</p>
+                <h1 class="title">МПС</h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Рег. номер</th>
+                        <th>VIN</th>
+                        <th>Фирма</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="v : ${vehicles}">
+                        <td th:text="${v.id}"></td>
+                        <td th:text="${v.registrationNumber}"></td>
+                        <td th:text="${v.vin}"></td>
+                        <td th:text="${v.company != null ? v.company.name : '—'}"></td>
+                        <td>
+                            <form th:action="@{'/vehicles/' + ${v.id} + '/delete'}" method="post"
+                                  th:attr="onsubmit=|return confirm('Изтриване на ${v.registrationNumber}?');|">
+                                <button class="btn-danger">Изтрий</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${vehicles == null or vehicles.isEmpty()}" class="empty-state">Няма МПС</div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редакция на фирма - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('companies')}"></div>
+
+    <div class="content" style="max-width:560px;">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Пълен достъп</p>
+                <h1 class="title">Редакция на фирма #<span th:text="${company.id}"></span></h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <form th:action="@{'/companies/' + ${company.id}}" method="post">
+
+                    <div style="margin-bottom:14px;">
+                        <label class="field-label">Име</label>
+                        <input type="text" name="name" class="field-control" th:value="${company.name}" required>
+                    </div>
+
+                    <div style="margin-bottom:14px;">
+                        <label class="field-label">Булстат</label>
+                        <input type="text" name="bulstat" class="field-control" th:value="${company.bulstat}">
+                    </div>
+
+                    <div style="margin-bottom:14px;">
+                        <label class="field-label">План</label>
+                        <select name="subscriptionPlan" class="field-control">
+                            <option th:each="p : ${plans}" th:value="${p}" th:text="${p}"
+                                    th:selected="${p == company.subscriptionPlan}"></option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:14px;">
+                        <label class="field-label">Валиден до</label>
+                        <input type="date" name="subscriptionExpiry" class="field-control"
+                               th:value="${company.subscriptionExpiry}">
+                    </div>
+
+                    <div style="margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" name="active" value="true" id="active"
+                               th:checked="${company.active}" style="width:16px; height:16px;">
+                        <label for="active" style="font-size:13px;">Абонаментът е активен</label>
+                    </div>
+
+                    <button type="submit" class="btn">💾 Запази промените</button>
+                    <a th:href="@{/companies}" class="btn-ghost">Откажи</a>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

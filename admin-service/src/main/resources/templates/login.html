@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body class="login-shell">
+
+<div class="login-card">
+
+    <div class="brand" style="justify-content:center; padding-bottom:22px;">
+        <span class="dot"></span> ADMIN // ROOT
+    </div>
+
+    <form th:action="@{/login}" method="post">
+
+        <div style="margin-bottom:14px;">
+            <label class="field-label">Потребител</label>
+            <input type="text" name="username" class="field-control" required autofocus>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <label class="field-label">Парола</label>
+            <input type="password" name="password" class="field-control" required>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%; justify-content:center; padding:10px;">
+            Вход
+        </button>
+
+    </form>
+
+    <p th:if="${param.error}" style="color:var(--accent); font-size:12.5px; text-align:center; margin-top:16px;">
+        Грешен потребител или парола.
+    </p>
+
+    <p th:if="${param.logout}" style="color:var(--ok); font-size:12.5px; text-align:center; margin-top:16px;">
+        Излязохте успешно.
+    </p>
+
+</div>
+
+</body>
+</html>

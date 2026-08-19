@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Одит лог - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('audit-log')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Всяко действие се записва</p>
+                <h1 class="title">Одит лог</h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <div th:each="log : ${logs}" class="log-line">
+                    <span class="log-time" th:text="${#temporals.format(log.timestamp, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                    <span class="log-action" th:text="${log.action}"></span>
+                    <span th:text="${log.adminUsername}"></span>
+                    <span th:if="${log.details != null}" style="color:var(--text-dim);" th:text="' — ' + ${log.details}"></span>
+                </div>
+
+                <div th:if="${logs == null or logs.isEmpty()}" class="empty-state">
+                    Няма записана активност още
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

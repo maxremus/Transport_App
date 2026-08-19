@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Потребители - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar('users')}"></div>
+
+    <div class="content">
+
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Всички акаунти</p>
+                <h1 class="title">Потребители</h1>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Потребител</th>
+                        <th>Имейл</th>
+                        <th>Роля</th>
+                        <th>Фирма</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${users}">
+                        <td th:text="${u.id}"></td>
+                        <td th:text="${u.username}"></td>
+                        <td th:text="${u.email}"></td>
+                        <td><span class="badge badge-neutral" th:text="${u.role}"></span></td>
+                        <td th:text="${u.company != null ? u.company.name : '—'}"></td>
+                        <td>
+                            <span th:if="${u.enabled}" class="badge badge-ok">активен</span>
+                            <span th:if="${!u.enabled}" class="badge badge-danger">блокиран</span>
+                        </td>
+                        <td>
+                            <form th:if="${u.enabled}" th:action="@{'/users/' + ${u.id} + '/disable'}" method="post">
+                                <button class="btn-danger">Блокирай</button>
+                            </form>
+                            <form th:if="${!u.enabled}" th:action="@{'/users/' + ${u.id} + '/enable'}" method="post">
+                                <button class="btn-ghost">Разблокирай</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${users == null or users.isEmpty()}" class="empty-state">Няма потребители</div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

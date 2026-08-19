@@ -1,0 +1,157 @@
+/* =========================================================
+   ADMIN SERVICE — CONTROL ROOM DESIGN SYSTEM
+   Тъмна, monospace-heavy естетика - различна нарочно от
+   основното приложение, за да е ясно, че е привилегирован инструмент.
+   ========================================================= */
+
+:root {
+  --bg:        #0B0E14;
+  --panel:     #141922;
+  --panel-alt: #1A2029;
+  --line:      #262D3A;
+  --text:      #D8DCE6;
+  --text-dim:  #7C8494;
+  --accent:    #FF5D5D;   /* root/admin red */
+  --accent-dim:#3A1518;
+  --ok:        #3ED598;
+  --ok-dim:    #123024;
+  --warn:      #F2B84B;
+  --warn-dim:  #33260C;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 14px;
+}
+
+h1, h2, h3, h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; margin: 0; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 230px;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent);
+  padding: 4px 8px 18px;
+  letter-spacing: 0.02em;
+}
+.brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+.nav { list-style: none; margin: 0; padding: 0; flex: 1; }
+.nav a {
+  display: block;
+  padding: 9px 10px;
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.nav a:hover { background: var(--panel-alt); color: var(--text); text-decoration: none; }
+.nav a.active { background: var(--accent-dim); color: var(--accent); }
+
+.content { margin-left: 230px; padding: 26px 30px 60px; width: 100%; }
+
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.eyebrow { text-transform: uppercase; font-size: 10.5px; letter-spacing: .12em; color: var(--accent); margin: 0 0 4px; }
+.title { font-size: 22px; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+.panel-body { padding: 18px 20px; }
+.panel-title { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin: 0 0 14px; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.kpi .label { font-size: 11px; text-transform: uppercase; color: var(--text-dim); margin: 0 0 6px; }
+.kpi .value { font-size: 24px; font-weight: 700; color: var(--text); }
+.kpi .value.accent { color: var(--accent); }
+.kpi .value.ok { color: var(--ok); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left; text-transform: uppercase; font-size: 10.5px; letter-spacing: .06em;
+  color: var(--text-dim); padding: 0 10px 10px; border-bottom: 1px solid var(--line);
+}
+tbody td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:hover { background: var(--panel-alt); }
+tbody tr:last-child td { border-bottom: none; }
+
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.badge-ok { background: var(--ok-dim); color: var(--ok); }
+.badge-warn { background: var(--warn-dim); color: var(--warn); }
+.badge-danger { background: var(--accent-dim); color: var(--accent); }
+.badge-neutral { background: var(--panel-alt); color: var(--text-dim); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent); color: #1A0505; border: none; border-radius: 6px;
+  padding: 8px 14px; font-weight: 700; font-size: 12.5px; cursor: pointer;
+  font-family: inherit; text-decoration: none;
+}
+.btn:hover { background: #ff7676; color: #1A0505; text-decoration: none; }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: var(--text); border: 1px solid var(--line); border-radius: 6px;
+  padding: 7px 14px; font-weight: 600; font-size: 12.5px; cursor: pointer;
+  font-family: inherit; text-decoration: none;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+.btn-danger {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px;
+  padding: 7px 14px; font-weight: 600; font-size: 12.5px; cursor: pointer;
+  font-family: inherit;
+}
+.btn-danger:hover { background: var(--accent-dim); }
+
+.field-label { display: block; font-size: 11.5px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .04em; }
+.field-control {
+  width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+  padding: 9px 11px; font-size: 13.5px; color: var(--text); font-family: inherit;
+}
+.field-control:focus { outline: none; border-color: var(--accent); }
+
+.login-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.login-card { width: 100%; max-width: 380px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 34px 30px; }
+
+.log-line { font-size: 12.5px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.log-line:last-child { border-bottom: none; }
+.log-time { color: var(--text-dim); margin-right: 8px; }
+.log-action { color: var(--accent); font-weight: 700; margin-right: 8px; }
+
+.empty-state { text-align: center; color: var(--text-dim); padding: 30px; font-size: 13px; }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  .content { margin-left: 0; padding: 18px; }
+}
