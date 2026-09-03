@@ -49,15 +49,15 @@ jobs:
       - name: Build and Push transport-saas
         run: |
           docker build \
-            -t $ACR_LOGIN_SERVER/transport-saas:latest \
+            -t $ACR_LOGIN_SERVER/transport-saas:${{ github.sha }} \
             ./transport_saas
 
           docker push \
-            $ACR_LOGIN_SERVER/transport-saas:latest
+            $ACR_LOGIN_SERVER/transport-saas:${{ github.sha }}
 
       - name: Deploy to Azure Container Apps
         run: |
           az containerapp update \
             --name $CONTAINER_APP \
             --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/transport-saas:latest
+            --image $ACR_LOGIN_SERVER/transport-saas:${{ github.sha }}
