@@ -5,7 +5,10 @@ on:
     branches: ["main", "azure-terraform"]
 
 env:
-  DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+  ACR_NAME: transportappacr2026
+  ACR_LOGIN_SERVER: transportappacr2026.azurecr.io
+  RESOURCE_GROUP: rg-transport-app
+  CONTAINER_APP: transport-saas
 
 jobs:
   build-test:
@@ -21,15 +24,10 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build all microservices
+      - name: Build transport-saas
         run: |
-          for s in driver-service payment-service transport_saas
-          do
-            echo "Building $s"
-            cd $s
-            mvn clean package -DskipTests
-            cd ..
-          done
+          cd transport_saas
+          mvn clean package -DskipTests
 
   docker-build-push:
     needs: build-test
@@ -39,23 +37,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
+      - name: Azure Login
+        uses: azure/login@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build & Push images
+      - name: Login to Azure Container Registry
         run: |
-          VERSION=${GITHUB_RUN_NUMBER}
+          az acr login --name $ACR_NAME
 
-          for s in driver-service payment-service transport_saas
-          do
-            echo "Dockerizing $s"
+      - name: Build and Push transport-saas
+        run: |
+          docker build \
+            -t $ACR_LOGIN_SERVER/transport-saas:latest \
+            ./transport_saas
 
-            docker build -t $DOCKERHUB_USER/$s:$VERSION ./$s
-            docker push $DOCKERHUB_USER/$s:$VERSION
+          docker push \
+            $ACR_LOGIN_SERVER/transport-saas:latest
 
-            docker tag $DOCKERHUB_USER/$s:$VERSION $DOCKERHUB_USER/$s:latest
-            docker push $DOCKERHUB_USER/$s:latest
-          done
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name $CONTAINER_APP \
+            --resource-group $RESOURCE_GROUP \
+            --image $ACR_LOGIN_SERVER/transport-saas:latest
