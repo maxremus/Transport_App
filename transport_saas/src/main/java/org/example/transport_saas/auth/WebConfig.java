@@ -16,6 +16,19 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor((HandlerInterceptor) subscriptionInterceptor)
-                .addPathPatterns("/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        // страници за подновяване/плащане на абонамента - трябва да
+                        // са достъпни дори когато абонаментът вече е изтекъл,
+                        // иначе потребителят никога не може да плати отново
+                        "/upgrade", "/upgrade/**",
+                        "/success", "/cancel",
+                        // публични/автентикационни страници
+                        "/", "/login", "/logout", "/register",
+                        "/forgot-password", "/reset-password",
+                        "/subscription-expired",
+                        // статични ресурси
+                        "/css/**", "/js/**", "/images/**"
+                );
     }
 }

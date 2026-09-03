@@ -31,12 +31,20 @@ public class SubscriptionService {
             throw new SubscriptionException("Subscription inactive");
         }
 
+        boolean hasValidPaidSubscription = company.getSubscriptionExpiry() != null &&
+                !company.getSubscriptionExpiry().isBefore(LocalDate.now());
+
         if (company.getSubscriptionExpiry() != null &&
                 company.getSubscriptionExpiry().isBefore(LocalDate.now())) {
             throw new SubscriptionException("Subscription expired");
         }
 
-        if (company.getTrialEndsAt() != null &&
+        // Пробният период е валиден само докато фирмата няма платен абонамент.
+        // Ако вече има валидна subscriptionExpiry (платен план), не проверяваме
+        // trialEndsAt - иначе стара/забравена стойност от пробния период може
+        // да блокира достъпа въпреки активен платен абонамент.
+        if (!hasValidPaidSubscription &&
+                company.getTrialEndsAt() != null &&
                 company.getTrialEndsAt().isBefore(LocalDate.now())) {
             throw new SubscriptionException("Trial expired");
         }
