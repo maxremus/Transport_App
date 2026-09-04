@@ -13,8 +13,9 @@ public class DataController {
     private final AdminDataService adminDataService;
 
     @GetMapping("/vehicles")
-    public String vehicles(Model model) {
-        model.addAttribute("vehicles", adminDataService.getAllVehicles());
+    public String vehicles(@RequestParam(defaultValue = "id") String sort, Model model) {
+        model.addAttribute("vehicles", adminDataService.getAllVehicles(sort));
+        model.addAttribute("sort", sort);
         return "vehicles";
     }
 
@@ -25,8 +26,9 @@ public class DataController {
     }
 
     @GetMapping("/trips")
-    public String trips(Model model) {
-        model.addAttribute("trips", adminDataService.getAllTrips());
+    public String trips(@RequestParam(defaultValue = "id") String sort, Model model) {
+        model.addAttribute("trips", adminDataService.getAllTrips(sort));
+        model.addAttribute("sort", sort);
         return "trips";
     }
 
@@ -37,8 +39,9 @@ public class DataController {
     }
 
     @GetMapping("/drivers")
-    public String drivers(Model model) {
-        model.addAttribute("drivers", adminDataService.getAllDrivers());
+    public String drivers(@RequestParam(defaultValue = "id") String sort, Model model) {
+        model.addAttribute("drivers", adminDataService.getAllDrivers(sort));
+        model.addAttribute("sort", sort);
         return "drivers";
     }
 

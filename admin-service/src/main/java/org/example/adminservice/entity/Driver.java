@@ -19,4 +19,7 @@ public class Driver {
     private String name;
     private String phone;
     private Long companyId;
+
+    @Transient
+    private String companyName;
 }

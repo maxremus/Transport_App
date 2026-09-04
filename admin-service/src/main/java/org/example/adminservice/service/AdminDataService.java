@@ -6,7 +6,10 @@ import org.example.adminservice.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,9 +87,51 @@ public class AdminDataService {
 
     // ---------- VEHICLES / TRIPS / DRIVERS (read + delete) ----------
 
-    public List<Vehicle> getAllVehicles() { return vehicleRepository.findAllWithCompany(); }
-    public List<Trip> getAllTrips() { return tripRepository.findAllWithCompany(); }
-    public List<Driver> getAllDrivers() { return driverRepository.findAll(); }
+    public List<Vehicle> getAllVehicles() { return getAllVehicles("id"); }
+
+    public List<Vehicle> getAllVehicles(String sortBy) {
+        List<Vehicle> vehicles = vehicleRepository.findAllWithCompany();
+        if ("company".equals(sortBy)) {
+            vehicles.sort(Comparator.comparing(
+                    (Vehicle v) -> v.getCompany() != null ? v.getCompany().getName() : "",
+                    String.CASE_INSENSITIVE_ORDER));
+        } else {
+            vehicles.sort(Comparator.comparing(Vehicle::getId));
+        }
+        return vehicles;
+    }
+
+    public List<Trip> getAllTrips() { return getAllTrips("id"); }
+
+    public List<Trip> getAllTrips(String sortBy) {
+        List<Trip> trips = tripRepository.findAllWithCompany();
+        if ("company".equals(sortBy)) {
+            trips.sort(Comparator.comparing(
+                    (Trip t) -> t.getCompany() != null ? t.getCompany().getName() : "",
+                    String.CASE_INSENSITIVE_ORDER));
+        } else {
+            trips.sort(Comparator.comparing(Trip::getId));
+        }
+        return trips;
+    }
+    public List<Driver> getAllDrivers() { return getAllDrivers("id"); }
+
+    public List<Driver> getAllDrivers(String sortBy) {
+        List<Driver> drivers = driverRepository.findAll();
+
+        Map<Long, String> companyNames = companyRepository.findAll().stream()
+                .collect(Collectors.toMap(Company::getId, Company::getName));
+
+        drivers.forEach(d -> d.setCompanyName(
+                d.getCompanyId() != null ? companyNames.getOrDefault(d.getCompanyId(), "—") : "—"));
+
+        if ("company".equals(sortBy)) {
+            drivers.sort(Comparator.comparing(Driver::getCompanyName, String.CASE_INSENSITIVE_ORDER));
+        } else {
+            drivers.sort(Comparator.comparing(Driver::getId));
+        }
+        return drivers;
+    }
 
     public void deleteVehicle(Long id) {
         vehicleRepository.deleteById(id);
