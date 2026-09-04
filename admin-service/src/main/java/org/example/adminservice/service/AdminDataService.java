@@ -68,7 +68,7 @@ public class AdminDataService {
     // ---------- USERS ----------
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllWithCompany();
     }
 
     public User getUser(Long id) {
