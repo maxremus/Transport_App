@@ -8,7 +8,6 @@ env:
   ACR_NAME: transportappacr2026
   ACR_LOGIN_SERVER: transportappacr2026.azurecr.io
   RESOURCE_GROUP: rg-transport-app
-  CONTAINER_APP: transport-saas
 
 jobs:
   build-test:
@@ -27,6 +26,11 @@ jobs:
       - name: Build transport-saas
         run: |
           cd transport_saas
+          mvn clean package -DskipTests
+
+      - name: Build admin-service
+        run: |
+          cd admin-service
           mvn clean package -DskipTests
 
   docker-build-push:
@@ -49,15 +53,33 @@ jobs:
       - name: Build and Push transport-saas
         run: |
           docker build \
+            -f ./transport_saas/dockerfile \
             -t $ACR_LOGIN_SERVER/transport-saas:${{ github.sha }} \
             ./transport_saas
 
           docker push \
             $ACR_LOGIN_SERVER/transport-saas:${{ github.sha }}
 
-      - name: Deploy to Azure Container Apps
+      - name: Build and Push admin-service
+        run: |
+          docker build \
+            -f ./admin-service/dockerfile \
+            -t $ACR_LOGIN_SERVER/admin-service:${{ github.sha }} \
+            ./admin-service
+
+          docker push \
+            $ACR_LOGIN_SERVER/admin-service:${{ github.sha }}
+
+      - name: Deploy transport-saas
         run: |
           az containerapp update \
-            --name $CONTAINER_APP \
+            --name transport-saas \
             --resource-group $RESOURCE_GROUP \
             --image $ACR_LOGIN_SERVER/transport-saas:${{ github.sha }}
+
+      - name: Deploy admin-service
+        run: |
+          az containerapp update \
+            --name admin-service \
+            --resource-group $RESOURCE_GROUP \
+            --image $ACR_LOGIN_SERVER/admin-service:${{ github.sha }}
