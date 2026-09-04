@@ -28,6 +28,7 @@
                     <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Дата</th>
                         <th>От</th>
                         <th>До</th>
                         <th>Приход</th>
@@ -39,6 +40,7 @@
                     <tbody>
                     <tr th:each="t : ${trips}">
                         <td th:text="${t.id}"></td>
+                        <td th:text="${t.tripDate != null ? #temporals.format(t.tripDate, 'dd.MM.yyyy') : '—'}"></td>
                         <td th:text="${t.fromLocation}"></td>
                         <td th:text="${t.toLocation}"></td>
                         <td th:text="${t.revenue} + ' €'"></td>
