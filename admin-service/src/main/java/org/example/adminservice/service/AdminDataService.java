@@ -84,8 +84,8 @@ public class AdminDataService {
 
     // ---------- VEHICLES / TRIPS / DRIVERS (read + delete) ----------
 
-    public List<Vehicle> getAllVehicles() { return vehicleRepository.findAll(); }
-    public List<Trip> getAllTrips() { return tripRepository.findAll(); }
+    public List<Vehicle> getAllVehicles() { return vehicleRepository.findAllWithCompany(); }
+    public List<Trip> getAllTrips() { return tripRepository.findAllWithCompany(); }
     public List<Driver> getAllDrivers() { return driverRepository.findAll(); }
 
     public void deleteVehicle(Long id) {
