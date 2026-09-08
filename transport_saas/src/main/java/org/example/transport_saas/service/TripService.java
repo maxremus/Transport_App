@@ -66,6 +66,7 @@ public class TripService {
         trip.setFuelCost(updated.getFuelCost());
         trip.setTollCost(updated.getTollCost());
         trip.setOtherCost(updated.getOtherCost());
+        trip.setDistanceKm(updated.getDistanceKm());
         trip.setVehicle(vehicle);
 
         if (clientId != null) {

@@ -202,6 +202,27 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     ORDER BY profit DESC
 """)
     List<Object[]> mostProfitableTrip(Long companyId, int month, int year);
+    @Query("""
+    SELECT v.registrationNumber,
+           COALESCE(SUM(t.fuelCost),0),
+           COALESCE(SUM(t.distanceKm),0),
+           COALESCE(SUM(t.revenue),0),
+           COALESCE(SUM(
+               t.revenue -
+               COALESCE(t.fuelCost,0) -
+               COALESCE(t.tollCost,0) -
+               COALESCE(t.otherCost,0)
+           ),0),
+           COUNT(t)
+    FROM Trip t
+    JOIN t.vehicle v
+    WHERE t.company.id = :companyId
+      AND (:month IS NULL OR MONTH(t.tripDate) = :month)
+      AND (:year IS NULL OR YEAR(t.tripDate) = :year)
+    GROUP BY v.registrationNumber
+    ORDER BY v.registrationNumber
+""")
+    List<Object[]> fuelReportByVehicle(Long companyId, Integer month, Integer year);
 }
 
 

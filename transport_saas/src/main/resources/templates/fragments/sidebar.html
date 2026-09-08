@@ -43,6 +43,12 @@
             </a>
         </li>
         <li>
+            <a th:href="@{/fuel-report}" class="nav-stop"
+               th:classappend="${active == 'fuel-report'} ? 'is-active'">
+                <span class="stop-dot"></span> Гориво
+            </a>
+        </li>
+        <li>
             <a th:href="@{/driver}" class="nav-stop"
                th:classappend="${active == 'driver'} ? 'is-active'">
                 <span class="stop-dot"></span> Шофьори

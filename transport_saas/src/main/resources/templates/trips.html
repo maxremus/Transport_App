@@ -93,6 +93,14 @@
                     </div>
 
                     <div class="col-md-3 col-6">
+                        <label class="field-label">Изминати км</label>
+                        <input type="number"
+                               class="field-control mono"
+                               th:field="*{distanceKm}"
+                               placeholder="напр. 450">
+                    </div>
+
+                    <div class="col-md-3 col-6">
                         <label class="field-label">Пътни такси (€)</label>
                         <input type="number" step="0.01"
                                class="field-control mono"
@@ -132,8 +140,10 @@
                         <th>До</th>
                         <th>МПС</th>
                         <th>Клиент</th>
+                        <th>Км</th>
                         <th>Приход</th>
                         <th>Разходи</th>
+                        <th>€/км гориво</th>
                         <th>Печалба</th>
                         <th></th>
                     </tr>
@@ -146,8 +156,10 @@
                         <td th:text="${t.toLocation}"></td>
                         <td><span class="plate" th:text="${t.vehicle.registrationNumber}"></span></td>
                         <td th:text="${t.client != null ? t.client.name : '—'}"></td>
+                        <td class="mono" th:text="${t.distanceKm != null ? t.distanceKm + ' км' : '—'}"></td>
                         <td class="mono" th:text="${t.revenue} + ' €'"></td>
                         <td class="mono" th:text="${t.totalCost} + ' €'"></td>
+                        <td class="mono" th:text="${t.fuelCostPerKm != null ? t.fuelCostPerKm + ' €' : '—'}"></td>
                         <td class="mono fw-bold" th:text="${t.profit} + ' €'"></td>
                         <td class="d-flex gap-2">
                             <a th:href="@{/trips(editId=${t.id})}"

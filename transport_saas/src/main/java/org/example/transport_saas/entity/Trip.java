@@ -37,6 +37,10 @@ public class Trip {
 
     private LocalDate tripDate;
 
+    // изминати километри за курса - незадължително, но нужно за реално
+    // изчисляване на разход на гориво (€/км)
+    private Integer distanceKm;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
@@ -70,5 +74,13 @@ public class Trip {
         BigDecimal rev = revenue != null ? revenue : BigDecimal.ZERO;
 
         return rev.subtract(getTotalCost());
+    }
+
+    /** €/км гориво за курса - null, ако няма въведени километри. */
+    public BigDecimal getFuelCostPerKm() {
+        if (distanceKm == null || distanceKm == 0 || fuelCost == null) {
+            return null;
+        }
+        return fuelCost.divide(BigDecimal.valueOf(distanceKm), 3, java.math.RoundingMode.HALF_UP);
     }
 }

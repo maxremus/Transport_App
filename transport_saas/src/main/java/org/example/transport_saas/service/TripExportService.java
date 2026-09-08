@@ -20,7 +20,7 @@ import java.util.List;
 public class TripExportService {
 
     private static final String[] HEADERS = {
-            "Дата", "От", "До", "МПС", "Клиент", "Приход",
+            "Дата", "От", "До", "МПС", "Клиент", "Км", "Приход",
             "Гориво", "Пътни такси", "Други разходи", "Общо разходи", "Печалба"
     };
 
@@ -70,6 +70,7 @@ public class TripExportService {
                         t.getVehicle() != null ? nullToEmpty(t.getVehicle().getRegistrationNumber()) : "");
                 row.createCell(4).setCellValue(
                         t.getClient() != null ? nullToEmpty(t.getClient().getName()) : "");
+                row.createCell(5).setCellValue(t.getDistanceKm() != null ? t.getDistanceKm() : 0);
 
                 BigDecimal revenue = orZero(t.getRevenue());
                 BigDecimal fuel = orZero(t.getFuelCost());
@@ -78,12 +79,12 @@ public class TripExportService {
                 BigDecimal cost = t.getTotalCost() != null ? t.getTotalCost() : BigDecimal.ZERO;
                 BigDecimal profit = t.getProfit() != null ? t.getProfit() : BigDecimal.ZERO;
 
-                row.createCell(5).setCellValue(revenue.doubleValue());
-                row.createCell(6).setCellValue(fuel.doubleValue());
-                row.createCell(7).setCellValue(toll.doubleValue());
-                row.createCell(8).setCellValue(other.doubleValue());
-                row.createCell(9).setCellValue(cost.doubleValue());
-                row.createCell(10).setCellValue(profit.doubleValue());
+                row.createCell(6).setCellValue(revenue.doubleValue());
+                row.createCell(7).setCellValue(fuel.doubleValue());
+                row.createCell(8).setCellValue(toll.doubleValue());
+                row.createCell(9).setCellValue(other.doubleValue());
+                row.createCell(10).setCellValue(cost.doubleValue());
+                row.createCell(11).setCellValue(profit.doubleValue());
 
                 totalRevenue = totalRevenue.add(revenue);
                 totalFuel = totalFuel.add(fuel);
@@ -95,17 +96,17 @@ public class TripExportService {
 
             // ред с общи суми накрая
             Row totalsRow = sheet.createRow(rowIdx + 1);
-            Cell totalsLabel = totalsRow.createCell(3);
+            Cell totalsLabel = totalsRow.createCell(4);
             totalsLabel.setCellValue("ОБЩО:");
             totalsLabel.setCellStyle(headerStyle);
 
-            totalsRow.createCell(5).setCellValue(totalRevenue.doubleValue());
-            totalsRow.createCell(6).setCellValue(totalFuel.doubleValue());
-            totalsRow.createCell(7).setCellValue(totalToll.doubleValue());
-            totalsRow.createCell(8).setCellValue(totalOther.doubleValue());
-            totalsRow.createCell(9).setCellValue(totalCost.doubleValue());
-            totalsRow.createCell(10).setCellValue(totalProfit.doubleValue());
-            for (int i = 5; i <= 10; i++) {
+            totalsRow.createCell(6).setCellValue(totalRevenue.doubleValue());
+            totalsRow.createCell(7).setCellValue(totalFuel.doubleValue());
+            totalsRow.createCell(8).setCellValue(totalToll.doubleValue());
+            totalsRow.createCell(9).setCellValue(totalOther.doubleValue());
+            totalsRow.createCell(10).setCellValue(totalCost.doubleValue());
+            totalsRow.createCell(11).setCellValue(totalProfit.doubleValue());
+            for (int i = 6; i <= 11; i++) {
                 totalsRow.getCell(i).setCellStyle(headerStyle);
             }
 
