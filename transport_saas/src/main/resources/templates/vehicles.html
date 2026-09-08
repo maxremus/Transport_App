@@ -50,6 +50,14 @@
                                required>
                     </div>
 
+                    <div class="col-md-4">
+                        <label class="field-label">Текущ пробег (км)</label>
+                        <input type="number"
+                               class="field-control mono"
+                               th:field="*{currentMileage}"
+                               placeholder="напр. 185000">
+                    </div>
+
                     <div class="col-md-4 d-flex align-items-end gap-2">
                         <button class="btn-route" style="flex:1;"
                                 th:text="${editId != null} ? '💾 Запази' : '➕ Добави'">
@@ -72,6 +80,7 @@
                     <thead>
                     <tr>
                         <th>Рег. номер</th>
+                        <th>Пробег</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -79,6 +88,7 @@
                     <tbody>
                     <tr th:each="v : ${vehicles}">
                         <td><span class="plate" th:text="${v.registrationNumber}"></span></td>
+                        <td class="mono" th:text="${v.currentMileage != null ? v.currentMileage + ' км' : '—'}"></td>
                         <td>
                             <a th:href="@{/vehicles(editId=${v.id})}"
                                class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✏ Редакция</a>
@@ -195,6 +205,119 @@
 
                 <div th:if="${documents.isEmpty()}" class="empty-state">
                     Няма документи
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ADD MAINTENANCE SCHEDULE -->
+        <div class="panel mb-4">
+            <div class="panel-body">
+
+                <p class="panel-title">🔧 Добави график за поддръжка</p>
+
+                <form th:action="@{/maintenance}" method="post" class="row g-3">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="col-md-3">
+                        <label class="field-label">МПС</label>
+                        <select name="vehicleId" class="field-control" required>
+                            <option value="">-- МПС --</option>
+                            <option th:each="v : ${vehicles}"
+                                    th:value="${v.id}"
+                                    th:text="${v.registrationNumber}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="field-label">Тип</label>
+                        <select name="type" class="field-control">
+                            <option value="OIL_CHANGE">Смяна на масло</option>
+                            <option value="TIRES">Гуми</option>
+                            <option value="BRAKES">Спирачки</option>
+                            <option value="TECHNICAL_INSPECTION">Годишен технически преглед</option>
+                            <option value="OTHER">Друго</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="field-label">Интервал (месеци)</label>
+                        <input type="number" name="intervalMonths" class="field-control mono" placeholder="напр. 12">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="field-label">Интервал (км)</label>
+                        <input type="number" name="intervalKm" class="field-control mono" placeholder="напр. 10000">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="field-label">Последно обслужен на</label>
+                        <input type="date" name="lastServiceDate" class="field-control" th:value="${T(java.time.LocalDate).now()}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="field-label">Бележка (за "Друго")</label>
+                        <input type="text" name="description" class="field-control">
+                    </div>
+
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn-ink" style="width:100%;">💾 Добави</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- MAINTENANCE TABLE -->
+        <div class="panel">
+            <div class="panel-body">
+
+                <p class="panel-title">🔧 График за поддръжка</p>
+
+                <table class="manifest-table">
+                    <thead>
+                    <tr>
+                        <th>МПС</th>
+                        <th>Тип</th>
+                        <th>Последно</th>
+                        <th>Следващ (дата)</th>
+                        <th>Следващ (км)</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="m : ${maintenanceSchedules}"
+                        th:classappend="
+                            ${@maintenanceService.getDisplayStatus(m) == 'ПРОСРОЧЕН'} ? 'row-danger' :
+                            (${@maintenanceService.getDisplayStatus(m) == 'СКОРО'} ? 'row-warning' : '')
+                        ">
+                        <td><span class="plate" th:text="${m.vehicle.registrationNumber}"></span></td>
+                        <td th:text="${@maintenanceService.getDisplayType(m.type)} + (${m.type.name() == 'OTHER' and m.description != null} ? ' (' + ${m.description} + ')' : '')"></td>
+                        <td class="mono" th:text="${#temporals.format(m.lastServiceDate, 'dd/MM/yyyy')} + (${m.lastServiceMileage != null} ? ' / ' + ${m.lastServiceMileage} + ' км' : '')"></td>
+                        <td class="mono" th:text="${@maintenanceService.getNextServiceDate(m) != null ? #temporals.format(@maintenanceService.getNextServiceDate(m), 'dd/MM/yyyy') : '—'}"></td>
+                        <td class="mono" th:text="${@maintenanceService.getNextServiceMileage(m) != null ? @maintenanceService.getNextServiceMileage(m) + ' км' : '—'}"></td>
+                        <td th:text="${@maintenanceService.getDisplayStatus(m)}"></td>
+                        <td style="display:flex; gap:6px;">
+                            <form th:action="@{'/maintenance/' + ${m.id} + '/serviced'}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✅ Обслужен</button>
+                            </form>
+                            <form th:action="@{'/maintenance/' + ${m.id} + '/delete'}" method="post"
+                                  onsubmit="return confirm('Изтриване на записа?');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button class="btn-danger-ghost" style="padding:5px 12px; font-size:12.5px;">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div th:if="${maintenanceSchedules.isEmpty()}" class="empty-state">
+                    Няма добавени графици за поддръжка
                 </div>
 
             </div>

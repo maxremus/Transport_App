@@ -1,9 +1,11 @@
 package org.example.transport_saas.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.transport_saas.entity.Client;
 import org.example.transport_saas.entity.Company;
 import org.example.transport_saas.entity.Trip;
 import org.example.transport_saas.entity.Vehicle;
+import org.example.transport_saas.repository.ClientRepository;
 import org.example.transport_saas.repository.TripRepository;
 import org.example.transport_saas.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
@@ -17,13 +19,14 @@ public class TripService {
 
     private final TripRepository tripRepository;
     private final VehicleRepository vehicleRepository;
+    private final ClientRepository clientRepository;
     private final PlanLimitService planLimitService;
 
     public List<Trip> getAllForCompany(Long companyId) {
         return tripRepository.findByCompanyId(companyId);
     }
 
-    public void save(Trip trip, Long companyId, Long vehicleId) {
+    public void save(Trip trip, Long companyId, Long vehicleId, Long clientId) {
 
         planLimitService.checkTripLimit(companyId);
 
@@ -35,6 +38,11 @@ public class TripService {
                 Company.builder().id(companyId).build()
         );
 
+        if (clientId != null) {
+            Client client = clientRepository.findById(clientId).orElse(null);
+            trip.setClient(client);
+        }
+
         if (trip.getTripDate() == null) {
             trip.setTripDate(LocalDate.now());
         }
@@ -42,7 +50,7 @@ public class TripService {
         tripRepository.save(trip);
     }
 
-    public void update(Long tripId, Long companyId, Trip updated, Long vehicleId) {
+    public void update(Long tripId, Long companyId, Trip updated, Long vehicleId, Long clientId) {
 
         Trip trip = getIfBelongsToCompany(tripId, companyId);
         if (trip == null) {
@@ -59,6 +67,13 @@ public class TripService {
         trip.setTollCost(updated.getTollCost());
         trip.setOtherCost(updated.getOtherCost());
         trip.setVehicle(vehicle);
+
+        if (clientId != null) {
+            Client client = clientRepository.findById(clientId).orElse(null);
+            trip.setClient(client);
+        } else {
+            trip.setClient(null);
+        }
 
         if (updated.getTripDate() != null) {
             trip.setTripDate(updated.getTripDate());

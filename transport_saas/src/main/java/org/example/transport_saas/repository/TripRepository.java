@@ -14,6 +14,10 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
     List<Trip> findByCompanyId(Long companyId);
 
+    List<Trip> findByCompanyIdAndClientIdAndInvoicedFalseOrderByTripDateAsc(Long companyId, Long clientId);
+
+    List<Trip> findByIdInAndCompanyId(List<Long> ids, Long companyId);
+
     List<Trip> findByCompanyIdAndTripDateBetween(
             Long companyId,
             LocalDate start,

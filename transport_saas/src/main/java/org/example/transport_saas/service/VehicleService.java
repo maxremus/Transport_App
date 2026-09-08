@@ -43,6 +43,10 @@ public class VehicleService {
             vehicle.setVin(updated.getVin());
         }
 
+        if (updated.getCurrentMileage() != null) {
+            vehicle.setCurrentMileage(updated.getCurrentMileage());
+        }
+
         vehicleRepository.save(vehicle);
     }
 

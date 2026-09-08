@@ -45,6 +45,17 @@ public class Trip {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
+    // клиент/контрагент за курса - незадължителен, за история и
+    // повтарящи се курсове с един и същ клиент
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    // маркира се true, щом курсът бъде включен във фактура,
+    // за да не се фактурира един и същ курс два пъти
+    @Column(nullable = false)
+    private boolean invoiced = false;
+
     public BigDecimal getTotalCost() {
 
         BigDecimal fuel = fuelCost != null ? fuelCost : BigDecimal.ZERO;

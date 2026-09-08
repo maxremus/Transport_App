@@ -27,6 +27,10 @@ public class Vehicle {
 
     private LocalDate technicalExpiry;
 
+    // текущ пробег в км - въвежда се ръчно от потребителя, служи за
+    // изчисляване на графика за поддръжка (масло, гуми и т.н.)
+    private Integer currentMileage;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;

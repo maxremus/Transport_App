@@ -24,6 +24,7 @@
                 <p class="page-eyebrow">Пътни листове</p>
                 <h1 class="page-title">Курсове</h1>
             </div>
+            <a th:href="@{/trips/export}" class="btn-ghost">⬇ Excel справка</a>
         </div>
 
         <!-- FORM (add or edit) -->
@@ -61,6 +62,18 @@
                                     th:value="${v.id}"
                                     th:selected="${trip.vehicle != null and trip.vehicle.id == v.id}"
                                     th:text="${v.registrationNumber}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="field-label">Клиент (незадължително)</label>
+                        <select class="field-control" name="clientId">
+                            <option value="">-- Без клиент --</option>
+                            <option th:each="c : ${clients}"
+                                    th:value="${c.id}"
+                                    th:selected="${trip.client != null and trip.client.id == c.id}"
+                                    th:text="${c.name}">
                             </option>
                         </select>
                     </div>
@@ -118,6 +131,7 @@
                         <th>От</th>
                         <th>До</th>
                         <th>МПС</th>
+                        <th>Клиент</th>
                         <th>Приход</th>
                         <th>Разходи</th>
                         <th>Печалба</th>
@@ -131,6 +145,7 @@
                         <td th:text="${t.fromLocation}"></td>
                         <td th:text="${t.toLocation}"></td>
                         <td><span class="plate" th:text="${t.vehicle.registrationNumber}"></span></td>
+                        <td th:text="${t.client != null ? t.client.name : '—'}"></td>
                         <td class="mono" th:text="${t.revenue} + ' €'"></td>
                         <td class="mono" th:text="${t.totalCost} + ' €'"></td>
                         <td class="mono fw-bold" th:text="${t.profit} + ' €'"></td>

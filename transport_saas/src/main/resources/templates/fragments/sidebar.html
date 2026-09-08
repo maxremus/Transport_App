@@ -31,6 +31,18 @@
             </a>
         </li>
         <li>
+            <a th:href="@{/clients}" class="nav-stop"
+               th:classappend="${active == 'clients'} ? 'is-active'">
+                <span class="stop-dot"></span> Клиенти
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/invoices}" class="nav-stop"
+               th:classappend="${active == 'invoices'} ? 'is-active'">
+                <span class="stop-dot"></span> Фактури
+            </a>
+        </li>
+        <li>
             <a th:href="@{/driver}" class="nav-stop"
                th:classappend="${active == 'driver'} ? 'is-active'">
                 <span class="stop-dot"></span> Шофьори

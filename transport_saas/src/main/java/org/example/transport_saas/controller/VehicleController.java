@@ -3,6 +3,7 @@ package org.example.transport_saas.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.entity.Vehicle;
+import org.example.transport_saas.service.MaintenanceService;
 import org.example.transport_saas.service.VehicleDocumentService;
 import org.example.transport_saas.service.VehicleService;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final VehicleDocumentService vehicleDocumentService;
+    private final MaintenanceService maintenanceService;
 
     @GetMapping
     public String list(@RequestParam(required = false) Long editId,
@@ -26,6 +28,7 @@ public class VehicleController {
         model.addAttribute("vehicles",
                 vehicleService.getAllForCompany(companyId));
         model.addAttribute("documents", vehicleDocumentService.getAllForCompany(companyId));
+        model.addAttribute("maintenanceSchedules", maintenanceService.getAllForCompany(companyId));
 
         Vehicle vehicle = null;
         if (editId != null) {
