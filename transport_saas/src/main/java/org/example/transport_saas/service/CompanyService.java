@@ -15,10 +15,16 @@ public class CompanyService {
         return companyRepository.findById(companyId).orElseThrow();
     }
 
-    public void updateProfile(Long companyId, String name, String bulstat) {
+    public void updateProfile(Long companyId, String name, String bulstat, String address,
+                               String iban, String mol, String vatNumber, boolean vatRegistered) {
         Company company = getById(companyId);
         company.setName(name);
         company.setBulstat(bulstat);
+        company.setAddress(address);
+        company.setIban(iban);
+        company.setMol(mol);
+        company.setVatNumber(vatNumber);
+        company.setVatRegistered(vatRegistered);
         companyRepository.save(company);
     }
 }

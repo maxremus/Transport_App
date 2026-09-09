@@ -56,10 +56,15 @@ public class SettingsController {
 
     @PostMapping("/settings/company")
     public String updateCompany(@RequestParam String name,
-                                 @RequestParam(required = false) String bulstat) {
+                                 @RequestParam(required = false) String bulstat,
+                                 @RequestParam(required = false) String address,
+                                 @RequestParam(required = false) String iban,
+                                 @RequestParam(required = false) String mol,
+                                 @RequestParam(required = false) String vatNumber,
+                                 @RequestParam(required = false) boolean vatRegistered) {
 
         Long companyId = SecurityUtils.getCurrentCompanyId();
-        companyService.updateProfile(companyId, name, bulstat);
+        companyService.updateProfile(companyId, name, bulstat, address, iban, mol, vatNumber, vatRegistered);
 
         return "redirect:/settings?saved";
     }

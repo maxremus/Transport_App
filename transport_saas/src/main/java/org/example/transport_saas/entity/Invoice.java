@@ -37,6 +37,11 @@ public class Invoice {
     @Column(nullable = false)
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
+    // ставка на ДДС в проценти (напр. 20.00) - 0, ако фирмата не е
+    // регистрирана по ДДС към датата на издаване
+    @Column(nullable = false)
+    private BigDecimal vatRate = BigDecimal.ZERO;
+
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,4 +55,17 @@ public class Invoice {
     @Builder.Default
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InvoiceItem> items = new ArrayList<>();
+
+    /** Сума на начисления ДДС. */
+    public BigDecimal getVatAmount() {
+        BigDecimal base = totalAmount != null ? totalAmount : BigDecimal.ZERO;
+        BigDecimal rate = vatRate != null ? vatRate : BigDecimal.ZERO;
+        return base.multiply(rate).divide(BigDecimal.valueOf(100), 2, java.math.RoundingMode.HALF_UP);
+    }
+
+    /** Крайна сума за плащане (данъчна основа + ДДС). */
+    public BigDecimal getGrandTotal() {
+        BigDecimal base = totalAmount != null ? totalAmount : BigDecimal.ZERO;
+        return base.add(getVatAmount());
+    }
 }

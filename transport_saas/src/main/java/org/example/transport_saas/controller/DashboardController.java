@@ -5,6 +5,7 @@ import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.repository.TripRepository;
 import org.example.transport_saas.repository.VehicleRepository;
 import org.example.transport_saas.service.DriverIntegrationService;
+import org.example.transport_saas.service.InvoiceService;
 import org.example.transport_saas.service.VehicleDocumentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ public class DashboardController {
     private final VehicleRepository vehicleRepository;
     private final VehicleDocumentService vehicleDocumentService;
     private final DriverIntegrationService driverIntegrationService;
+    private final InvoiceService invoiceService;
 
     @GetMapping("/dashboard")
     public String dashboard(
@@ -122,12 +124,13 @@ public class DashboardController {
         }
         model.addAttribute("expiringDriverDocs", expiringDriverDocs);
 
+        model.addAttribute("overdueInvoices", invoiceService.getOverdueInvoices(companyId));
+
         return "dashboard";
     }
 
-    @GetMapping("/logout")
-    public String logout() {
-        // Пренасочване към началната страница
-        return "redirect:/";
-    }
+    // Забележка: няма собствен /logout mapping тук нарочно - Spring Security
+    // вече обработва POST /logout по подразбиране (виж SecurityConfig) и
+    // реално инвалидира сесията. Предишен GET mapping тук само пренасочваше
+    // към "/" без да разлогва потребителя.
 }

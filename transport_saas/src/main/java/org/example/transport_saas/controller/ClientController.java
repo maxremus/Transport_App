@@ -4,9 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.entity.Client;
 import org.example.transport_saas.service.ClientService;
+import org.example.transport_saas.service.InvoiceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,13 +20,23 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
 
     private final ClientService clientService;
+    private final InvoiceService invoiceService;
 
     @GetMapping
     public String list(@RequestParam(required = false) Long editId, Model model) {
 
         Long companyId = SecurityUtils.getCurrentCompanyId();
 
-        model.addAttribute("clients", clientService.getAllForCompany(companyId));
+        List<Client> clients = clientService.getAllForCompany(companyId);
+        model.addAttribute("clients", clients);
+
+        // "картон на клиента" - колко му дължат неплатени фактури, за
+        // бърз преглед кой клиент трябва да се подсети за плащане
+        Map<Long, BigDecimal> balances = new HashMap<>();
+        for (Client c : clients) {
+            balances.put(c.getId(), invoiceService.getUnpaidBalanceForClient(companyId, c.getId()));
+        }
+        model.addAttribute("balances", balances);
 
         Client client = null;
         if (editId != null) {

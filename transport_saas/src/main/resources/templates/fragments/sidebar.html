@@ -2,7 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="sidebar(active)" class="app-sidebar">
+<div th:fragment="sidebar(active)">
+
+<button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Меню">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-sidebar" id="appSidebar">
 
     <div class="app-brand">
         <span class="dot"></span> Transport Manager
@@ -75,9 +80,43 @@
 
     <hr class="route-line">
 
-    <a th:href="@{/logout}" class="nav-stop is-exit">
-        <span class="stop-dot"></span> Изход
-    </a>
+    <form th:action="@{/logout}" method="post" style="margin:0;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="nav-stop is-exit"
+                style="width:100%; background:none; border:none; text-align:left; cursor:pointer; font:inherit;">
+            <span class="stop-dot"></span> Изход
+        </button>
+    </form>
+
+</div>
+
+<script>
+    (function () {
+        var toggle = document.getElementById('sidebarToggle');
+        var sidebar = document.getElementById('appSidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        if (!toggle || !sidebar || !overlay) return;
+
+        function openMenu() {
+            sidebar.classList.add('is-open');
+            overlay.classList.add('is-open');
+        }
+        function closeMenu() {
+            sidebar.classList.remove('is-open');
+            overlay.classList.remove('is-open');
+        }
+
+        toggle.addEventListener('click', function () {
+            sidebar.classList.contains('is-open') ? closeMenu() : openMenu();
+        });
+        overlay.addEventListener('click', closeMenu);
+
+        // затваряме менюто автоматично при избор на линк - по-удобно на телефон
+        sidebar.querySelectorAll('a.nav-stop').forEach(function (link) {
+            link.addEventListener('click', closeMenu);
+        });
+    })();
+</script>
 
 </div>
 

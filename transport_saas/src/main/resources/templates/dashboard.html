@@ -102,6 +102,38 @@
 
         </div>
 
+        <!-- ПРОСРОЧЕНИ ФАКТУРИ -->
+        <div class="panel mb-4" th:if="${overdueInvoices != null && !overdueInvoices.isEmpty()}">
+            <div class="panel-body">
+
+                <p class="panel-title" style="color: var(--signal-red);">
+                    ⚠ Просрочени фактури (<span th:text="${overdueInvoices.size()}"></span>)
+                </p>
+
+                <table class="manifest-table">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Клиент</th>
+                        <th>Падеж</th>
+                        <th>Сума (с ДДС)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="inv : ${overdueInvoices}" class="row-danger">
+                        <td class="mono" th:text="${inv.invoiceNumber}"></td>
+                        <td th:text="${inv.client != null ? inv.client.name : '—'}"></td>
+                        <td class="mono" th:text="${#temporals.format(inv.dueDate, 'dd.MM.yyyy')}"></td>
+                        <td class="mono fw-bold" th:text="${inv.grandTotal} + ' €'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <a th:href="@{/invoices}" class="btn-ghost" style="margin-top:10px; display:inline-block;">Виж всички фактури →</a>
+
+            </div>
+        </div>
+
         <!-- ИЗТИЧАЩИ ДОКУМЕНТИ -->
         <div class="panel mb-4" th:if="${expiringDocs != null && !expiringDocs.isEmpty()}">
             <div class="panel-body">

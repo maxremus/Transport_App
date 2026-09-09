@@ -26,6 +26,24 @@
             </div>
         </div>
 
+        <!-- OVERDUE ALERT -->
+        <div th:if="${overdueInvoices != null and !overdueInvoices.isEmpty()}"
+             class="panel mb-4" style="border-left:4px solid #e5484d;">
+            <div class="panel-body">
+                <p class="panel-title" style="color:#e5484d;">
+                    ⚠ Просрочени фактури (<span th:text="${overdueInvoices.size()}"></span>)
+                </p>
+                <ul style="margin:0; padding-left:18px;">
+                    <li th:each="inv : ${overdueInvoices}">
+                        <span th:text="${inv.invoiceNumber}"></span> —
+                        <span th:text="${inv.client != null ? inv.client.name : '—'}"></span>,
+                        падеж <span th:text="${#temporals.format(inv.dueDate, 'dd.MM.yyyy')}"></span>,
+                        <span th:text="${inv.grandTotal}"></span> €
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <!-- GENERATE NEW INVOICE -->
         <div class="panel mb-4">
             <div class="panel-body">
@@ -85,6 +103,10 @@
                                 <input type="date" name="dueDate" class="field-control"
                                        th:value="${T(java.time.LocalDate).now().plusDays(14)}">
                             </div>
+                            <div class="col-md-3" th:if="${vatRegistered}">
+                                <label class="field-label">ДДС %</label>
+                                <input type="number" step="0.01" name="vatRate" class="field-control mono" value="20">
+                            </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <button class="btn-route" style="width:100%;">💾 Генерирай фактура</button>
                             </div>
@@ -110,17 +132,22 @@
                         <th>Издадена</th>
                         <th>Падеж</th>
                         <th>Сума</th>
+                        <th>ДДС</th>
+                        <th>Общо (с ДДС)</th>
                         <th>Статус</th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="inv : ${invoices}">
+                    <tr th:each="inv : ${invoices}"
+                        th:classappend="${inv.status.name() == 'ISSUED' and inv.dueDate != null and inv.dueDate.isBefore(T(java.time.LocalDate).now())} ? 'row-danger' : ''">
                         <td class="mono" th:text="${inv.invoiceNumber}"></td>
                         <td th:text="${inv.client != null ? inv.client.name : '—'}"></td>
                         <td class="mono" th:text="${inv.issueDate != null ? #temporals.format(inv.issueDate, 'dd.MM.yyyy') : '—'}"></td>
                         <td class="mono" th:text="${inv.dueDate != null ? #temporals.format(inv.dueDate, 'dd.MM.yyyy') : '—'}"></td>
-                        <td class="mono fw-bold" th:text="${inv.totalAmount} + ' €'"></td>
+                        <td class="mono" th:text="${inv.totalAmount} + ' €'"></td>
+                        <td class="mono" th:text="${inv.vatRate} + '% / ' + ${inv.vatAmount} + ' €'"></td>
+                        <td class="mono fw-bold" th:text="${inv.grandTotal} + ' €'"></td>
                         <td th:text="${inv.status}"></td>
                         <td style="display:flex; gap:6px;">
                             <a th:href="@{'/invoices/' + ${inv.id} + '/pdf'}" class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">⬇ PDF</a>

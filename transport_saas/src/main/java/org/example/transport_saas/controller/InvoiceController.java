@@ -5,6 +5,7 @@ import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.entity.Invoice;
 import org.example.transport_saas.repository.TripRepository;
 import org.example.transport_saas.service.ClientService;
+import org.example.transport_saas.service.CompanyService;
 import org.example.transport_saas.service.InvoicePdfService;
 import org.example.transport_saas.service.InvoiceService;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
     private final InvoicePdfService invoicePdfService;
     private final ClientService clientService;
+    private final CompanyService companyService;
     private final TripRepository tripRepository;
 
     @GetMapping
@@ -34,6 +36,8 @@ public class InvoiceController {
 
         model.addAttribute("invoices", invoiceService.getAllForCompany(companyId));
         model.addAttribute("clients", clientService.getAllForCompany(companyId));
+        model.addAttribute("overdueInvoices", invoiceService.getOverdueInvoices(companyId));
+        model.addAttribute("vatRegistered", companyService.getById(companyId).isVatRegistered());
 
         // ако е избран клиент, показваме неговите нефактурирани курсове,
         // за да може да се генерира нова фактура директно от тук
@@ -49,7 +53,8 @@ public class InvoiceController {
     @PostMapping("/generate")
     public String generate(@RequestParam Long clientId,
                             @RequestParam List<Long> tripIds,
-                            @RequestParam(required = false) String dueDate) {
+                            @RequestParam(required = false) String dueDate,
+                            @RequestParam(required = false) java.math.BigDecimal vatRate) {
 
         Long companyId = SecurityUtils.getCurrentCompanyId();
 
@@ -57,7 +62,7 @@ public class InvoiceController {
                 ? LocalDate.parse(dueDate)
                 : LocalDate.now().plusDays(14);
 
-        invoiceService.generateFromTrips(companyId, clientId, tripIds, due);
+        invoiceService.generateFromTrips(companyId, clientId, tripIds, due, vatRate);
 
         return "redirect:/invoices";
     }

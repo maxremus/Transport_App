@@ -59,6 +59,39 @@
                         <input type="text" name="bulstat" class="field-control mono" th:value="${company.bulstat}">
                     </div>
 
+                    <div class="col-md-12">
+                        <label class="field-label">Адрес по регистрация</label>
+                        <input type="text" name="address" class="field-control" th:value="${company.address}"
+                               placeholder="напр. гр. София, бул. Витоша 1">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="field-label">IBAN</label>
+                        <input type="text" name="iban" class="field-control mono" th:value="${company.iban}"
+                               placeholder="BG00XXXX00000000000000">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="field-label">МОЛ (Материално отговорно лице)</label>
+                        <input type="text" name="mol" class="field-control" th:value="${company.mol}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="field-label">ДДС номер</label>
+                        <input type="text" name="vatNumber" class="field-control mono" th:value="${company.vatNumber}"
+                               placeholder="BG000000000">
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="vatRegistered"
+                                   name="vatRegistered" value="true" th:checked="${company.vatRegistered}">
+                            <label class="form-check-label" for="vatRegistered">
+                                Фирмата е регистрирана по ДДС
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="col-12">
                         <button class="btn-route">💾 Запази профила</button>
                     </div>

@@ -504,7 +504,60 @@ body.road-shell {
 }
 .progress-fill.green { background: var(--signal-green); }
 
-@media (max-width: 900px) {
-  .app-sidebar { display: none; }
-  .app-content { margin-left: 0; padding: 20px; }
+/* ---------- MOBILE NAV (hamburger toggle) ---------- */
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 60;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
 }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20,24,31,0.55);
+  z-index: 39;
+}
+
+@media (max-width: 900px) {
+  .sidebar-toggle { display: flex; }
+
+  .app-sidebar {
+    display: flex; /* остава flex-структурата, но се плъзга извън екрана */
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    width: 84vw;
+    max-width: 300px;
+    z-index: 50;
+  }
+
+  .app-sidebar.is-open { transform: translateX(0); }
+
+  .sidebar-overlay.is-open { display: block; }
+
+  .app-content { margin-left: 0; padding: 20px; padding-top: 72px; }
+
+  /* широките таблици (Курсове, Фактури и т.н.) преливат на телефон -
+     позволяваме хоризонтален скрол вместо да се чупи оформлението */
+  .manifest-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+

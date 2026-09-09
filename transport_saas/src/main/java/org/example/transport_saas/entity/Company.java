@@ -23,6 +23,19 @@ public class Company {
 
     private String bulstat;
 
+    // данни за фактуриране - показват се в PDF фактурата като данни
+    // на доставчика
+    private String address;
+
+    private String iban;
+
+    private String mol; // Материално отговорно лице
+
+    private String vatNumber; // ДДС номер (ако фирмата е регистрирана по ДДС)
+
+    @Column(nullable = false)
+    private boolean vatRegistered = false;
+
     @Column(nullable = false)
     private boolean active;
 

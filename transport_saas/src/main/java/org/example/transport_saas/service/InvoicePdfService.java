@@ -9,7 +9,6 @@ import org.example.transport_saas.entity.InvoiceItem;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.awt.Color;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -43,8 +42,22 @@ public class InvoicePdfService {
             fromCell.addElement(new Paragraph("ДОСТАВЧИК", labelFont));
             fromCell.addElement(new Paragraph(
                     invoice.getCompany() != null ? invoice.getCompany().getName() : "", normalFont));
-            if (invoice.getCompany() != null && invoice.getCompany().getBulstat() != null) {
-                fromCell.addElement(new Paragraph("ЕИК: " + invoice.getCompany().getBulstat(), normalFont));
+            if (invoice.getCompany() != null) {
+                if (invoice.getCompany().getBulstat() != null) {
+                    fromCell.addElement(new Paragraph("ЕИК: " + invoice.getCompany().getBulstat(), normalFont));
+                }
+                if (invoice.getCompany().isVatRegistered() && invoice.getCompany().getVatNumber() != null) {
+                    fromCell.addElement(new Paragraph("ДДС №: " + invoice.getCompany().getVatNumber(), normalFont));
+                }
+                if (invoice.getCompany().getAddress() != null) {
+                    fromCell.addElement(new Paragraph(invoice.getCompany().getAddress(), normalFont));
+                }
+                if (invoice.getCompany().getMol() != null) {
+                    fromCell.addElement(new Paragraph("МОЛ: " + invoice.getCompany().getMol(), normalFont));
+                }
+                if (invoice.getCompany().getIban() != null) {
+                    fromCell.addElement(new Paragraph("IBAN: " + invoice.getCompany().getIban(), normalFont));
+                }
             }
 
             PdfPCell toCell = new PdfPCell();
@@ -103,11 +116,32 @@ public class InvoicePdfService {
 
             document.add(table);
 
-            Paragraph total = new Paragraph(
-                    "ОБЩО: " + (invoice.getTotalAmount() != null ? invoice.getTotalAmount().toPlainString() : "0") + " €",
-                    new Font(Font.HELVETICA, 13, Font.BOLD));
-            total.setAlignment(Element.ALIGN_RIGHT);
-            document.add(total);
+            PdfPTable totalsTable = new PdfPTable(new float[]{5f, 2f});
+            totalsTable.setWidthPercentage(100);
+            totalsTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+
+            addTotalsRow(totalsTable, "Данъчна основа:", invoice.getTotalAmount(), normalFont);
+
+            if (invoice.getVatRate() != null && invoice.getVatRate().signum() > 0) {
+                addTotalsRow(totalsTable,
+                        "ДДС (" + invoice.getVatRate().stripTrailingZeros().toPlainString() + "%):",
+                        invoice.getVatAmount(), normalFont);
+                addTotalsRow(totalsTable, "ОБЩО ЗА ПЛАЩАНЕ:", invoice.getGrandTotal(),
+                        new Font(Font.HELVETICA, 13, Font.BOLD));
+            } else {
+                addTotalsRow(totalsTable, "ОБЩО ЗА ПЛАЩАНЕ:", invoice.getTotalAmount(),
+                        new Font(Font.HELVETICA, 13, Font.BOLD));
+            }
+
+            document.add(totalsTable);
+
+            if (invoice.getVatRate() == null || invoice.getVatRate().signum() == 0) {
+                Paragraph vatNote = new Paragraph(
+                        "Основание за неначисляване на ДДС: доставчикът не е регистриран по ЗДДС.",
+                        new Font(Font.HELVETICA, 8, Font.ITALIC));
+                vatNote.setSpacingBefore(6);
+                document.add(vatNote);
+            }
 
             if (invoice.getNotes() != null && !invoice.getNotes().isBlank()) {
                 Paragraph notes = new Paragraph();
@@ -123,5 +157,21 @@ public class InvoicePdfService {
         } catch (DocumentException e) {
             throw new RuntimeException("Грешка при генериране на фактурата", e);
         }
+    }
+
+    private void addTotalsRow(PdfPTable table, String label, java.math.BigDecimal amount, Font font) {
+        PdfPCell labelCell = new PdfPCell(new Phrase(label, font));
+        labelCell.setBorder(Rectangle.NO_BORDER);
+        labelCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        labelCell.setPadding(4);
+
+        PdfPCell valueCell = new PdfPCell(new Phrase(
+                (amount != null ? amount.toPlainString() : "0") + " €", font));
+        valueCell.setBorder(Rectangle.NO_BORDER);
+        valueCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        valueCell.setPadding(4);
+
+        table.addCell(labelCell);
+        table.addCell(valueCell);
     }
 }

@@ -2,7 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="sidebar(active)" class="sidebar">
+<div th:fragment="sidebar(active)">
+
+<button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Меню">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="sidebar" id="appSidebar">
 
     <div class="brand"><span class="dot"></span> ADMIN // ROOT</div>
 
@@ -23,6 +28,35 @@
             ⏻ Изход
         </button>
     </form>
+
+</div>
+
+<script>
+    (function () {
+        var toggle = document.getElementById('sidebarToggle');
+        var sidebar = document.getElementById('appSidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        if (!toggle || !sidebar || !overlay) return;
+
+        function openMenu() {
+            sidebar.classList.add('is-open');
+            overlay.classList.add('is-open');
+        }
+        function closeMenu() {
+            sidebar.classList.remove('is-open');
+            overlay.classList.remove('is-open');
+        }
+
+        toggle.addEventListener('click', function () {
+            sidebar.classList.contains('is-open') ? closeMenu() : openMenu();
+        });
+        overlay.addEventListener('click', closeMenu);
+
+        sidebar.querySelectorAll('.nav a').forEach(function (link) {
+            link.addEventListener('click', closeMenu);
+        });
+    })();
+</script>
 
 </div>
 

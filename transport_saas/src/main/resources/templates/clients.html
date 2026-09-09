@@ -103,6 +103,7 @@
                         <th>Лице за контакт</th>
                         <th>Телефон</th>
                         <th>Имейл</th>
+                        <th>Дължи</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -114,7 +115,12 @@
                         <td th:text="${c.contactPerson}"></td>
                         <td class="mono" th:text="${c.phone}"></td>
                         <td th:text="${c.email}"></td>
+                        <td class="mono fw-bold"
+                            th:style="${balances.get(c.id) != null and balances.get(c.id).signum() > 0} ? 'color:#e5484d;' : ''"
+                            th:text="${balances.get(c.id)} + ' €'"></td>
                         <td style="display:flex; gap:6px;">
+                            <a th:href="@{/invoices(clientId=${c.id})}"
+                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">🧾 Фактура</a>
                             <a th:href="@{/clients(editId=${c.id})}"
                                class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✏ Редакция</a>
                             <form th:action="@{'/clients/delete/' + ${c.id}}" method="post"

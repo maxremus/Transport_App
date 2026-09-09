@@ -12,4 +12,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     List<Invoice> findByCompanyIdOrderByIssueDateDesc(Long companyId);
 
     long countByCompanyId(Long companyId);
+
+    List<Invoice> findByCompanyIdAndStatusAndDueDateBefore(
+            Long companyId, org.example.transport_saas.entity.InvoiceStatus status, java.time.LocalDate date);
 }

@@ -27,6 +27,21 @@ public class InvoiceService {
         return invoiceRepository.findByCompanyIdOrderByIssueDateDesc(companyId);
     }
 
+    /** Фактури с минал падеж, които все още не са платени - за известие. */
+    public List<Invoice> getOverdueInvoices(Long companyId) {
+        return invoiceRepository.findByCompanyIdAndStatusAndDueDateBefore(
+                companyId, InvoiceStatus.ISSUED, LocalDate.now());
+    }
+
+    /** Обща неплатена сума (с ДДС) за даден клиент - "картон на клиента". */
+    public BigDecimal getUnpaidBalanceForClient(Long companyId, Long clientId) {
+        return getAllForCompany(companyId).stream()
+                .filter(inv -> inv.getClient() != null && inv.getClient().getId().equals(clientId))
+                .filter(inv -> inv.getStatus() == InvoiceStatus.ISSUED)
+                .map(Invoice::getGrandTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     public Invoice getIfBelongsToCompany(Long invoiceId, Long companyId) {
         Invoice invoice = invoiceRepository.findById(invoiceId).orElse(null);
         if (invoice == null || invoice.getCompany() == null
@@ -42,7 +57,8 @@ public class InvoiceService {
      * това е сумата, която се таксува на клиента.
      */
     @Transactional
-    public Invoice generateFromTrips(Long companyId, Long clientId, List<Long> tripIds, LocalDate dueDate) {
+    public Invoice generateFromTrips(Long companyId, Long clientId, List<Long> tripIds,
+                                      LocalDate dueDate, BigDecimal vatRateOverride) {
 
         Client client = clientRepository.findById(clientId).orElseThrow();
         if (!client.getCompany().getId().equals(companyId)) {
@@ -56,11 +72,18 @@ public class InvoiceService {
             throw new RuntimeException("Няма избрани курсове");
         }
 
+        // ако фирмата не е регистрирана по ДДС, не може да начислява ДДС на
+        // фактурата, независимо какво е подадено от формата
+        BigDecimal vatRate = company.isVatRegistered()
+                ? (vatRateOverride != null ? vatRateOverride : BigDecimal.valueOf(20))
+                : BigDecimal.ZERO;
+
         Invoice invoice = Invoice.builder()
                 .invoiceNumber(nextInvoiceNumber(companyId))
                 .issueDate(LocalDate.now())
                 .dueDate(dueDate)
                 .status(InvoiceStatus.ISSUED)
+                .vatRate(vatRate)
                 .company(company)
                 .client(client)
                 .build();
