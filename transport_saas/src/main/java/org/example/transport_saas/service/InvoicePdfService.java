@@ -9,6 +9,7 @@ import org.example.transport_saas.entity.InvoiceItem;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.awt.Color;
 import java.time.format.DateTimeFormatter;
 
 @Service
