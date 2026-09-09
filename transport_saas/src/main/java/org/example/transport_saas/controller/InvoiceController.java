@@ -67,6 +67,39 @@ public class InvoiceController {
         return "redirect:/invoices";
     }
 
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+        Invoice invoice = invoiceService.getIfBelongsToCompany(id, companyId);
+        if (invoice == null) {
+            return "redirect:/invoices";
+        }
+
+        model.addAttribute("invoice", invoice);
+        model.addAttribute("vatRegistered", companyService.getById(companyId).isVatRegistered());
+
+        return "invoice-edit";
+    }
+
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id,
+                          @RequestParam(required = false) String dueDate,
+                          @RequestParam(required = false) String notes,
+                          @RequestParam(required = false) java.math.BigDecimal vatRate,
+                          @RequestParam("itemId") List<Long> itemIds,
+                          @RequestParam("description") List<String> descriptions,
+                          @RequestParam("amount") List<java.math.BigDecimal> amounts) {
+
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+
+        LocalDate due = (dueDate != null && !dueDate.isBlank()) ? LocalDate.parse(dueDate) : null;
+
+        invoiceService.update(id, companyId, due, notes, vatRate, itemIds, descriptions, amounts);
+
+        return "redirect:/invoices";
+    }
+
     @PostMapping("/{id}/paid")
     public String markPaid(@PathVariable Long id) {
         Long companyId = SecurityUtils.getCurrentCompanyId();

@@ -152,6 +152,10 @@
                         <td style="display:flex; gap:6px;">
                             <a th:href="@{'/invoices/' + ${inv.id} + '/pdf'}" class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">⬇ PDF</a>
 
+                            <a th:if="${inv.status.name() != 'CANCELLED'}"
+                               th:href="@{'/invoices/' + ${inv.id} + '/edit'}"
+                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✏ Редакция</a>
+
                             <form th:if="${inv.status.name() == 'ISSUED'}"
                                   th:action="@{'/invoices/' + ${inv.id} + '/paid'}" method="post">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

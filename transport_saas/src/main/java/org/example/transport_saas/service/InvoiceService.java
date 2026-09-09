@@ -115,6 +115,51 @@ public class InvoiceService {
         return invoiceRepository.save(invoice);
     }
 
+    /**
+     * Редакция на вече издадена фактура - ако е допусната грешка
+     * (грешна сума, описание, падеж и т.н.), без да се налага анулиране.
+     * Сумата на фактурата се преизчислява от редовете след промяната.
+     */
+    @Transactional
+    public void update(Long invoiceId, Long companyId, LocalDate dueDate, String notes,
+                        BigDecimal vatRate, List<Long> itemIds, List<String> descriptions,
+                        List<BigDecimal> amounts) {
+
+        Invoice invoice = getIfBelongsToCompany(invoiceId, companyId);
+        if (invoice == null) {
+            throw new RuntimeException("Access denied");
+        }
+
+        invoice.setDueDate(dueDate);
+        invoice.setNotes(notes);
+
+        // ако фирмата не е регистрирана по ДДС, не позволяваме начисляване
+        if (!invoice.getCompany().isVatRegistered()) {
+            vatRate = BigDecimal.ZERO;
+        }
+        invoice.setVatRate(vatRate != null ? vatRate : BigDecimal.ZERO);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (int i = 0; i < itemIds.size(); i++) {
+            Long itemId = itemIds.get(i);
+            String desc = descriptions.get(i);
+            BigDecimal amount = amounts.get(i) != null ? amounts.get(i) : BigDecimal.ZERO;
+
+            for (InvoiceItem item : invoice.getItems()) {
+                if (item.getId().equals(itemId)) {
+                    item.setDescription(desc);
+                    item.setAmount(amount);
+                    break;
+                }
+            }
+            total = total.add(amount);
+        }
+
+        invoice.setTotalAmount(total);
+
+        invoiceRepository.save(invoice);
+    }
+
     public void markPaid(Long invoiceId, Long companyId) {
         Invoice invoice = getIfBelongsToCompany(invoiceId, companyId);
         if (invoice == null) {
@@ -142,8 +187,7 @@ public class InvoiceService {
 
     private String nextInvoiceNumber(Long companyId) {
         long count = invoiceRepository.countByCompanyId(companyId);
-        int year = LocalDate.now().getYear();
-        return year + "-" + String.format("%04d", count + 1);
+        return String.format("%010d", count + 1);
     }
 
     private String nullToEmpty(String s) {
