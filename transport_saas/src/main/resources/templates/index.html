@@ -79,6 +79,20 @@
             margin: 0 0 30px;
         }
 
+        .l-trial-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(217,138,43,0.12);
+            border: 1px solid rgba(217,138,43,0.4);
+            color: #F0C892;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 9px 16px;
+            border-radius: 999px;
+            margin: 0 0 26px;
+        }
+
         .l-hero-visual {
             flex-shrink: 0;
             width: 340px;
@@ -175,6 +189,7 @@
             Курсове, шофьори, документи и печалба — управлявай транспортната
             си фирма от едно място, вместо от бележник и Excel таблици.
         </p>
+        <p class="l-trial-badge">🎁 14 дни безплатен пробен период — без нужда от карта · после от 25 €/месец</p>
 
         <div class="l-navbtns">
             <a th:href="@{/register}" class="btn-route">🚀 Регистрация</a>
@@ -191,8 +206,12 @@
                 <div class="stat-label">Стартиране</div>
             </div>
             <div>
-                <div class="stat-num">0 лв</div>
+                <div class="stat-num">14 дни</div>
                 <div class="stat-label">Пробен период</div>
+            </div>
+            <div>
+                <div class="stat-num">от 25 €</div>
+                <div class="stat-label">На месец</div>
             </div>
         </div>
     </div>
