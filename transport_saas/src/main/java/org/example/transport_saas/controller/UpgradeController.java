@@ -73,6 +73,18 @@ public class UpgradeController {
             model.addAttribute("daysUntilExpiry", null);
         }
 
+        // Пробен период - показваме до кога тече, ако фирмата все още е в trial
+        // (няма платен абонамент, но trialEndsAt е зададена и не е изтекла).
+        LocalDate trialEndsAt = company.getTrialEndsAt();
+        model.addAttribute("trialEndsAt", trialEndsAt);
+
+        if (expiry == null && trialEndsAt != null) {
+            long trialDaysLeft = ChronoUnit.DAYS.between(LocalDate.now(), trialEndsAt);
+            model.addAttribute("trialDaysLeft", trialDaysLeft);
+        } else {
+            model.addAttribute("trialDaysLeft", null);
+        }
+
         return "upgrade";
     }
 }

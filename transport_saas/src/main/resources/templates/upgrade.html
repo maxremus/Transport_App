@@ -59,8 +59,19 @@
                         </p>
                     </div>
 
-                    <div th:if="${expiry == null}" class="text-end">
-                        <p class="mb-0 text-muted-c" style="font-size:13px;">Пробен период / без активен абонамент</p>
+                    <div th:if="${expiry == null and trialEndsAt != null}" class="text-end">
+                        <p class="mb-0" style="font-size:13px; color:var(--text-muted);">Пробен период до <span class="mono" th:text="${#temporals.format(trialEndsAt, 'dd/MM/yyyy')}"></span></p>
+                        <p class="mb-0" style="font-weight:700;"
+                           th:classappend="${trialDaysLeft != null and trialDaysLeft <= 3} ? 'text-danger' : ''">
+                            <span th:if="${trialDaysLeft != null and trialDaysLeft >= 0}"
+                                  th:text="'Остават ' + ${trialDaysLeft} + ' дни'"></span>
+                            <span th:if="${trialDaysLeft != null and trialDaysLeft < 0}"
+                                  style="color:var(--signal-red);">Пробният период е изтекъл</span>
+                        </p>
+                    </div>
+
+                    <div th:if="${expiry == null and trialEndsAt == null}" class="text-end">
+                        <p class="mb-0 text-muted-c" style="font-size:13px;">Без активен абонамент</p>
                     </div>
                 </div>
 

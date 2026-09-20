@@ -23,6 +23,9 @@ public class WebConfig implements WebMvcConfigurer {
                         // иначе потребителят никога не може да плати отново
                         "/upgrade", "/upgrade/**",
                         "/success", "/cancel",
+                        // страницата за връзка с администратора трябва да е
+                        // достъпна дори при изтекъл абонамент/пробен период
+                        "/support", "/support/**",
                         // публични/автентикационни страници
                         "/", "/login", "/logout", "/register",
                         "/forgot-password", "/reset-password",

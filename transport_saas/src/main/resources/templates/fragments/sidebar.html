@@ -76,6 +76,12 @@
                 <span class="stop-dot"></span> Настройки
             </a>
         </li>
+        <li>
+            <a th:href="@{/support}" class="nav-stop"
+               th:classappend="${active == 'support'} ? 'is-active'">
+                <span class="stop-dot"></span> Помощ
+            </a>
+        </li>
     </ul>
 
     <hr class="route-line">

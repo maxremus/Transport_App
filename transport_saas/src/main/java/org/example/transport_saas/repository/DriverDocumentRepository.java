@@ -2,8 +2,10 @@ package org.example.transport_saas.repository;
 
 import org.example.transport_saas.entity.DriverDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +16,11 @@ public interface DriverDocumentRepository extends JpaRepository<DriverDocument, 
 
     // за проверка, че документът принадлежи на текущата фирма преди редакция
     Optional<DriverDocument> findByIdAndDriverCompanyId(Long id, Long companyId);
+
+    @Query("""
+    SELECT d FROM DriverDocument d
+    WHERE d.driver.company.id = :companyId
+    AND d.expiryDate <= :alertDate
+    """)
+    List<DriverDocument> findExpiringDocuments(Long companyId, LocalDate alertDate);
 }
