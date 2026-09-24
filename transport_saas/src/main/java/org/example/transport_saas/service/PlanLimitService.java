@@ -36,7 +36,7 @@ public class PlanLimitService {
         long tripCount = tripRepository.countByCompanyId(companyId);
 
         int maxTrips = switch (company.getSubscriptionPlan()) {
-            case BASIC -> 100;
+            case BASIC -> 10;
             case PRO -> 1000;
             case PREMIUM -> Integer.MAX_VALUE;
         };
@@ -52,7 +52,7 @@ public class PlanLimitService {
                 .orElseThrow();
 
         return switch (company.getSubscriptionPlan()) {
-            case BASIC -> 3;
+            case BASIC -> 1;
             case PRO -> 10;
             case PREMIUM -> Integer.MAX_VALUE;
         };
@@ -64,7 +64,7 @@ public class PlanLimitService {
                 .orElseThrow();
 
         return switch (company.getSubscriptionPlan()) {
-            case BASIC -> 100;
+            case BASIC -> 10;
             case PRO -> 1000;
             case PREMIUM -> Integer.MAX_VALUE;
         };
