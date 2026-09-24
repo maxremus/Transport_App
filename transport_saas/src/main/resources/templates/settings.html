@@ -99,6 +99,40 @@
             </div>
         </div>
 
+        <!-- НОМЕРАЦИЯ НА ФАКТУРИ -->
+        <div class="panel mb-4">
+            <div class="panel-body">
+                <p class="panel-title">🧾 Номерация на фактури</p>
+                <p class="text-muted-c" style="margin-bottom:16px;">
+                    Следващата издадена фактура ще получи този номер (10-цифрен, с водещи нули).
+                    Полезно е, ако искаш да продължиш номерацията от предишна система вместо да
+                    започваш отначало. Промяната засяга само <strong>следващите</strong> фактури -
+                    вече издадените не се пипат. (Номерата на съществуващи фактури също могат да се
+                    редактират индивидуално от бутона „Редакция" на всяка фактура.)
+                </p>
+
+                <form th:action="@{/settings/invoice-numbering}" method="post" class="row g-3">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="col-md-4">
+                        <label class="field-label">Следващ номер</label>
+                        <input type="number" min="1" name="nextInvoiceNumber" class="field-control mono"
+                               th:value="${company.nextInvoiceNumberOrDefault}" required>
+                    </div>
+
+                    <div class="col-md-8 d-flex align-items-end">
+                        <p class="text-muted-c mono" style="margin:0;">
+                            Преглед: <span th:text="${#numbers.formatInteger(company.nextInvoiceNumberOrDefault, 10)}"></span>
+                        </p>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn-route">💾 Запази номерацията</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- АБОНАМЕНТ -->
         <div class="panel mb-4">
             <div class="panel-body">

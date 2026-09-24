@@ -69,6 +69,15 @@ public class SettingsController {
         return "redirect:/settings?saved";
     }
 
+    @PostMapping("/settings/invoice-numbering")
+    public String updateInvoiceNumbering(@RequestParam long nextInvoiceNumber) {
+
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+        companyService.updateNextInvoiceNumber(companyId, Math.max(1L, nextInvoiceNumber));
+
+        return "redirect:/settings?saved";
+    }
+
     @PostMapping("/settings/password")
     public String updatePassword(@RequestParam String currentPassword,
                                   @RequestParam String newPassword,

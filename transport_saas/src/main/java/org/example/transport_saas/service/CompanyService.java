@@ -27,4 +27,10 @@ public class CompanyService {
         company.setVatRegistered(vatRegistered);
         companyRepository.save(company);
     }
+
+    public void updateNextInvoiceNumber(Long companyId, long nextInvoiceNumber) {
+        Company company = getById(companyId);
+        company.setNextInvoiceNumber(nextInvoiceNumber);
+        companyRepository.save(company);
+    }
 }

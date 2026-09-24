@@ -35,11 +35,19 @@
                     &nbsp;·&nbsp; Статус: <strong th:text="${invoice.status}"></strong>
                 </p>
 
+                <div class="notice notice-danger" th:if="${invoiceNumberError}" th:text="${invoiceNumberError}"></div>
+
                 <form th:action="@{'/invoices/' + ${invoice.id}}" method="post">
 
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                     <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="field-label">Номер на фактура</label>
+                            <input type="text" name="invoiceNumber" class="field-control mono"
+                                   th:value="${invoice.invoiceNumber}">
+                        </div>
+
                         <div class="col-md-3">
                             <label class="field-label">Падеж</label>
                             <input type="date" name="dueDate" class="field-control" th:value="${invoice.dueDate}">
@@ -51,7 +59,7 @@
                                    th:value="${invoice.vatRate}">
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label class="field-label">Бележки</label>
                             <input type="text" name="notes" class="field-control" th:value="${invoice.notes}">
                         </div>

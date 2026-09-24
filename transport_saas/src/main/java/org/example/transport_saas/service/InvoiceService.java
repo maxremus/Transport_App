@@ -79,7 +79,7 @@ public class InvoiceService {
                 : BigDecimal.ZERO;
 
         Invoice invoice = Invoice.builder()
-                .invoiceNumber(nextInvoiceNumber(companyId))
+                .invoiceNumber(nextInvoiceNumber(company))
                 .issueDate(LocalDate.now())
                 .dueDate(dueDate)
                 .status(InvoiceStatus.ISSUED)
@@ -121,13 +121,26 @@ public class InvoiceService {
      * Сумата на фактурата се преизчислява от редовете след промяната.
      */
     @Transactional
-    public void update(Long invoiceId, Long companyId, LocalDate dueDate, String notes,
+    public void update(Long invoiceId, Long companyId, String invoiceNumber, LocalDate dueDate, String notes,
                         BigDecimal vatRate, List<Long> itemIds, List<String> descriptions,
                         List<BigDecimal> amounts) {
 
         Invoice invoice = getIfBelongsToCompany(invoiceId, companyId);
         if (invoice == null) {
             throw new RuntimeException("Access denied");
+        }
+
+        // Номерът може да се смени ръчно (напр. за да продължи номерацията
+        // от стара система), но трябва да остане уникален за фирмата.
+        if (invoiceNumber != null && !invoiceNumber.isBlank()
+                && !invoiceNumber.equals(invoice.getInvoiceNumber())) {
+
+            boolean taken = invoiceRepository.existsByCompanyIdAndInvoiceNumberAndIdNot(
+                    companyId, invoiceNumber, invoiceId);
+            if (taken) {
+                throw new IllegalArgumentException("Вече има фактура с номер " + invoiceNumber + ".");
+            }
+            invoice.setInvoiceNumber(invoiceNumber);
         }
 
         invoice.setDueDate(dueDate);
@@ -185,9 +198,11 @@ public class InvoiceService {
         invoiceRepository.save(invoice);
     }
 
-    private String nextInvoiceNumber(Long companyId) {
-        long count = invoiceRepository.countByCompanyId(companyId);
-        return String.format("%010d", count + 1);
+    private String nextInvoiceNumber(Company company) {
+        long number = company.getNextInvoiceNumberOrDefault();
+        company.setNextInvoiceNumber(number + 1);
+        companyRepository.save(company);
+        return String.format("%010d", number);
     }
 
     private String nullToEmpty(String s) {

@@ -13,6 +13,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     long countByCompanyId(Long companyId);
 
+    boolean existsByCompanyIdAndInvoiceNumberAndIdNot(Long companyId, String invoiceNumber, Long id);
+
     List<Invoice> findByCompanyIdAndStatusAndDueDateBefore(
             Long companyId, org.example.transport_saas.entity.InvoiceStatus status, java.time.LocalDate date);
 }

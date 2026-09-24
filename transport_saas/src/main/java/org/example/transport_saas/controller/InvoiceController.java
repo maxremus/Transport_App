@@ -84,18 +84,25 @@ public class InvoiceController {
 
     @PostMapping("/{id}")
     public String update(@PathVariable Long id,
+                          @RequestParam(required = false) String invoiceNumber,
                           @RequestParam(required = false) String dueDate,
                           @RequestParam(required = false) String notes,
                           @RequestParam(required = false) java.math.BigDecimal vatRate,
                           @RequestParam("itemId") List<Long> itemIds,
                           @RequestParam("description") List<String> descriptions,
-                          @RequestParam("amount") List<java.math.BigDecimal> amounts) {
+                          @RequestParam("amount") List<java.math.BigDecimal> amounts,
+                          org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
 
         Long companyId = SecurityUtils.getCurrentCompanyId();
 
         LocalDate due = (dueDate != null && !dueDate.isBlank()) ? LocalDate.parse(dueDate) : null;
 
-        invoiceService.update(id, companyId, due, notes, vatRate, itemIds, descriptions, amounts);
+        try {
+            invoiceService.update(id, companyId, invoiceNumber, due, notes, vatRate, itemIds, descriptions, amounts);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("invoiceNumberError", e.getMessage());
+            return "redirect:/invoices/" + id + "/edit";
+        }
 
         return "redirect:/invoices";
     }
