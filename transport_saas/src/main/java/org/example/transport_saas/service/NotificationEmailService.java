@@ -2,11 +2,9 @@ package org.example.transport_saas.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.transport_saas.entity.Company;
-import org.example.transport_saas.entity.DriverDocument;
 import org.example.transport_saas.entity.User;
 import org.example.transport_saas.entity.VehicleDocument;
 import org.example.transport_saas.repository.CompanyRepository;
-import org.example.transport_saas.repository.DriverDocumentRepository;
 import org.example.transport_saas.repository.UserRepository;
 import org.example.transport_saas.repository.VehicleDocumentRepository;
 import org.springframework.mail.SimpleMailMessage;
@@ -26,6 +24,10 @@ import java.util.List;
  * Ако SMTP не е конфигуриран (MAIL_USERNAME/MAIL_PASSWORD липсват),
  * грешката се хваща тихо и се логва в конзолата - същия подход, както
  * при PasswordResetService, за да не чупи стартирането на приложението.
+ *
+ * Документите на шофьорите НЕ живеят в тази база - идват от отделния
+ * driver-service през DriverIntegrationService (същия източник, който
+ * таблото използва за "Изтичащи документи на шофьори").
  */
 @Service
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class NotificationEmailService {
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final VehicleDocumentRepository vehicleDocumentRepository;
-    private final DriverDocumentRepository driverDocumentRepository;
+    private final DriverIntegrationService driverIntegrationService;
     private final JavaMailSender mailSender;
 
     /**
@@ -112,10 +114,23 @@ public class NotificationEmailService {
                     .append(" изтича на ").append(doc.getExpiryDate()).append(".\n");
         }
 
-        List<DriverDocument> driverDocs = driverDocumentRepository.findExpiringDocuments(company.getId(), alertDate);
-        for (DriverDocument doc : driverDocs) {
+        // Документите на шофьорите живеят в driver-service, не тук -
+        // ползваме същия интеграционен слой, който пълни таблото.
+        List<org.example.transport_saas.DTO.DriverDocumentRequestDTO> driverDocs;
+        try {
+            driverDocs = driverIntegrationService.getExpiringDocumentsForCompany(company.getId());
+        } catch (Exception e) {
+            System.out.println("⚠ driver-service недостъпен при генериране на известия за фирма "
+                    + company.getId() + ": " + e.getMessage());
+            driverDocs = List.of();
+        }
+
+        for (org.example.transport_saas.DTO.DriverDocumentRequestDTO doc : driverDocs) {
+            if (doc.getExpiryDate() == null || doc.getExpiryDate().isAfter(alertDate)) {
+                continue; // driver-service връща до 30 дни - тук филтрираме до нашия по-кратък праг
+            }
             body.append("🪪 Документ ").append(doc.getType())
-                    .append(" на шофьор ").append(doc.getDriver().getName())
+                    .append(" на шофьор ").append(doc.getDriverName())
                     .append(" изтича на ").append(doc.getExpiryDate()).append(".\n");
         }
     }
