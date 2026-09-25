@@ -41,33 +41,45 @@ public class NotificationEmailService {
     private final JavaMailSender mailSender;
 
     /**
+     * Ръчно пускане на проверката за една фирма (бутон "Изпрати сега" в
+     * Настройки) - използва се за тестване, без да се чака до 08:00.
+     * Връща true, ако е имало какво да се съобщи (и е пратен имейл).
+     */
+    public boolean sendNowForCompany(Long companyId) {
+        Company company = companyRepository.findById(companyId).orElseThrow();
+
+        List<User> recipients = userRepository.findByCompanyIdAndEmailNotificationsTrue(company.getId());
+        if (recipients.isEmpty()) {
+            return false;
+        }
+
+        StringBuilder body = new StringBuilder();
+        appendSubscriptionAlert(company, body);
+        appendDocumentAlerts(company, body);
+
+        if (body.isEmpty()) {
+            return false;
+        }
+
+        String fullMessage = "Здравей,\n\nЕто твоите известия от Transport Manager за фирма \""
+                + company.getName() + "\":\n\n" + body
+                + "\nМожеш да изключиш тези известия по всяко време от Настройки.";
+
+        for (User user : recipients) {
+            if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                sendEmail(user.getEmail(), "Известия - Transport Manager", fullMessage);
+            }
+        }
+        return true;
+    }
+
+    /**
      * Пуска се веднъж на ден в 08:00 (сървърно време).
      */
     @Scheduled(cron = "0 0 8 * * *")
     public void sendDailyAlerts() {
         for (Company company : companyRepository.findAll()) {
-            List<User> recipients = userRepository.findByCompanyIdAndEmailNotificationsTrue(company.getId());
-            if (recipients.isEmpty()) {
-                continue;
-            }
-
-            StringBuilder body = new StringBuilder();
-            appendSubscriptionAlert(company, body);
-            appendDocumentAlerts(company, body);
-
-            if (body.isEmpty()) {
-                continue;
-            }
-
-            String fullMessage = "Здравей,\n\nЕто твоите известия от Transport Manager за фирма \""
-                    + company.getName() + "\":\n\n" + body
-                    + "\nМожеш да изключиш тези известия по всяко време от Настройки.";
-
-            for (User user : recipients) {
-                if (user.getEmail() != null && !user.getEmail().isBlank()) {
-                    sendEmail(user.getEmail(), "Известия - Transport Manager", fullMessage);
-                }
-            }
+            sendNowForCompany(company.getId());
         }
     }
 

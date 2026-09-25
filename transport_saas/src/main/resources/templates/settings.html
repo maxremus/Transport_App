@@ -165,6 +165,9 @@
             <div class="panel-body">
                 <p class="panel-title">🔔 Известия</p>
 
+                <div class="notice notice-ok" th:if="${param.notificationSent}">✔ Известията са проверени и имейл е изпратен.</div>
+                <div class="notice notice-danger" th:if="${param.notificationEmpty}">ℹ В момента няма изтичащи документи/абонамент за съобщаване (или известията по имейл са изключени).</div>
+
                 <form th:action="@{/settings/notifications}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
@@ -179,6 +182,14 @@
                     </div>
 
                     <button class="btn-ghost">💾 Запази</button>
+                </form>
+
+                <form th:action="@{/settings/notifications/test}" method="post" style="margin-top:10px;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button class="btn-route" type="submit">📨 Изпрати сега (тест)</button>
+                    <span class="text-muted-c" style="font-size:12.5px; margin-left:6px;">
+                        Проверява веднага за изтичащи документи/абонамент, без да чакаш дневната проверка в 08:00.
+                    </span>
                 </form>
             </div>
         </div>

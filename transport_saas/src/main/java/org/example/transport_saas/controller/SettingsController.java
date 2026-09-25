@@ -4,6 +4,7 @@ import org.example.transport_saas.auth.SecurityUtils;
 import org.example.transport_saas.entity.Company;
 import org.example.transport_saas.entity.User;
 import org.example.transport_saas.service.CompanyService;
+import org.example.transport_saas.service.NotificationEmailService;
 import org.example.transport_saas.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +19,13 @@ public class SettingsController {
 
     private final UserService userService;
     private final CompanyService companyService;
+    private final NotificationEmailService notificationEmailService;
 
-    public SettingsController(UserService userService, CompanyService companyService) {
+    public SettingsController(UserService userService, CompanyService companyService,
+                               NotificationEmailService notificationEmailService) {
         this.userService = userService;
         this.companyService = companyService;
+        this.notificationEmailService = notificationEmailService;
     }
 
     @GetMapping("/settings")
@@ -52,6 +56,15 @@ public class SettingsController {
         userService.save(user);
 
         return "redirect:/settings?saved";
+    }
+
+    @PostMapping("/settings/notifications/test")
+    public String sendTestNotifications(Principal principal) {
+
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+        boolean sent = notificationEmailService.sendNowForCompany(companyId);
+
+        return "redirect:/settings?" + (sent ? "notificationSent" : "notificationEmpty");
     }
 
     @PostMapping("/settings/company")
