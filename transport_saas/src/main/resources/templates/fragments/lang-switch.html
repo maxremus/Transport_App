@@ -10,11 +10,11 @@
   избора в бисквитка (важи преди логин и между сесиите).
 -->
 <div th:fragment="switcher(dark)" class="lang-switch" th:classappend="${dark} ? 'lang-switch-dark' : ''">
-    <a th:href="@{${#request.requestURI}(lang='bg')}"
+    <a th:href="@{${#httpServletRequest.requestURI}(lang='bg')}"
        th:classappend="${#locale.language == 'bg'} ? 'is-active'"
        th:text="#{lang.switch.bg}">БГ</a>
     <span class="lang-sep">/</span>
-    <a th:href="@{${#request.requestURI}(lang='en')}"
+    <a th:href="@{${#httpServletRequest.requestURI}(lang='en')}"
        th:classappend="${#locale.language == 'en'} ? 'is-active'"
        th:text="#{lang.switch.en}">EN</a>
 </div>
