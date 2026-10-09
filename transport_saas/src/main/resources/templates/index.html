@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -175,43 +175,46 @@
 <div class="l-navbar">
     <div class="l-brand"><span class="dot"></span> Transport Manager</div>
 
-    <div class="l-navbtns" th:if="${#authentication.name == 'anonymousUser'}">
-        <a th:href="@{/login}" class="btn-ghost" style="color:#EDEAE0; border-color:rgba(255,255,255,0.25);">Вход</a>
-        <a th:href="@{/register}" class="btn-route">Регистрация</a>
+    <div class="l-navbtns" style="align-items:center;">
+        <div th:replace="~{fragments/lang-switch :: switcher(dark=true)}"></div>
+        <div th:if="${#authentication.name == 'anonymousUser'}" style="display:flex; gap:10px;">
+            <a th:href="@{/login}" class="btn-ghost" style="color:#EDEAE0; border-color:rgba(255,255,255,0.25);" th:text="#{nav.login}">Вход</a>
+            <a th:href="@{/register}" class="btn-route" th:text="#{nav.register}">Регистрация</a>
+        </div>
     </div>
 </div>
 
 <div class="l-hero">
     <div class="hero-text">
-        <p class="l-eyebrow">Диспечерски софтуер · без хартия</p>
-        <h1>Целият автопарк,<br>на едно табло.</h1>
-        <p class="lead">
+        <p class="l-eyebrow" th:text="#{landing.eyebrow}">Диспечерски софтуер · без хартия</p>
+        <h1><span th:text="#{landing.hero.title.line1}">Целият автопарк,</span><br><span th:text="#{landing.hero.title.line2}">на едно табло.</span></h1>
+        <p class="lead" th:text="#{landing.hero.lead}">
             Курсове, шофьори, документи и печалба — управлявай транспортната
             си фирма от едно място, вместо от бележник и Excel таблици.
         </p>
-        <p class="l-trial-badge">🎁 14 дни безплатен пробен период — без нужда от карта · после от 25 €/месец</p>
+        <p class="l-trial-badge" th:text="#{landing.trial.badge}">🎁 14 дни безплатен пробен период — без нужда от карта · после от 25 €/месец</p>
 
         <div class="l-navbtns">
-            <a th:href="@{/register}" class="btn-route">🚀 Регистрация</a>
-            <a th:href="@{/login}" class="btn-ghost" style="color:#EDEAE0; border-color:rgba(255,255,255,0.25);">Вход</a>
+            <a th:href="@{/register}" class="btn-route" th:text="#{landing.cta.register}">🚀 Регистрация</a>
+            <a th:href="@{/login}" class="btn-ghost" style="color:#EDEAE0; border-color:rgba(255,255,255,0.25);" th:text="#{nav.login}">Вход</a>
         </div>
 
         <div class="l-stats">
             <div>
-                <div class="stat-num">24/7</div>
-                <div class="stat-label">Достъп</div>
+                <div class="stat-num" th:text="#{landing.stat.access.num}">24/7</div>
+                <div class="stat-label" th:text="#{landing.stat.access.label}">Достъп</div>
             </div>
             <div>
-                <div class="stat-num">&lt; 5 мин</div>
-                <div class="stat-label">Стартиране</div>
+                <div class="stat-num" th:text="#{landing.stat.start.num}">&lt; 5 мин</div>
+                <div class="stat-label" th:text="#{landing.stat.start.label}">Стартиране</div>
             </div>
             <div>
-                <div class="stat-num">14 дни</div>
-                <div class="stat-label">Пробен период</div>
+                <div class="stat-num" th:text="#{landing.stat.trial.num}">14 дни</div>
+                <div class="stat-label" th:text="#{landing.stat.trial.label}">Пробен период</div>
             </div>
             <div>
-                <div class="stat-num">от 25 €</div>
-                <div class="stat-label">На месец</div>
+                <div class="stat-num" th:text="#{landing.stat.price.num}">от 25 €</div>
+                <div class="stat-label" th:text="#{landing.stat.price.label}">На месец</div>
             </div>
         </div>
     </div>
@@ -223,38 +226,38 @@
 
 <div class="l-section">
     <div class="l-section-head">
-        <p class="l-eyebrow" style="text-align:center;">Всичко нужно</p>
-        <h2>Едно табло, четири колела на бизнеса</h2>
+        <p class="l-eyebrow" style="text-align:center;" th:text="#{landing.features.eyebrow}">Всичко нужно</p>
+        <h2 th:text="#{landing.features.title}">Едно табло, четири колела на бизнеса</h2>
     </div>
 
     <div class="l-features">
         <div class="l-feature">
             <div class="num">01</div>
-            <h3>🚛 Автопарк</h3>
-            <p>Регистрационни номера, ГТП, застраховки и винетки — с ясен статус кой документ изтича.</p>
+            <h3 th:text="#{landing.feature.fleet.title}">🚛 Автопарк</h3>
+            <p th:text="#{landing.feature.fleet.text}">Регистрационни номера, ГТП, застраховки и винетки — с ясен статус кой документ изтича.</p>
         </div>
 
         <div class="l-feature">
             <div class="num">02</div>
-            <h3>📦 Курсове</h3>
-            <p>Записвай маршрут, приход и разходи за всеки курс — печалбата се смята автоматично.</p>
+            <h3 th:text="#{landing.feature.trips.title}">📦 Курсове</h3>
+            <p th:text="#{landing.feature.trips.text}">Записвай маршрут, приход и разходи за всеки курс — печалбата се смята автоматично.</p>
         </div>
 
         <div class="l-feature">
             <div class="num">03</div>
-            <h3>👨‍✈️ Шофьори</h3>
-            <p>Екипаж, книжки и документи на едно място, свързани директно с превозните средства.</p>
+            <h3 th:text="#{landing.feature.drivers.title}">👨‍✈️ Шофьори</h3>
+            <p th:text="#{landing.feature.drivers.text}">Екипаж, книжки и документи на едно място, свързани директно с превозните средства.</p>
         </div>
 
         <div class="l-feature">
             <div class="num">04</div>
-            <h3>💰 Финанси</h3>
-            <p>Месечна статистика за приходи, разходи и печалба, с графика в реално време.</p>
+            <h3 th:text="#{landing.feature.finance.title}">💰 Финанси</h3>
+            <p th:text="#{landing.feature.finance.text}">Месечна статистика за приходи, разходи и печалба, с графика в реално време.</p>
         </div>
     </div>
 </div>
 
-<div class="l-footer">
+<div class="l-footer" th:text="#{landing.footer}">
     © 2026 Transport Manager
 </div>
 

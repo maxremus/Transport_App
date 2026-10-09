@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Курсове - Transport Manager</title>
+    <title th:text="#{trips.title} + ' - Transport Manager'">Курсове - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,17 +21,17 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Пътни листове</p>
-                <h1 class="page-title">Курсове</h1>
+                <p class="page-eyebrow" th:text="#{trips.eyebrow}">Пътни листове</p>
+                <h1 class="page-title" th:text="#{trips.title}">Курсове</h1>
             </div>
-            <a th:href="@{/trips/export}" class="btn-ghost">⬇ Excel справка</a>
+            <a th:href="@{/trips/export}" class="btn-ghost" th:text="#{trips.export}">⬇ Excel справка</a>
         </div>
 
         <!-- FORM (add or edit) -->
         <div class="panel mb-4">
             <div class="panel-body">
 
-                <p class="panel-title" th:text="${editId != null} ? '✏ Редакция на курс' : 'Добавяне на курс'"></p>
+                <p class="panel-title" th:text="${editId != null} ? #{trips.form.edit} : #{trips.form.add}"></p>
 
                 <form th:action="${editId != null} ? @{'/trips/' + ${editId}} : @{/trips}"
                       method="post"
@@ -43,21 +43,21 @@
                            th:value="${_csrf.token}" />
 
                     <div class="col-md-4">
-                        <label class="field-label">От</label>
+                        <label class="field-label" th:text="#{trips.field.from}">От</label>
                         <input type="text" class="field-control"
                                th:field="*{fromLocation}" required>
                     </div>
 
                     <div class="col-md-4">
-                        <label class="field-label">До</label>
+                        <label class="field-label" th:text="#{trips.field.to}">До</label>
                         <input type="text" class="field-control"
                                th:field="*{toLocation}" required>
                     </div>
 
                     <div class="col-md-4">
-                        <label class="field-label">МПС</label>
+                        <label class="field-label" th:text="#{trips.field.vehicle}">МПС</label>
                         <select class="field-control" name="vehicleId" required>
-                            <option value="">-- Избери МПС --</option>
+                            <option value="" th:text="#{trips.field.vehicle.placeholder}">-- Избери МПС --</option>
                             <option th:each="v : ${vehicles}"
                                     th:value="${v.id}"
                                     th:selected="${trip.vehicle != null and trip.vehicle.id == v.id}"
@@ -67,9 +67,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="field-label">Клиент (незадължително)</label>
+                        <label class="field-label" th:text="#{trips.field.client}">Клиент (незадължително)</label>
                         <select class="field-control" name="clientId">
-                            <option value="">-- Без клиент --</option>
+                            <option value="" th:text="#{trips.field.client.placeholder}">-- Без клиент --</option>
                             <option th:each="c : ${clients}"
                                     th:value="${c.id}"
                                     th:selected="${trip.client != null and trip.client.id == c.id}"
@@ -79,36 +79,36 @@
                     </div>
 
                     <div class="col-md-3 col-6">
-                        <label class="field-label">Приход (€)</label>
+                        <label class="field-label" th:text="#{trips.field.revenue}">Приход (€)</label>
                         <input type="number" step="0.01"
                                class="field-control mono"
                                th:field="*{revenue}" required>
                     </div>
 
                     <div class="col-md-3 col-6">
-                        <label class="field-label">Гориво (€)</label>
+                        <label class="field-label" th:text="#{trips.field.fuel}">Гориво (€)</label>
                         <input type="number" step="0.01"
                                class="field-control mono"
                                th:field="*{fuelCost}">
                     </div>
 
                     <div class="col-md-3 col-6">
-                        <label class="field-label">Изминати км</label>
+                        <label class="field-label" th:text="#{trips.field.distance}">Изминати км</label>
                         <input type="number"
                                class="field-control mono"
                                th:field="*{distanceKm}"
-                               placeholder="напр. 450">
+                               th:placeholder="#{trips.field.distance.placeholder}">
                     </div>
 
                     <div class="col-md-3 col-6">
-                        <label class="field-label">Пътни такси (€)</label>
+                        <label class="field-label" th:text="#{trips.field.toll}">Пътни такси (€)</label>
                         <input type="number" step="0.01"
                                class="field-control mono"
                                th:field="*{tollCost}">
                     </div>
 
                     <div class="col-md-3 col-6">
-                        <label class="field-label">Други (€)</label>
+                        <label class="field-label" th:text="#{trips.field.other}">Други (€)</label>
                         <input type="number" step="0.01"
                                class="field-control mono"
                                th:field="*{otherCost}">
@@ -116,9 +116,9 @@
 
                     <div class="col-12 d-flex gap-2">
                         <button class="btn-route" style="flex:1;"
-                                th:text="${editId != null} ? '💾 Запази промените' : '💾 Запази курс'">
+                                th:text="${editId != null} ? #{trips.save.edit} : #{trips.save.new}">
                         </button>
-                        <a th:if="${editId != null}" th:href="@{/trips}" class="btn-ghost">Откажи</a>
+                        <a th:if="${editId != null}" th:href="@{/trips}" class="btn-ghost" th:text="#{trips.cancel}">Откажи</a>
                     </div>
 
                 </form>
@@ -130,21 +130,21 @@
         <div class="panel">
             <div class="panel-body">
 
-                <p class="panel-title">Всички курсове</p>
+                <p class="panel-title" th:text="#{trips.table.title}">Всички курсове</p>
 
                 <table class="manifest-table">
 
                     <thead>
                     <tr>
-                        <th>От</th>
-                        <th>До</th>
-                        <th>МПС</th>
-                        <th>Клиент</th>
-                        <th>Км</th>
-                        <th>Приход</th>
-                        <th>Разходи</th>
-                        <th>€/км гориво</th>
-                        <th>Печалба</th>
+                        <th th:text="#{trips.col.from}">От</th>
+                        <th th:text="#{trips.col.to}">До</th>
+                        <th th:text="#{trips.col.vehicle}">МПС</th>
+                        <th th:text="#{trips.col.client}">Клиент</th>
+                        <th th:text="#{trips.col.km}">Км</th>
+                        <th th:text="#{trips.col.revenue}">Приход</th>
+                        <th th:text="#{trips.col.expenses}">Разходи</th>
+                        <th th:text="#{trips.col.fuelperkm}">€/км гориво</th>
+                        <th th:text="#{trips.col.profit}">Печалба</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -165,7 +165,8 @@
                             <a th:href="@{/trips(editId=${t.id})}"
                                class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✏</a>
 
-                            <form th:action="@{'/trips/delete/' + ${t.id}}" method="post" onsubmit="return confirm('Изтриване на курса?');">
+                            <form th:action="@{'/trips/delete/' + ${t.id}}" method="post"
+                                  th:onsubmit="'return confirm(\'' + #{trips.confirm.delete} + '\');'">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <button class="btn-danger-ghost" style="padding:5px 12px; font-size:12.5px;">🗑</button>
                             </form>
@@ -175,7 +176,7 @@
                     </tbody>
                 </table>
 
-                <div th:if="${trips == null || trips.isEmpty()}" class="empty-state">
+                <div th:if="${trips == null || trips.isEmpty()}" class="empty-state" th:text="#{trips.empty}">
                     Няма добавени курсове
                 </div>
 

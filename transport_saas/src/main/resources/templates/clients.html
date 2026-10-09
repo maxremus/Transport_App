@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Клиенти - Transport Manager</title>
+    <title th:text="#{clients.title} + ' - Transport Manager'">Клиенти - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,8 +21,8 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Контрагенти</p>
-                <h1 class="page-title">Клиенти</h1>
+                <p class="page-eyebrow" th:text="#{clients.eyebrow}">Контрагенти</p>
+                <h1 class="page-title" th:text="#{clients.title}">Клиенти</h1>
             </div>
         </div>
 
@@ -30,7 +30,7 @@
         <div class="panel mb-4">
             <div class="panel-body">
 
-                <p class="panel-title" th:text="${editId != null} ? '✏ Редакция на клиент' : 'Добавяне на клиент'"></p>
+                <p class="panel-title" th:text="${editId != null} ? #{clients.form.edit} : #{clients.form.add}"></p>
 
                 <form th:action="${editId != null} ? @{'/clients/' + ${editId}} : @{/clients}"
                       method="post"
@@ -42,46 +42,46 @@
                            th:value="${_csrf.token}" />
 
                     <div class="col-md-4">
-                        <label class="field-label">Име / Фирма</label>
+                        <label class="field-label" th:text="#{clients.field.name}">Име / Фирма</label>
                         <input type="text" class="field-control" th:field="*{name}"
-                               placeholder="напр. Логистика ЕООД" required>
+                               th:placeholder="#{clients.field.name.placeholder}" required>
                     </div>
 
                     <div class="col-md-2">
-                        <label class="field-label">ЕИК / Булстат</label>
+                        <label class="field-label" th:text="#{clients.field.bulstat}">ЕИК / Булстат</label>
                         <input type="text" class="field-control mono" th:field="*{bulstat}">
                     </div>
 
                     <div class="col-md-3">
-                        <label class="field-label">Лице за контакт</label>
+                        <label class="field-label" th:text="#{clients.field.contact}">Лице за контакт</label>
                         <input type="text" class="field-control" th:field="*{contactPerson}">
                     </div>
 
                     <div class="col-md-3">
-                        <label class="field-label">Телефон</label>
+                        <label class="field-label" th:text="#{clients.field.phone}">Телефон</label>
                         <input type="text" class="field-control mono" th:field="*{phone}">
                     </div>
 
                     <div class="col-md-4">
-                        <label class="field-label">Имейл</label>
+                        <label class="field-label" th:text="#{clients.field.email}">Имейл</label>
                         <input type="email" class="field-control" th:field="*{email}">
                     </div>
 
                     <div class="col-md-8">
-                        <label class="field-label">Адрес</label>
+                        <label class="field-label" th:text="#{clients.field.address}">Адрес</label>
                         <input type="text" class="field-control" th:field="*{address}">
                     </div>
 
                     <div class="col-md-12">
-                        <label class="field-label">Бележки</label>
+                        <label class="field-label" th:text="#{clients.field.notes}">Бележки</label>
                         <input type="text" class="field-control" th:field="*{notes}">
                     </div>
 
                     <div class="col-md-4 d-flex align-items-end gap-2">
                         <button class="btn-route" style="flex:1;"
-                                th:text="${editId != null} ? '💾 Запази' : '➕ Добави'">
+                                th:text="${editId != null} ? #{clients.save} : #{clients.add}">
                         </button>
-                        <a th:if="${editId != null}" th:href="@{/clients}" class="btn-ghost">Откажи</a>
+                        <a th:if="${editId != null}" th:href="@{/clients}" class="btn-ghost" th:text="#{clients.cancel}">Откажи</a>
                     </div>
 
                 </form>
@@ -93,17 +93,17 @@
         <div class="panel">
             <div class="panel-body">
 
-                <p class="panel-title">Всички клиенти</p>
+                <p class="panel-title" th:text="#{clients.table.title}">Всички клиенти</p>
 
                 <table class="manifest-table">
                     <thead>
                     <tr>
-                        <th>Име</th>
-                        <th>ЕИК</th>
-                        <th>Лице за контакт</th>
-                        <th>Телефон</th>
-                        <th>Имейл</th>
-                        <th>Дължи</th>
+                        <th th:text="#{clients.col.name}">Име</th>
+                        <th th:text="#{clients.col.bulstat}">ЕИК</th>
+                        <th th:text="#{clients.col.contact}">Лице за контакт</th>
+                        <th th:text="#{clients.col.phone}">Телефон</th>
+                        <th th:text="#{clients.col.email}">Имейл</th>
+                        <th th:text="#{clients.col.owes}">Дължи</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -120,11 +120,11 @@
                             th:text="${balances.get(c.id)} + ' €'"></td>
                         <td style="display:flex; gap:6px;">
                             <a th:href="@{/invoices(clientId=${c.id})}"
-                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">🧾 Фактура</a>
+                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;" th:text="#{clients.action.invoice}">🧾 Фактура</a>
                             <a th:href="@{/clients(editId=${c.id})}"
-                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">✏ Редакция</a>
+                               class="btn-ghost" style="padding:5px 12px; font-size:12.5px;" th:text="#{clients.action.edit}">✏ Редакция</a>
                             <form th:action="@{'/clients/delete/' + ${c.id}}" method="post"
-                                  onsubmit="return confirm('Изтриване на клиента?');">
+                                  th:onsubmit="'return confirm(\'' + #{clients.confirm.delete} + '\');'">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                 <button class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">🗑</button>
                             </form>
@@ -133,7 +133,7 @@
                     </tbody>
                 </table>
 
-                <div th:if="${clients.isEmpty()}" class="empty-state">
+                <div th:if="${clients.isEmpty()}" class="empty-state" th:text="#{clients.empty}">
                     Няма добавени клиенти
                 </div>
 

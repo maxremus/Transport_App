@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Шофьор - Transport Manager</title>
+    <title th:text="#{driveradd.title} + ' - Transport Manager'">Шофьор - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,8 +17,8 @@
 
     <div class="road-brand"><span class="dot"></span> Transport Manager</div>
 
-    <h3 class="road-title" th:text="${editDriver != null} ? '✏ Редакция на шофьор' : 'Нов шофьор'"></h3>
-    <p class="road-sub" th:text="${editDriver != null} ? 'Обнови данните на члена на екипажа' : 'Добави член на екипажа'"></p>
+    <h3 class="road-title" th:text="${editDriver != null} ? #{driveradd.heading.edit} : #{driveradd.heading.add}"></h3>
+    <p class="road-sub" th:text="${editDriver != null} ? #{driveradd.sub.edit} : #{driveradd.sub.add}"></p>
 
     <form th:action="${editDriver != null} ? @{'/drivers/' + ${editDriver.id}} : @{/drivers/add}" method="post">
 
@@ -27,21 +27,21 @@
                th:value="${_csrf.token}" />
 
         <div class="mb-3">
-            <label class="field-label">Име</label>
+            <label class="field-label" th:text="#{driveradd.field.name}">Име</label>
             <input type="text" name="name" class="field-control" required
                    th:value="${editDriver != null} ? ${editDriver.name} : ''">
         </div>
 
         <div class="mb-4">
-            <label class="field-label">Телефон</label>
+            <label class="field-label" th:text="#{driveradd.field.phone}">Телефон</label>
             <input type="text" name="phone" class="field-control" required
                    th:value="${editDriver != null} ? ${editDriver.phone} : ''">
         </div>
 
         <button class="btn-route btn-block mb-2"
-                th:text="${editDriver != null} ? '💾 Запази промените' : '💾 Запази шофьор'">
+                th:text="${editDriver != null} ? #{driveradd.save.edit} : #{driveradd.save.add}">
         </button>
-        <a th:href="@{/driver}" class="btn-ghost btn-block">⬅ Назад към списъка</a>
+        <a th:href="@{/driver}" class="btn-ghost btn-block" th:text="#{driveradd.back}">⬅ Назад към списъка</a>
 
     </form>
 

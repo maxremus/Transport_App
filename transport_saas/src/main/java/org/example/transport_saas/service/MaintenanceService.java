@@ -6,6 +6,8 @@ import org.example.transport_saas.entity.MaintenanceType;
 import org.example.transport_saas.entity.Vehicle;
 import org.example.transport_saas.repository.MaintenanceScheduleRepository;
 import org.example.transport_saas.repository.VehicleRepository;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,6 +19,11 @@ public class MaintenanceService {
 
     private final MaintenanceScheduleRepository maintenanceRepository;
     private final VehicleRepository vehicleRepository;
+    private final MessageSource messageSource;
+
+    private String msg(String key) {
+        return messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
+    }
 
     public List<MaintenanceSchedule> getAllForCompany(Long companyId) {
         return maintenanceRepository.findAllForCompany(companyId);
@@ -80,8 +87,8 @@ public class MaintenanceService {
         return m.getLastServiceMileage() + m.getIntervalKm();
     }
 
-    /** ПРОСРОЧЕН / СКОРО / ОК - взима предвид и дата, и пробег, каквото дойде първо. */
-    public String getDisplayStatus(MaintenanceSchedule m) {
+    /** Суров, locale-независим статус - за CSS/логика в шаблоните (НЕ за показване). */
+    public String getStatus(MaintenanceSchedule m) {
         LocalDate nextDate = getNextServiceDate(m);
         Integer nextKm = getNextServiceMileage(m);
         Integer currentMileage = m.getVehicle() != null ? m.getVehicle().getCurrentMileage() : null;
@@ -90,26 +97,35 @@ public class MaintenanceService {
         boolean overdueByKm = nextKm != null && currentMileage != null && currentMileage >= nextKm;
 
         if (overdueByDate || overdueByKm) {
-            return "ПРОСРОЧЕН";
+            return "OVERDUE";
         }
 
         boolean soonByDate = nextDate != null && nextDate.isBefore(LocalDate.now().plusDays(30));
         boolean soonByKm = nextKm != null && currentMileage != null && currentMileage >= nextKm - 1000;
 
         if (soonByDate || soonByKm) {
-            return "СКОРО";
+            return "SOON";
         }
 
-        return "ОК";
+        return "OK";
+    }
+
+    /** ПРОСРОЧЕН / СКОРО / ОК (превежда се) - само за показване в UI. */
+    public String getDisplayStatus(MaintenanceSchedule m) {
+        return switch (getStatus(m)) {
+            case "OVERDUE" -> msg("maintenance.status.overdue");
+            case "SOON" -> msg("maintenance.status.soon");
+            default -> msg("maintenance.status.ok");
+        };
     }
 
     public String getDisplayType(MaintenanceType type) {
         return switch (type) {
-            case OIL_CHANGE -> "Смяна на масло";
-            case TIRES -> "Гуми";
-            case BRAKES -> "Спирачки";
-            case TECHNICAL_INSPECTION -> "Годишен технически преглед";
-            case OTHER -> "Друго";
+            case OIL_CHANGE -> msg("maintenance.type.oil_change");
+            case TIRES -> msg("maintenance.type.tires");
+            case BRAKES -> msg("maintenance.type.brakes");
+            case TECHNICAL_INSPECTION -> msg("maintenance.type.technical_inspection");
+            case OTHER -> msg("maintenance.type.other");
         };
     }
 }

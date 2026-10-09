@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>В процес на изграждане - Transport Manager</title>
+    <title th:text="#{construction.title} + ' - Transport Manager'">В процес на изграждане - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,15 +17,15 @@
 
     <div class="status-badge-circle" style="background: var(--signal-amber-bg); color: var(--signal-amber);">🚧</div>
 
-    <h3 class="road-title">В процес на изграждане</h3>
+    <h3 class="road-title" th:text="#{construction.title}">В процес на изграждане</h3>
 
     <p class="text-muted-c mb-4">
-        Тази функционалност все още се разработва.
-        Очаквайте скоро обновление.
+        <span th:text="#{construction.text}">Тази функционалност все още се разработва.
+        Очаквайте скоро обновление.</span>
     </p>
 
     <button onclick="history.back()" class="btn-route btn-block">
-        ⬅ Върни се назад
+        <span th:text="#{construction.back}">⬅ Върни се назад</span>
     </button>
 
 </div>

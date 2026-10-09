@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Регистрация - Transport Manager</title>
+    <title th:text="#{register.title} + ' - Transport Manager'">Регистрация - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,10 +16,13 @@
 
 <div class="road-card wide">
 
-    <div class="road-brand"><span class="dot"></span> Transport Manager</div>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="road-brand"><span class="dot"></span> Transport Manager</div>
+        <div th:replace="~{fragments/lang-switch :: switcher(dark=false)}"></div>
+    </div>
 
-    <h3 class="road-title">Създаване на акаунт</h3>
-    <p class="road-sub">Регистрация на нова транспортна фирма</p>
+    <h3 class="road-title" th:text="#{register.heading}">Създаване на акаунт</h3>
+    <p class="road-sub" th:text="#{register.eyebrow}">Регистрация на нова транспортна фирма</p>
 
     <form th:action="@{/register}" th:object="${request}" method="post">
 
@@ -28,45 +31,45 @@
                th:value="${_csrf.token}" />
 
         <div class="mb-3">
-            <label class="field-label">Име на фирмата</label>
+            <label class="field-label" th:text="#{register.field.company}">Име на фирмата</label>
             <input type="text"
                    th:field="*{companyName}"
                    class="field-control"
-                   placeholder="Въведете име на фирмата"
+                   th:placeholder="#{register.field.company.placeholder}"
                    required>
         </div>
 
         <div class="mb-3">
-            <label class="field-label">Потребителско име</label>
+            <label class="field-label" th:text="#{register.field.username}">Потребителско име</label>
             <input type="text"
                    th:field="*{username}"
                    class="field-control"
-                   placeholder="Изберете потребителско име"
+                   th:placeholder="#{register.field.username.placeholder}"
                    required>
         </div>
 
         <div class="mb-3">
-            <label class="field-label">Имейл</label>
+            <label class="field-label" th:text="#{register.field.email}">Имейл</label>
             <input type="email"
                    th:field="*{email}"
                    class="field-control"
-                   placeholder="за възстановяване на парола"
+                   th:placeholder="#{register.field.email.placeholder}"
                    required>
         </div>
 
         <div class="mb-4">
-            <label class="field-label">Парола</label>
+            <label class="field-label" th:text="#{register.field.password}">Парола</label>
             <div class="password-wrap">
                 <input type="password"
                        th:field="*{password}"
                        class="field-control"
-                       placeholder="Изберете парола"
+                       th:placeholder="#{register.field.password.placeholder}"
                        required>
                 <button type="button" class="password-toggle" onclick="togglePassword(this)">👁</button>
             </div>
         </div>
 
-        <button type="submit" class="btn-route btn-block mb-2">
+        <button type="submit" class="btn-route btn-block mb-2" th:text="#{register.submit}">
             Регистрация
         </button>
 
@@ -81,8 +84,8 @@
     </div>
 
     <p class="text-center text-muted-c mt-4 mb-0" style="font-size:14px;">
-        Вече имате акаунт?
-        <a th:href="@{/login}" style="font-weight:600;">Вход</a>
+        <span th:text="#{register.haveaccount}">Вече имате акаунт?</span>
+        <a th:href="@{/login}" style="font-weight:600;" th:text="#{register.login.link}">Вход</a>
     </p>
 
 </div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Вход - Transport Manager</title>
+    <title th:text="#{login.title} + ' - Transport Manager'">Вход - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,10 +16,13 @@
 
 <div class="road-card">
 
-    <div class="road-brand"><span class="dot"></span> Transport Manager</div>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="road-brand"><span class="dot"></span> Transport Manager</div>
+        <div th:replace="~{fragments/lang-switch :: switcher(dark=false)}"></div>
+    </div>
 
-    <h3 class="road-title">Вход</h3>
-    <p class="road-sub">Влез в диспечерския си акаунт</p>
+    <h3 class="road-title" th:text="#{login.heading}">Вход</h3>
+    <p class="road-sub" th:text="#{login.eyebrow}">Влез в диспечерския си акаунт</p>
 
     <form th:action="@{/login}" method="post">
 
@@ -28,28 +31,28 @@
                th:value="${_csrf.token}" />
 
         <div class="mb-3">
-            <label class="field-label">Потребителско име</label>
+            <label class="field-label" th:text="#{login.field.username}">Потребителско име</label>
             <input type="text" name="username"
                    class="field-control"
-                   placeholder="Въведете потребителско име"
+                   th:placeholder="#{login.field.username.placeholder}"
                    required>
         </div>
 
         <div class="mb-4">
-            <label class="field-label">Парола</label>
+            <label class="field-label" th:text="#{login.field.password}">Парола</label>
             <div class="password-wrap">
                 <input type="password" name="password"
                        class="field-control"
-                       placeholder="Въведете парола"
+                       th:placeholder="#{login.field.password.placeholder}"
                        required>
                 <button type="button" class="password-toggle" onclick="togglePassword(this)">👁</button>
             </div>
             <p class="text-end mt-1 mb-0" style="font-size:13px;">
-                <a th:href="@{/forgot-password}">Забравена парола?</a>
+                <a th:href="@{/forgot-password}" th:text="#{login.forgot}">Забравена парола?</a>
             </p>
         </div>
 
-        <button type="submit" class="btn-route btn-block mb-2">
+        <button type="submit" class="btn-route btn-block mb-2" th:text="#{login.submit}">
             Вход
         </button>
 
@@ -59,21 +62,21 @@
 
     </form>
 
-    <div th:if="${param.error}" class="notice notice-danger text-center mt-3 mb-0">
+    <div th:if="${param.error}" class="notice notice-danger text-center mt-3 mb-0" th:text="#{login.error}">
         Невалидно потребителско име или парола.
     </div>
 
-    <div th:if="${param.logout}" class="notice notice-ok text-center mt-3 mb-0">
+    <div th:if="${param.logout}" class="notice notice-ok text-center mt-3 mb-0" th:text="#{login.logout.success}">
         Успешно излязохте от системата.
     </div>
 
-    <div th:if="${param.passwordReset}" class="notice notice-ok text-center mt-3 mb-0">
+    <div th:if="${param.passwordReset}" class="notice notice-ok text-center mt-3 mb-0" th:text="#{login.reset.success}">
         Паролата е сменена успешно. Влез с новата си парола.
     </div>
 
     <p class="text-center text-muted-c mt-4 mb-0" style="font-size:14px;">
-        Нямате акаунт?
-        <a th:href="@{/register}" style="font-weight:600;">Регистрация</a>
+        <span th:text="#{login.noaccount}">Нямате акаунт?</span>
+        <a th:href="@{/register}" style="font-weight:600;" th:text="#{login.register.link}">Регистрация</a>
     </p>
 
 </div>

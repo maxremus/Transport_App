@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Абонамент изтекъл - Transport Manager</title>
+    <title th:text="#{subexpired.title} + ' - Transport Manager'">Абонамент изтекъл - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,14 +17,14 @@
 
     <div class="status-badge-circle" style="background: var(--signal-red-bg); color: var(--signal-red);">❌</div>
 
-    <h3 class="road-title">Абонаментът е изтекъл</h3>
+    <h3 class="road-title" th:text="#{subexpired.title}">Абонаментът е изтекъл</h3>
 
     <p class="text-muted-c mb-4">
-        Моля подновете абонамента си, за да продължите да ползвате Transport Manager.
+        <span th:text="#{subexpired.text}">Моля подновете абонамента си, за да продължите да ползвате Transport Manager.</span>
     </p>
 
     <a th:href="@{/upgrade}" class="btn-route btn-block">
-        💳 Поднови абонамент
+        <span th:text="#{subexpired.cta}">💳 Поднови абонамент</span>
     </a>
 
 </div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Неуспешно плащане - Transport Manager</title>
+    <title th:text="#{paycancel.title} + ' - Transport Manager'">Неуспешно плащане - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,18 +17,18 @@
 
     <div class="status-badge-circle" style="background: var(--signal-red-bg); color: var(--signal-red);">✖</div>
 
-    <h3 class="road-title">Плащането не беше успешно</h3>
+    <h3 class="road-title" th:text="#{paycancel.title}">Плащането не беше успешно</h3>
 
     <p class="text-muted-c mb-4">
-        Възникна проблем или плащането беше отказано.
+        <span th:text="#{paycancel.text}">Възникна проблем или плащането беше отказано.</span>
     </p>
 
     <a th:href="@{/upgrade}" class="btn-route btn-block mb-2">
-        Опитай отново
+        <span th:text="#{paycancel.retry}">Опитай отново</span>
     </a>
 
     <a th:href="@{/dashboard}" class="btn-ghost btn-block">
-        Обратно към таблото
+        <span th:text="#{paycancel.back}">Обратно към таблото</span>
     </a>
 
 </div>

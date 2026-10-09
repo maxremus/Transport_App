@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Помощ - Transport Manager</title>
+    <title th:text="#{support.title} + ' - Transport Manager'">Помощ - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,94 +32,94 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Връзка с нас</p>
-                <h1 class="page-title">Помощ</h1>
+                <p class="page-eyebrow" th:text="#{support.eyebrow}">Връзка с нас</p>
+                <h1 class="page-title" th:text="#{support.title}">Помощ</h1>
             </div>
         </div>
 
-        <div class="notice notice-ok" th:if="${param.sent}">✔ Съобщението е изпратено. Ще отговорим на посочения имейл възможно най-скоро.</div>
+        <div class="notice notice-ok" th:if="${param.sent}" th:text="#{support.sent}">✔ Съобщението е изпратено. Ще отговорим на посочения имейл възможно най-скоро.</div>
 
         <div class="panel mb-4">
             <div class="panel-body">
-                <p class="panel-title">📖 Как работи Transport Manager</p>
+                <p class="panel-title" th:text="#{support.guide.title}">📖 Как работи Transport Manager</p>
 
                 <div class="help-item">
-                    <p class="help-item-title">🏠 Табло</p>
-                    <p class="text-muted-c">Общ преглед на фирмата - активни курсове, приходи, предстоящи изтичащи документи и бърз достъп до най-важното.</p>
+                    <p class="help-item-title" th:text="#{support.guide.dashboard.title}">🏠 Табло</p>
+                    <p class="text-muted-c" th:text="#{support.guide.dashboard.text}">Общ преглед на фирмата - активни курсове, приходи, предстоящи изтичащи документи и бърз достъп до най-важното.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">🚚 Курсове</p>
-                    <p class="text-muted-c">Създавай нов курс с начална/крайна точка, шофьор, МПС и клиент. Проследявай статус (планиран/в изпълнение/приключен) и приходите по всеки курс.</p>
+                    <p class="help-item-title" th:text="#{support.guide.trips.title}">🚚 Курсове</p>
+                    <p class="text-muted-c" th:text="#{support.guide.trips.text}">Създавай нов курс с начална/крайна точка, шофьор, МПС и клиент. Проследявай статус (планиран/в изпълнение/приключен) и приходите по всеки курс.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">🚛 МПС</p>
-                    <p class="text-muted-c">Добавяй превозни средства с регистрационен номер и VIN. За всяко МПС можеш да качваш документи (ГТП, застраховка, винетка) с дата на валидност - системата те известява, преди да изтекат.</p>
+                    <p class="help-item-title" th:text="#{support.guide.vehicles.title}">🚛 МПС</p>
+                    <p class="text-muted-c" th:text="#{support.guide.vehicles.text}">Добавяй превозни средства с регистрационен номер и VIN. За всяко МПС можеш да качваш документи (ГТП, застраховка, винетка) с дата на валидност - системата те известява, преди да изтекат.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">👤 Клиенти</p>
-                    <p class="text-muted-c">Управлявай базата с клиенти на фирмата - данни за контакт и фактуриране, свързани автоматично с курсовете и фактурите им.</p>
+                    <p class="help-item-title" th:text="#{support.guide.clients.title}">👤 Клиенти</p>
+                    <p class="text-muted-c" th:text="#{support.guide.clients.text}">Управлявай базата с клиенти на фирмата - данни за контакт и фактуриране, свързани автоматично с курсовете и фактурите им.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">🧾 Фактури</p>
-                    <p class="text-muted-c">Издавай фактури към клиенти на база завършени курсове, редактирай позиции и изтегляй готов PDF за изпращане.</p>
+                    <p class="help-item-title" th:text="#{support.guide.invoices.title}">🧾 Фактури</p>
+                    <p class="text-muted-c" th:text="#{support.guide.invoices.text}">Издавай фактури към клиенти на база завършени курсове, редактирай позиции и изтегляй готов PDF за изпращане.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">⛽ Гориво</p>
-                    <p class="text-muted-c">Записвай зареждания на гориво по МПС и следи разхода - справката помага да видиш реалната себестойност на всеки курс.</p>
+                    <p class="help-item-title" th:text="#{support.guide.fuel.title}">⛽ Гориво</p>
+                    <p class="text-muted-c" th:text="#{support.guide.fuel.text}">Записвай зареждания на гориво по МПС и следи разхода - справката помага да видиш реалната себестойност на всеки курс.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">🪪 Шофьори</p>
-                    <p class="text-muted-c">Добавяй шофьори с телефон за връзка и качвай документите им (книжка, лична карта, дигитална карта, професионална квалификация) с дата на валидност.</p>
+                    <p class="help-item-title" th:text="#{support.guide.drivers.title}">🪪 Шофьори</p>
+                    <p class="text-muted-c" th:text="#{support.guide.drivers.text}">Добавяй шофьори с телефон за връзка и качвай документите им (книжка, лична карта, дигитална карта, професионална квалификация) с дата на валидност.</p>
                 </div>
 
                 <div class="help-item">
-                    <p class="help-item-title">💳 Абонамент</p>
-                    <p class="text-muted-c">Виж докога тече пробният ти период или платеният абонамент, и премини към PRO (25 €/мес) или PREMIUM (50 €/мес), когато си готов.</p>
+                    <p class="help-item-title" th:text="#{support.guide.subscription.title}">💳 Абонамент</p>
+                    <p class="text-muted-c" th:text="#{support.guide.subscription.text}">Виж докога тече пробният ти период или платеният абонамент, и премини към PRO (25 €/мес) или PREMIUM (50 €/мес), когато си готов.</p>
                 </div>
 
                 <div class="help-item" style="border-bottom:none;">
-                    <p class="help-item-title">⚙️ Настройки</p>
-                    <p class="text-muted-c">Смени паролата си, обнови данните на фирмата и включи известия по имейл за изтичащ абонамент и изтичащи документи.</p>
+                    <p class="help-item-title" th:text="#{support.guide.settings.title}">⚙️ Настройки</p>
+                    <p class="text-muted-c" th:text="#{support.guide.settings.text}">Смени паролата си, обнови данните на фирмата и включи известия по имейл за изтичащ абонамент и изтичащи документи.</p>
                 </div>
             </div>
         </div>
 
         <div class="panel mb-4">
             <div class="panel-body">
-                <p class="panel-title">✉️ Пиши директно</p>
+                <p class="panel-title" th:text="#{support.contact.title}">✉️ Пиши директно</p>
                 <p class="text-muted-c" style="margin-bottom:16px;">
-                    Можеш да пишеш директно на
+                    <span th:text="#{support.contact.intro1}">Можеш да пишеш директно на</span>
                     <a th:href="'mailto:admintransportapp@gmail.com'" class="mono">admintransportapp@gmail.com</a>,
-                    или да попълниш формата по-долу — съобщението ще стигне до нас автоматично, заедно с данните на твоята фирма.
+                    <span th:text="#{support.contact.intro2}">или да попълниш формата по-долу — съобщението ще стигне до нас автоматично, заедно с данните на твоята фирма.</span>
                 </p>
 
                 <form th:action="@{/support}" method="post" class="row g-3">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                     <div class="col-12">
-                        <label class="field-label">Тема</label>
+                        <label class="field-label" th:text="#{support.field.subject}">Тема</label>
                         <input type="text" name="subject" class="field-control" required maxlength="150"
-                               placeholder="Например: Проблем с фактура">
+                               th:placeholder="#{support.field.subject.placeholder}">
                     </div>
 
                     <div class="col-12">
-                        <label class="field-label">Съобщение</label>
+                        <label class="field-label" th:text="#{support.field.message}">Съобщение</label>
                         <textarea name="message" class="field-control" rows="6" required
-                                  placeholder="Опиши какъв е проблемът или въпросът ти..."></textarea>
+                                  th:placeholder="#{support.field.message.placeholder}"></textarea>
                     </div>
 
-                    <div class="col-12 text-muted-c" style="font-size:13px;">
-                        Ще отговорим на: <span class="mono" th:text="${user.email != null ? user.email : 'няма зададен имейл в профила ти'}"></span>
+                    <div class="col-12 text-muted-c" style="font-size:13px;" th:with="noEmailText=#{support.replyto.none}">
+                        <span th:text="#{support.replyto}">Ще отговорим на:</span> <span class="mono" th:text="${user.email != null ? user.email : noEmailText}"></span>
                     </div>
 
                     <div class="col-12">
-                        <button class="btn-route" type="submit">📨 Изпрати</button>
+                        <button class="btn-route" type="submit" th:text="#{support.submit}">📨 Изпрати</button>
                     </div>
                 </form>
             </div>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Надхвърлен лимит - Transport Manager</title>
+    <title th:text="#{upgradereq.title} + ' - Transport Manager'">Надхвърлен лимит - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,23 +17,23 @@
 
     <div class="status-badge-circle" style="background: var(--signal-amber-bg); color: var(--signal-amber);">⚠</div>
 
-    <h3 class="road-title" style="color: var(--signal-red);">Достигнат е лимитът на плана</h3>
+    <h3 class="road-title" style="color: var(--signal-red);" th:text="#{upgradereq.title}">Достигнат е лимитът на плана</h3>
 
     <p class="mb-3" th:text="${errorMessage}">
         Надхвърлили сте позволения брой записи за текущия абонамент.
     </p>
 
     <p class="text-muted-c mb-4">
-        За да продължите да използвате всички функционалности,
-        е необходимо да надградите своя абонаментен план.
+        <span th:text="#{upgradereq.text}">За да продължите да използвате всички функционалности,
+        е необходимо да надградите своя абонаментен план.</span>
     </p>
 
     <a th:href="@{/upgrade}" class="btn-route btn-block mb-2">
-        Надграждане на абонамент
+        <span th:text="#{upgradereq.cta}">Надграждане на абонамент</span>
     </a>
 
     <a th:href="@{/dashboard}" class="btn-ghost btn-block">
-        Обратно към таблото
+        <span th:text="#{upgradereq.back}">Обратно към таблото</span>
     </a>
 
 </div>

@@ -20,43 +20,43 @@
         <li>
             <a th:href="@{/dashboard}" class="nav-stop"
                th:classappend="${active == 'dashboard'} ? 'is-active'">
-                <span class="stop-dot"></span> Табло
+                <span class="stop-dot"></span> <span th:text="#{nav.dashboard}">Табло</span>
             </a>
         </li>
         <li>
             <a th:href="@{/trips}" class="nav-stop"
                th:classappend="${active == 'trips'} ? 'is-active'">
-                <span class="stop-dot"></span> Курсове
+                <span class="stop-dot"></span> <span th:text="#{nav.trips}">Курсове</span>
             </a>
         </li>
         <li>
             <a th:href="@{/vehicles}" class="nav-stop"
                th:classappend="${active == 'vehicles'} ? 'is-active'">
-                <span class="stop-dot"></span> МПС
+                <span class="stop-dot"></span> <span th:text="#{nav.vehicles}">МПС</span>
             </a>
         </li>
         <li>
             <a th:href="@{/clients}" class="nav-stop"
                th:classappend="${active == 'clients'} ? 'is-active'">
-                <span class="stop-dot"></span> Клиенти
+                <span class="stop-dot"></span> <span th:text="#{nav.clients}">Клиенти</span>
             </a>
         </li>
         <li>
             <a th:href="@{/invoices}" class="nav-stop"
                th:classappend="${active == 'invoices'} ? 'is-active'">
-                <span class="stop-dot"></span> Фактури
+                <span class="stop-dot"></span> <span th:text="#{nav.invoices}">Фактури</span>
             </a>
         </li>
         <li>
             <a th:href="@{/fuel-report}" class="nav-stop"
                th:classappend="${active == 'fuel-report'} ? 'is-active'">
-                <span class="stop-dot"></span> Гориво
+                <span class="stop-dot"></span> <span th:text="#{nav.fuel}">Гориво</span>
             </a>
         </li>
         <li>
             <a th:href="@{/driver}" class="nav-stop"
                th:classappend="${active == 'driver'} ? 'is-active'">
-                <span class="stop-dot"></span> Шофьори
+                <span class="stop-dot"></span> <span th:text="#{nav.drivers}">Шофьори</span>
             </a>
         </li>
     </ul>
@@ -67,19 +67,19 @@
         <li>
             <a th:href="@{/upgrade}" class="nav-stop"
                th:classappend="${active == 'upgrade'} ? 'is-active'">
-                <span class="stop-dot"></span> Абонамент
+                <span class="stop-dot"></span> <span th:text="#{nav.subscription}">Абонамент</span>
             </a>
         </li>
         <li>
             <a th:href="@{/settings}" class="nav-stop"
                th:classappend="${active == 'settings'} ? 'is-active'">
-                <span class="stop-dot"></span> Настройки
+                <span class="stop-dot"></span> <span th:text="#{nav.settings}">Настройки</span>
             </a>
         </li>
         <li>
             <a th:href="@{/support}" class="nav-stop"
                th:classappend="${active == 'support'} ? 'is-active'">
-                <span class="stop-dot"></span> Помощ
+                <span class="stop-dot"></span> <span th:text="#{nav.support}">Помощ</span>
             </a>
         </li>
     </ul>
@@ -90,9 +90,13 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <button type="submit" class="nav-stop is-exit"
                 style="width:100%; background:none; border:none; text-align:left; cursor:pointer; font:inherit;">
-            <span class="stop-dot"></span> Изход
+            <span class="stop-dot"></span> <span th:text="#{nav.logout}">Изход</span>
         </button>
     </form>
+
+    <div style="padding:14px 12px 0;">
+        <div th:replace="~{fragments/lang-switch :: switcher(dark=true)}"></div>
+    </div>
 
 </div>
 

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Шофьори - Transport Manager</title>
+    <title th:text="#{drivers.title} + ' - Transport Manager'">Шофьори - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,11 +21,11 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Екипаж</p>
-                <h1 class="page-title">Шофьори</h1>
+                <p class="page-eyebrow" th:text="#{drivers.eyebrow}">Екипаж</p>
+                <h1 class="page-title" th:text="#{drivers.title}">Шофьори</h1>
             </div>
 
-            <a th:href="@{/driver-add}" class="btn-route">
+            <a th:href="@{/driver-add}" class="btn-route" th:text="#{drivers.add}">
                 ➕ Добави шофьор
             </a>
         </div>
@@ -33,17 +33,17 @@
         <div class="panel">
             <div class="panel-body">
 
-                <p class="panel-title">Списък</p>
+                <p class="panel-title" th:text="#{drivers.list}">Списък</p>
 
                 <table class="manifest-table">
 
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Име</th>
-                        <th>Телефон</th>
-                        <th>Статус</th>
-                        <th>Действия</th>
+                        <th th:text="#{drivers.col.id}">ID</th>
+                        <th th:text="#{drivers.col.name}">Име</th>
+                        <th th:text="#{drivers.col.phone}">Телефон</th>
+                        <th th:text="#{drivers.col.status}">Статус</th>
+                        <th th:text="#{drivers.col.actions}">Действия</th>
                     </tr>
                     </thead>
 
@@ -55,16 +55,16 @@
                         <td class="mono" th:text="${d.phone}"></td>
 
                         <td>
-                            <span class="pill pill-ok">Активен</span>
+                            <span class="pill pill-ok" th:text="#{drivers.status.active}">Активен</span>
                         </td>
 
                         <td class="d-flex gap-2">
                             <a th:href="@{/driver-documents(driverId=${d.id})}"
-                               class="btn-ghost" style="padding:6px 14px; font-size:13px;">
+                               class="btn-ghost" style="padding:6px 14px; font-size:13px;" th:text="#{drivers.action.documents}">
                                 📄 Документи
                             </a>
                             <a th:href="@{/driver-add(editId=${d.id})}"
-                               class="btn-ghost" style="padding:6px 14px; font-size:13px;">
+                               class="btn-ghost" style="padding:6px 14px; font-size:13px;" th:text="#{drivers.action.edit}">
                                 ✏ Редакция
                             </a>
                         </td>
@@ -74,7 +74,7 @@
 
                 </table>
 
-                <div th:if="${drivers == null || drivers.isEmpty()}" class="empty-state">
+                <div th:if="${drivers == null || drivers.isEmpty()}" class="empty-state" th:text="#{drivers.empty}">
                     Няма шофьори
                 </div>
 

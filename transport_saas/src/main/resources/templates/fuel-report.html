@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Гориво по МПС - Transport Manager</title>
+    <title th:text="#{fuel.title} + ' - Transport Manager'">Гориво по МПС - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,8 +21,8 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Рентабилност</p>
-                <h1 class="page-title">Гориво по МПС</h1>
+                <p class="page-eyebrow" th:text="#{fuel.eyebrow}">Рентабилност</p>
+                <h1 class="page-title" th:text="#{fuel.title}">Гориво по МПС</h1>
             </div>
         </div>
 
@@ -31,7 +31,7 @@
             <div class="panel-body">
                 <form method="get" th:action="@{/fuel-report}" class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label class="field-label">Месец</label>
+                        <label class="field-label" th:text="#{fuel.filter.month}">Месец</label>
                         <select name="month" class="field-control">
                             <option th:each="i : ${#numbers.sequence(1,12)}"
                                     th:value="${i}"
@@ -41,11 +41,11 @@
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="field-label">Година</label>
+                        <label class="field-label" th:text="#{fuel.filter.year}">Година</label>
                         <input type="number" name="year" class="field-control mono" th:value="${year}">
                     </div>
                     <div class="col-md-3">
-                        <button class="btn-route" style="width:100%;">Филтрирай</button>
+                        <button class="btn-route" style="width:100%;" th:text="#{fuel.filter.submit}">Филтрирай</button>
                     </div>
                 </form>
             </div>
@@ -55,19 +55,19 @@
         <div class="panel">
             <div class="panel-body">
 
-                <p class="panel-title">Разход на гориво по МПС</p>
+                <p class="panel-title" th:text="#{fuel.table.title}">Разход на гориво по МПС</p>
 
                 <table class="manifest-table">
                     <thead>
                     <tr>
-                        <th>МПС</th>
-                        <th>Курсове</th>
-                        <th>Км</th>
-                        <th>Гориво общо</th>
-                        <th>€/км гориво</th>
-                        <th>Приход</th>
-                        <th>Печалба</th>
-                        <th>Печалба/км</th>
+                        <th th:text="#{fuel.col.vehicle}">МПС</th>
+                        <th th:text="#{fuel.col.trips}">Курсове</th>
+                        <th th:text="#{fuel.col.km}">Км</th>
+                        <th th:text="#{fuel.col.fueltotal}">Гориво общо</th>
+                        <th th:text="#{fuel.col.fuelperkm}">€/км гориво</th>
+                        <th th:text="#{fuel.col.revenue}">Приход</th>
+                        <th th:text="#{fuel.col.profit}">Печалба</th>
+                        <th th:text="#{fuel.col.profitperkm}">Печалба/км</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -84,7 +84,7 @@
                     </tbody>
                     <tfoot th:if="${!rows.isEmpty()}">
                     <tr style="font-weight:700; border-top:2px solid var(--border-strong,#333);">
-                        <td>ОБЩО</td>
+                        <td th:text="#{fuel.total}">ОБЩО</td>
                         <td></td>
                         <td class="mono" th:text="${grandKm} + ' км'"></td>
                         <td class="mono" th:text="${grandFuel} + ' €'"></td>
@@ -96,11 +96,11 @@
                     </tfoot>
                 </table>
 
-                <div th:if="${rows.isEmpty()}" class="empty-state">
+                <div th:if="${rows.isEmpty()}" class="empty-state" th:text="#{fuel.empty}">
                     Няма курсове с данни за избрания период
                 </div>
 
-                <p style="margin-top:14px; font-size:12.5px; opacity:0.65;">
+                <p style="margin-top:14px; font-size:12.5px; opacity:0.65;" th:text="#{fuel.note}">
                     €/км и печалба/км се смятат само за курсове с въведени изминати километри.
                     Добавяй ги в поле "Изминати км" при въвеждане на курс за точна справка.
                 </p>

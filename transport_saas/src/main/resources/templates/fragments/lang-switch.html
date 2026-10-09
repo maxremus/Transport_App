@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+  Използване: <div th:replace="~{fragments/lang-switch :: switcher(dark=false)}"></div>
+  dark=true за тъмен фон (напр. началната страница).
+  Смяната минава през ?lang=bg / ?lang=en на текущия URL (запазва останалите
+  query параметри) - LocaleChangeInterceptor чете параметъра и записва
+  избора в бисквитка (важи преди логин и между сесиите).
+-->
+<div th:fragment="switcher(dark)" class="lang-switch" th:classappend="${dark} ? 'lang-switch-dark' : ''">
+    <a th:href="@{${#request.requestURI}(lang='bg')}"
+       th:classappend="${#locale.language == 'bg'} ? 'is-active'"
+       th:text="#{lang.switch.bg}">БГ</a>
+    <span class="lang-sep">/</span>
+    <a th:href="@{${#request.requestURI}(lang='en')}"
+       th:classappend="${#locale.language == 'en'} ? 'is-active'"
+       th:text="#{lang.switch.en}">EN</a>
+</div>
+
+</body>
+</html>

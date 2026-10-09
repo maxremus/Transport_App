@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Документи на шофьор - Transport Manager</title>
+    <title th:text="#{driverdocs.title} + ' - Transport Manager'">Документи на шофьор - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,15 +21,15 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Екипаж</p>
+                <p class="page-eyebrow" th:text="#{drivers.eyebrow}">Екипаж</p>
                 <h1 class="page-title">
-                    Документи
+                    <span th:text="#{driverdocs.title}">Документи</span>
                     <span th:if="${driverName != null}" class="text-muted-c" style="font-size:16px; font-weight:500;"
                           th:text="'— ' + ${driverName}"></span>
                 </h1>
             </div>
 
-            <a th:href="@{/driver}" class="btn-ghost">⬅ Назад към шофьорите</a>
+            <a th:href="@{/driver}" class="btn-ghost" th:text="#{driverdocs.back}">⬅ Назад към шофьорите</a>
         </div>
 
         <div class="row g-4">
@@ -39,7 +39,7 @@
                 <div class="panel">
                     <div class="panel-body">
 
-                        <p class="panel-title" th:text="${editDoc != null} ? '✏ Редакция на документ' : '📄 Нов документ'"></p>
+                        <p class="panel-title" th:text="${editDoc != null} ? #{driverdocs.form.edit} : #{driverdocs.form.add}"></p>
 
                         <form th:action="${editDoc != null} ? @{'/driver-documents/' + ${editDoc.id}} : @{/driver-documents}"
                               method="post">
@@ -52,38 +52,42 @@
                                    th:value="${editDoc != null} ? ${editDoc.driverId} : ${driverId}">
 
                             <div class="mb-3">
-                                <label class="field-label">Тип документ</label>
+                                <label class="field-label" th:text="#{driverdocs.field.type}">Тип документ</label>
                                 <select name="type" class="field-control">
                                     <option value="DRIVING_LICENSE"
-                                            th:selected="${editDoc != null and editDoc.type.name() == 'DRIVING_LICENSE'}">Книжка</option>
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'DRIVING_LICENSE'}"
+                                            th:text="#{doc.type.driving_license}">Книжка</option>
                                     <option value="ID_CARD"
-                                            th:selected="${editDoc != null and editDoc.type.name() == 'ID_CARD'}">Лична карта</option>
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'ID_CARD'}"
+                                            th:text="#{doc.type.id_card}">Лична карта</option>
                                     <option value="DIGITAL_CARD"
-                                            th:selected="${editDoc != null and editDoc.type.name() == 'DIGITAL_CARD'}">Дигитална карта</option>
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'DIGITAL_CARD'}"
+                                            th:text="#{doc.type.digital_card}">Дигитална карта</option>
                                     <option value="PROFESSIONAL_CERT"
-                                            th:selected="${editDoc != null and editDoc.type.name() == 'PROFESSIONAL_CERT'}">Професионална</option>
+                                            th:selected="${editDoc != null and editDoc.type.name() == 'PROFESSIONAL_CERT'}"
+                                            th:text="#{doc.type.professional_cert}">Професионална</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
-                                <label class="field-label">Номер</label>
+                                <label class="field-label" th:text="#{driverdocs.field.number}">Номер</label>
                                 <input type="text" name="number" class="field-control mono"
                                        th:value="${editDoc != null} ? ${editDoc.number} : ''">
                             </div>
 
                             <div class="mb-4">
-                                <label class="field-label">Валиден до</label>
+                                <label class="field-label" th:text="#{driverdocs.field.validuntil}">Валиден до</label>
                                 <input type="date" name="expiryDate" class="field-control"
                                        th:value="${editDoc != null} ? ${editDoc.expiryDate} : ''" required>
                             </div>
 
                             <button class="btn-route btn-block mb-2"
-                                    th:text="${editDoc != null} ? '💾 Запази промените' : '💾 Добави документ'">
+                                    th:text="${editDoc != null} ? #{driverdocs.save.edit} : #{driverdocs.save.add}">
                             </button>
 
                             <a th:if="${editDoc != null}"
                                th:href="@{/driver-documents(driverId=${driverId})}"
-                               class="btn-ghost btn-block">Откажи редакция</a>
+                               class="btn-ghost btn-block" th:text="#{driverdocs.cancel}">Откажи редакция</a>
 
                         </form>
 
@@ -96,23 +100,23 @@
                 <div class="panel">
                     <div class="panel-body">
 
-                        <p class="panel-title">Всички документи на шофьора</p>
+                        <p class="panel-title" th:text="#{driverdocs.table.title}">Всички документи на шофьора</p>
 
                         <table class="manifest-table" th:if="${documents != null and !documents.isEmpty()}">
                             <thead>
                             <tr>
-                                <th>Тип</th>
-                                <th>Номер</th>
-                                <th>Валиден до</th>
-                                <th>Статус</th>
+                                <th th:text="#{driverdocs.col.type}">Тип</th>
+                                <th th:text="#{driverdocs.col.number}">Номер</th>
+                                <th th:text="#{driverdocs.col.validuntil}">Валиден до</th>
+                                <th th:text="#{driverdocs.col.status}">Статус</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="doc : ${documents}"
                                 th:classappend="
-                                    ${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ИЗТЕКЪЛ'} ? 'row-danger' :
-                                    (${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'СПЕШЕН'} ? 'row-warning' : '')
+                                    ${@driverDocumentService.getStatus(doc.expiryDate) == 'EXPIRED'} ? 'row-danger' :
+                                    (${@driverDocumentService.getStatus(doc.expiryDate) == 'URGENT'} ? 'row-warning' : '')
                                 ">
                                 <td th:text="${@driverDocumentService.getDisplayType(doc.type)}"></td>
                                 <td class="mono" th:text="${doc.number}"></td>
@@ -120,14 +124,14 @@
                                 <td>
                                     <span class="pill"
                                           th:classappend="
-                                              ${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ОК'} ? 'pill-ok' :
-                                              (${@driverDocumentService.getDisplayStatus(doc.expiryDate) == 'ИЗТЕКЪЛ'} ? 'pill-danger' : 'pill-warning')
+                                              ${@driverDocumentService.getStatus(doc.expiryDate) == 'OK'} ? 'pill-ok' :
+                                              (${@driverDocumentService.getStatus(doc.expiryDate) == 'EXPIRED'} ? 'pill-danger' : 'pill-warning')
                                           "
                                           th:text="${@driverDocumentService.getDisplayStatus(doc.expiryDate)}"></span>
                                 </td>
                                 <td>
                                     <a th:href="@{/driver-documents(driverId=${driverId}, editId=${doc.id})}"
-                                       class="btn-ghost" style="padding:5px 12px; font-size:12.5px;">
+                                       class="btn-ghost" style="padding:5px 12px; font-size:12.5px;" th:text="#{driverdocs.action.edit}">
                                         ✏ Редакция
                                     </a>
                                 </td>
@@ -135,7 +139,7 @@
                             </tbody>
                         </table>
 
-                        <div th:if="${documents == null or documents.isEmpty()}" class="empty-state">
+                        <div th:if="${documents == null or documents.isEmpty()}" class="empty-state" th:text="#{driverdocs.empty}">
                             Няма добавени документи за този шофьор
                         </div>
 

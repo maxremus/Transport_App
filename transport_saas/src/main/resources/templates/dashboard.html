@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Табло - Transport Manager</title>
+    <title th:text="#{dashboard.title} + ' - Transport Manager'">Табло - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,8 +23,8 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Диспечерско табло</p>
-                <h1 class="page-title">Табло</h1>
+                <p class="page-eyebrow" th:text="#{dashboard.eyebrow}">Диспечерско табло</p>
+                <h1 class="page-title" th:text="#{dashboard.title}">Табло</h1>
             </div>
         </div>
 
@@ -35,7 +35,7 @@
                 <form method="get" th:action="@{/dashboard}" class="row g-3 align-items-end">
 
                     <div class="col-md-4">
-                        <label class="field-label">Месец</label>
+                        <label class="field-label" th:text="#{dashboard.filter.month}">Месец</label>
                         <select name="month" class="field-control">
                             <option th:each="m : ${#numbers.sequence(1,12)}"
                                     th:value="${m}"
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="field-label">Година</label>
+                        <label class="field-label" th:text="#{dashboard.filter.year}">Година</label>
                         <select name="year" class="field-control">
                             <option th:each="y : ${#numbers.sequence(2023,2035)}"
                                     th:value="${y}"
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <button class="btn-route btn-block">Филтрирай</button>
+                        <button class="btn-route btn-block" th:text="#{dashboard.filter.submit}">Филтрирай</button>
                     </div>
 
                 </form>
@@ -70,30 +70,30 @@
 
             <div class="col-md-3 col-6">
                 <div class="kpi-card">
-                    <p class="kpi-label">Приход</p>
+                    <p class="kpi-label" th:text="#{dashboard.kpi.revenue}">Приход</p>
                     <p class="kpi-value up mono" th:text="${revenue} + ' €'"></p>
                 </div>
             </div>
 
             <div class="col-md-3 col-6">
                 <div class="kpi-card">
-                    <p class="kpi-label">Разходи</p>
+                    <p class="kpi-label" th:text="#{dashboard.kpi.expenses}">Разходи</p>
                     <p class="kpi-value down mono" th:text="${expenses} + ' €'"></p>
                 </div>
             </div>
 
             <div class="col-md-3 col-6">
                 <div class="kpi-card">
-                    <p class="kpi-label">Печалба</p>
+                    <p class="kpi-label" th:text="#{dashboard.kpi.profit}">Печалба</p>
                     <p class="kpi-value neutral mono" th:text="${profit} + ' €'"></p>
                 </div>
             </div>
 
             <div class="col-md-3 col-6" th:if="${topTrip != null}">
                 <div class="kpi-card" style="border-color: var(--route);">
-                    <p class="kpi-label">🚀 Най-печеливш курс</p>
+                    <p class="kpi-label" th:text="#{dashboard.kpi.toptrip}">🚀 Най-печеливш курс</p>
                     <p class="kpi-value neutral" style="font-size:16px;">
-                        Курс № <span th:text="${topTrip[0]}"></span>
+                        <span th:text="#{dashboard.kpi.toptrip.prefix}">Курс №</span> <span th:text="${topTrip[0]}"></span>
                     </p>
                     <p class="text-muted-c mono" style="font-size:12px; margin:2px 0;" th:text="${topTrip[1]}"></p>
                     <p class="mono" style="color:var(--signal-green); font-weight:700; margin:0;" th:text="${topTrip[2]} + ' €'"></p>
@@ -107,16 +107,16 @@
             <div class="panel-body">
 
                 <p class="panel-title" style="color: var(--signal-red);">
-                    ⚠ Просрочени фактури (<span th:text="${overdueInvoices.size()}"></span>)
+                    <span th:text="#{dashboard.overdue.title}">⚠ Просрочени фактури</span> (<span th:text="${overdueInvoices.size()}"></span>)
                 </p>
 
                 <table class="manifest-table">
                     <thead>
                     <tr>
-                        <th>№</th>
-                        <th>Клиент</th>
-                        <th>Падеж</th>
-                        <th>Сума (с ДДС)</th>
+                        <th th:text="#{dashboard.overdue.col.number}">№</th>
+                        <th th:text="#{dashboard.overdue.col.client}">Клиент</th>
+                        <th th:text="#{dashboard.overdue.col.due}">Падеж</th>
+                        <th th:text="#{dashboard.overdue.col.total}">Сума (с ДДС)</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -129,7 +129,7 @@
                     </tbody>
                 </table>
 
-                <a th:href="@{/invoices}" class="btn-ghost" style="margin-top:10px; display:inline-block;">Виж всички фактури →</a>
+                <a th:href="@{/invoices}" class="btn-ghost" style="margin-top:10px; display:inline-block;" th:text="#{dashboard.overdue.viewall}">Виж всички фактури →</a>
 
             </div>
         </div>
@@ -138,17 +138,17 @@
         <div class="panel mb-4" th:if="${expiringDocs != null && !expiringDocs.isEmpty()}">
             <div class="panel-body">
 
-                <p class="panel-title" style="color: var(--signal-red);">
+                <p class="panel-title" style="color: var(--signal-red);" th:text="#{dashboard.docs.vehicle.title}">
                     ⚠ Изтичащи документи (до 30 дни)
                 </p>
 
                 <table class="manifest-table">
                     <thead>
                     <tr>
-                        <th>МПС</th>
-                        <th>Документ</th>
-                        <th>Валиден до</th>
-                        <th>Статус</th>
+                        <th th:text="#{dashboard.docs.col.vehicle}">МПС</th>
+                        <th th:text="#{dashboard.docs.col.document}">Документ</th>
+                        <th th:text="#{dashboard.docs.col.validuntil}">Валиден до</th>
+                        <th th:text="#{dashboard.docs.col.status}">Статус</th>
                     </tr>
                     </thead>
 
@@ -173,17 +173,17 @@
         <div class="panel mb-4" th:if="${expiringDriverDocs != null && !expiringDriverDocs.isEmpty()}">
             <div class="panel-body">
 
-                <p class="panel-title" style="color: var(--signal-red);">
+                <p class="panel-title" style="color: var(--signal-red);" th:text="#{dashboard.docs.driver.title}">
                     ⚠ Изтичащи документи на шофьори (до 30 дни)
                 </p>
 
                 <table class="manifest-table">
                     <thead>
                     <tr>
-                        <th>Шофьор</th>
-                        <th>Документ</th>
-                        <th>Валиден до</th>
-                        <th>Статус</th>
+                        <th th:text="#{dashboard.docs.col.driver}">Шофьор</th>
+                        <th th:text="#{dashboard.docs.col.document}">Документ</th>
+                        <th th:text="#{dashboard.docs.col.validuntil}">Валиден до</th>
+                        <th th:text="#{dashboard.docs.col.status}">Статус</th>
                     </tr>
                     </thead>
 
@@ -209,7 +209,7 @@
         <!-- CHART -->
         <div class="panel">
             <div class="panel-body">
-                <p class="panel-title">Финансова статистика</p>
+                <p class="panel-title" th:text="#{dashboard.chart.title}">Финансова статистика</p>
                 <canvas id="financeChart" height="90"></canvas>
             </div>
         </div>
@@ -220,6 +220,10 @@
 
 <script th:inline="javascript">
     let chartData = [[${chartData}]];
+    const i18nMonth = /*[[#{dashboard.chart.month}]]*/ "Месец";
+    const i18nRevenue = /*[[#{dashboard.chart.revenue}]]*/ "Приход";
+    const i18nExpenses = /*[[#{dashboard.chart.expenses}]]*/ "Разходи";
+    const i18nProfit = /*[[#{dashboard.chart.profit}]]*/ "Печалба";
 
     let labels = [];
     let revenue = [];
@@ -227,7 +231,7 @@
     let profit = [];
 
     chartData.forEach(row => {
-        labels.push("Месец " + row[0]);
+        labels.push(i18nMonth + " " + row[0]);
         revenue.push(row[1]);
         expenses.push(row[2]);
         profit.push(row[1] - row[2]);
@@ -238,9 +242,9 @@
         data: {
             labels: labels,
             datasets: [
-                { label: "Приход", data: revenue, borderColor: "#3C8C6B", backgroundColor: "#3C8C6B", borderWidth: 3, tension: .3 },
-                { label: "Разходи", data: expenses, borderColor: "#C1442E", backgroundColor: "#C1442E", borderWidth: 3, tension: .3 },
-                { label: "Печалба", data: profit, borderColor: "#D98A2B", backgroundColor: "#D98A2B", borderWidth: 3, tension: .3 }
+                { label: i18nRevenue, data: revenue, borderColor: "#3C8C6B", backgroundColor: "#3C8C6B", borderWidth: 3, tension: .3 },
+                { label: i18nExpenses, data: expenses, borderColor: "#C1442E", backgroundColor: "#C1442E", borderWidth: 3, tension: .3 },
+                { label: i18nProfit, data: profit, borderColor: "#D98A2B", backgroundColor: "#D98A2B", borderWidth: 3, tension: .3 }
             ]
         },
         options: {

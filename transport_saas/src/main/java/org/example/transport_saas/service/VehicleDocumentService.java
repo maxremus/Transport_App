@@ -6,6 +6,8 @@ import org.example.transport_saas.entity.Vehicle;
 import org.example.transport_saas.entity.VehicleDocument;
 import org.example.transport_saas.repository.VehicleDocumentRepository;
 import org.example.transport_saas.repository.VehicleRepository;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,6 +20,11 @@ public class VehicleDocumentService {
 
     private final VehicleDocumentRepository vehicleDocumentRepository;
     private final VehicleRepository  vehicleRepository;
+    private final MessageSource messageSource;
+
+    private String msg(String key) {
+        return messageSource.getMessage(key, null, LocaleContextHolder.getLocale());
+    }
 
     public List<VehicleDocument> getExpiringDocuments(Long companyId) {
 
@@ -74,9 +81,9 @@ public class VehicleDocumentService {
 
     public String getDisplayType(DocumentType type) {
         return switch (type) {
-            case TECHNICAL_INSPECTION -> "ГТП";
-            case INSURANCE -> "Застраховка";
-            case VIGNETTE -> "Винетка";
+            case TECHNICAL_INSPECTION -> msg("doc.type.technical_inspection");
+            case INSURANCE -> msg("doc.type.insurance");
+            case VIGNETTE -> msg("doc.type.vignette");
         };
     }
 
@@ -85,18 +92,18 @@ public class VehicleDocumentService {
         LocalDate now = LocalDate.now();
 
         if (expiryDate.isBefore(now)) {
-            return "ИЗТEКЪЛ";
+            return msg("doc.status.expired");
         }
 
         if (expiryDate.isBefore(now.plusDays(10))) {
-            return "СПЕШЕН";
+            return msg("doc.status.urgent");
         }
 
         if (expiryDate.isBefore(now.plusDays(30))) {
-            return "ПРЕДУПРЕЖДЕНИЕ";
+            return msg("doc.status.warning");
         }
 
-        return "ОК";
+        return msg("doc.status.ok");
     }
 
     public Optional<Vehicle> getByVehicle(Long vehicleId) {

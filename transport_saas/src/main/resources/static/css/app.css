@@ -561,3 +561,15 @@ body.road-shell {
   }
 }
 
+/* ---------- Език (BG/EN) ---------- */
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+}
+.lang-switch a { color: var(--text-muted); text-decoration: none; padding: 2px 4px; }
+.lang-switch a.is-active { color: var(--route-dark); }
+.lang-switch .lang-sep { color: var(--line); }
+.lang-switch-dark a { color: #8790A3; }
+.lang-switch-dark a.is-active { color: #fff; }
+.lang-switch-dark .lang-sep { color: #444B5C; }
+

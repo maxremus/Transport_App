@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Редакция на фактура - Transport Manager</title>
+    <title th:text="#{invoiceedit.title} + ' ' + ${invoice.invoiceNumber} + ' - Transport Manager'">Редакция на фактура - Transport Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,18 +21,18 @@
 
         <div class="page-head">
             <div>
-                <p class="page-eyebrow">Продажби</p>
-                <h1 class="page-title">Редакция на фактура № <span th:text="${invoice.invoiceNumber}"></span></h1>
+                <p class="page-eyebrow" th:text="#{invoices.eyebrow}">Продажби</p>
+                <h1 class="page-title"><span th:text="#{invoiceedit.title}">Редакция на фактура №</span> <span th:text="${invoice.invoiceNumber}"></span></h1>
             </div>
-            <a th:href="@{/invoices}" class="btn-ghost">← Обратно към фактурите</a>
+            <a th:href="@{/invoices}" class="btn-ghost" th:text="#{invoiceedit.back}">← Обратно към фактурите</a>
         </div>
 
         <div class="panel">
             <div class="panel-body">
 
                 <p style="margin-bottom:18px; opacity:0.75;">
-                    Клиент: <strong th:text="${invoice.client != null ? invoice.client.name : '—'}"></strong>
-                    &nbsp;·&nbsp; Статус: <strong th:text="${invoice.status}"></strong>
+                    <span th:text="#{invoiceedit.client}">Клиент</span>: <strong th:text="${invoice.client != null ? invoice.client.name : '—'}"></strong>
+                    &nbsp;·&nbsp; <span th:text="#{invoiceedit.status}">Статус</span>: <strong th:text="#{${'invoice.status.' + #strings.toLowerCase(invoice.status.name())}}"></strong>
                 </p>
 
                 <div class="notice notice-danger" th:if="${invoiceNumberError}" th:text="${invoiceNumberError}"></div>
@@ -43,35 +43,35 @@
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-3">
-                            <label class="field-label">Номер на фактура</label>
+                            <label class="field-label" th:text="#{invoiceedit.field.number}">Номер на фактура</label>
                             <input type="text" name="invoiceNumber" class="field-control mono"
                                    th:value="${invoice.invoiceNumber}">
                         </div>
 
                         <div class="col-md-3">
-                            <label class="field-label">Падеж</label>
+                            <label class="field-label" th:text="#{invoiceedit.field.due}">Падеж</label>
                             <input type="date" name="dueDate" class="field-control" th:value="${invoice.dueDate}">
                         </div>
 
                         <div class="col-md-3" th:if="${vatRegistered}">
-                            <label class="field-label">ДДС %</label>
+                            <label class="field-label" th:text="#{invoiceedit.field.vat}">ДДС %</label>
                             <input type="number" step="0.01" name="vatRate" class="field-control mono"
                                    th:value="${invoice.vatRate}">
                         </div>
 
                         <div class="col-md-3">
-                            <label class="field-label">Бележки</label>
+                            <label class="field-label" th:text="#{invoiceedit.field.notes}">Бележки</label>
                             <input type="text" name="notes" class="field-control" th:value="${invoice.notes}">
                         </div>
                     </div>
 
-                    <p class="panel-title">Редове на фактурата</p>
+                    <p class="panel-title" th:text="#{invoiceedit.items.title}">Редове на фактурата</p>
 
                     <table class="manifest-table mb-3">
                         <thead>
                         <tr>
-                            <th>Описание</th>
-                            <th style="width:160px;">Сума (€)</th>
+                            <th th:text="#{invoiceedit.items.col.description}">Описание</th>
+                            <th style="width:160px;" th:text="#{invoiceedit.items.col.amount}">Сума (€)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -88,11 +88,11 @@
                         </tbody>
                     </table>
 
-                    <p style="font-size:12.5px; opacity:0.65; margin-bottom:20px;">
+                    <p style="font-size:12.5px; opacity:0.65; margin-bottom:20px;" th:text="#{invoiceedit.note}">
                         Сумата на фактурата се преизчислява автоматично от сборa на редовете по-горе след запис.
                     </p>
 
-                    <button class="btn-route">💾 Запази промените</button>
+                    <button class="btn-route" th:text="#{invoiceedit.save}">💾 Запази промените</button>
 
                 </form>
 
