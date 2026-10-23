@@ -48,6 +48,9 @@ public class SecurityConfig {
                         // трябва да са достъпни независимо дали сесията е още валидна
                         .requestMatchers("/success", "/cancel").permitAll()
 
+                        // собствената страница за грешки трябва да се показва и без логин
+                        .requestMatchers("/error").permitAll()
+
                         .requestMatchers("/api/v1/company/**").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")

@@ -29,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
                         // публични/автентикационни страници
                         "/", "/login", "/logout", "/register",
                         "/forgot-password", "/reset-password",
-                        "/subscription-expired",
+                        "/subscription-expired", "/error",
                         // статични ресурси
                         "/css/**", "/js/**", "/images/**"
                 );

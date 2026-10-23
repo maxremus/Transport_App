@@ -135,8 +135,7 @@ public class InvoiceService {
         if (invoiceNumber != null && !invoiceNumber.isBlank()
                 && !invoiceNumber.equals(invoice.getInvoiceNumber())) {
 
-            boolean taken = invoiceRepository.existsByCompanyIdAndInvoiceNumberAndIdNot(
-                    companyId, invoiceNumber, invoiceId);
+            boolean taken = invoiceRepository.existsByInvoiceNumberAndIdNot(invoiceNumber, invoiceId);
             if (taken) {
                 throw new IllegalArgumentException("Вече има фактура с номер " + invoiceNumber + ".");
             }
@@ -199,7 +198,18 @@ public class InvoiceService {
     }
 
     private String nextInvoiceNumber(Company company) {
-        long number = company.getNextInvoiceNumberOrDefault();
+        // Ако фирмата още няма зададен брояч (стари фирми), продължаваме от
+        // броя на досегашните ѝ фактури + 1 - както беше преди.
+        long number = company.getNextInvoiceNumber() != null
+                ? company.getNextInvoiceNumber()
+                : invoiceRepository.countByCompanyId(company.getId()) + 1;
+
+        // invoice_number е уникален в цялата таблица - прескачаме заетите номера,
+        // вместо да получим грешка 500 при запис.
+        while (invoiceRepository.existsByInvoiceNumber(String.format("%010d", number))) {
+            number++;
+        }
+
         company.setNextInvoiceNumber(number + 1);
         companyRepository.save(company);
         return String.format("%010d", number);
